@@ -6,31 +6,42 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    folderHistory(new QStack<QString>)
 {
-    folderHistory = new QStack<QString>;
-
+    // Setup the UI
     ui->setupUi(this);
 
-    model = new QFileSystemModel;
+    // Create file system models
+    model = new QFileSystemModel(this);
     model->setRootPath(QDir::homePath());
+    modelDirs = new QFileSystemModel(this);
+    modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+
+    // Set models in views
+    ui->treeViewExplorer->setModel(model);
+    ui->treeViewExplorer->setRootIndex(model->index(QDir::homePath()));
+    ui->treeViewFiles->setModel(modelDirs);
+    ui->treeViewFiles->hideColumn(3);
+    ui->treeViewFiles->hideColumn(2);
+    ui->treeViewFiles->hideColumn(1);
 
     // Add to stack
     folderHistory->append(QDir::homePath());
 
     // Show path in status bar
     this->setPath();
-
-    ui->treeView_2->setModel(model);
-    ui->treeView_2->setRootIndex(model->index(QDir::homePath()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete folderHistory;
+    delete model;
+    delete modelDirs;
 }
 
-void MainWindow::on_treeView_2_doubleClicked(const QModelIndex &index)
+void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 {
     // Get directory
     QString dir(model->filePath(index));
@@ -39,10 +50,14 @@ void MainWindow::on_treeView_2_doubleClicked(const QModelIndex &index)
     folderHistory->append(dir);
 
     // Set root index
-    ui->treeView_2->setRootIndex(model->index(dir));
+    ui->treeViewExplorer->setRootIndex(model->index(dir));
 
     // Show path in status bar
     this->setPath();
+}
+
+void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index) {
+    this->on_treeViewExplorer_doubleClicked(index);
 }
 
 void MainWindow::on_buttonBack_clicked()
@@ -56,13 +71,13 @@ void MainWindow::on_buttonBack_clicked()
         dir = folderHistory->pop();
 
         // Is it the current directory?
-        if(folderHistory->size() > 0 && ui->treeView_2->rootIndex() == model->index(dir)) {
+        if(folderHistory->size() > 0 && ui->treeViewExplorer->rootIndex() == model->index(dir)) {
             // Pop another
             dir = folderHistory->last();
         }
 
         // Set root index
-        ui->treeView_2->setRootIndex(model->index(dir));
+        ui->treeViewExplorer->setRootIndex(model->index(dir));
     }
 
     // History empty?
@@ -83,5 +98,3 @@ void MainWindow::setPath()
     // At last item? Disable back button.
     ui->buttonBack->setEnabled(folderHistory->size() > 1);
 }
-
-
