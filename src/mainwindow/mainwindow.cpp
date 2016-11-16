@@ -7,7 +7,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    folderHistory(new QStack<QString>)
+    folderHistory(new QStack<QString>),
+    folderForwardHistory(new QStack<QString>)
 {
     // Setup the UI
     ui->setupUi(this);
@@ -37,6 +38,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete folderHistory;
+    delete folderForwardHistory;
     delete model;
     delete modelDirs;
 }
@@ -45,6 +47,11 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 {
     // Get directory
     QString dir(model->filePath(index));
+
+    // clear forward if it doesn't contain dir
+    // else pop from ForwardHistory
+    if (!folderForwardHistory->contains(dir)) folderForwardHistory->clear();
+    else folderForwardHistory->pop();
 
     // Add to stack
     folderHistory->append(dir);
@@ -70,6 +77,9 @@ void MainWindow::on_buttonBack_clicked()
         // Get the first item of the stack
         dir = folderHistory->pop();
 
+        // Add to folderForwardHistory
+        folderForwardHistory->append(dir);
+
         // Is it the current directory?
         if(folderHistory->size() > 0 && ui->treeViewExplorer->rootIndex() == model->index(dir)) {
             // Pop another
@@ -90,6 +100,28 @@ void MainWindow::on_buttonBack_clicked()
     this->setPath();
 }
 
+void MainWindow::on_buttonForward_clicked()
+{
+    // Track dir
+    QString dir;
+
+    // If there is a Forward
+    if(folderForwardHistory->size() > 0){
+        // Get first item of the forward stack
+        dir = folderForwardHistory->pop();
+
+        // Append dir to folderHistory
+        folderHistory->append(dir);
+
+        // Set root index
+        ui->treeViewExplorer->setRootIndex(model->index(dir));
+
+    }
+
+    // Show path in status bar
+    this->setPath();
+}
+
 void MainWindow::setPath()
 {
     // Show message
@@ -97,4 +129,7 @@ void MainWindow::setPath()
 
     // At last item? Disable back button.
     ui->buttonBack->setEnabled(folderHistory->size() > 1);
+
+    // At last forward item? Disable forward button.
+    ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
 }
