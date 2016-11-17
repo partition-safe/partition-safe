@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "dialogopen.h"
 
 #include <QtDebug>
 #include <QFileSystemModel>
@@ -120,6 +121,24 @@ void MainWindow::on_buttonForward_clicked()
 
     // Show path in status bar
     this->setPath();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    qDebug() << "Click O";
+    DialogOpen *open = new DialogOpen(this);
+
+    open->exec();
+
+    if(open->Accepted){
+        qDebug()<< "accepted";
+    }
+
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    qDebug() << "Click N";
 }
 
 void MainWindow::setPath()
