@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.6)
 project(PartitionSafe)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -framework CoreFoundation")
+if(APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -framework CoreFoundation")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
 
 set(SOURCE_FILES
         lib/libpartitionsafe/Partition.cpp
