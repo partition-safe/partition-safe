@@ -66,7 +66,7 @@ Partition Partition::create(char label[40], unsigned int size, const char* path)
     struct Header* header = new Header;
     strncpy(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
     strncpy(header->label, label, sizeof(header->label));
-    strncpy(header->UUID, newUUID().c_str(), sizeof(header->UUID));
+    strncpy(header->UUID, newUUID(), sizeof(header->UUID));
     header->size = size;
     header->version = Partition::VERSION;
 
