@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow/mainwindow.cpp
+        mainwindow/mainwindow.cpp \
+    lib/psfilesystemmodel/psfilesystemmodel.cpp
 
-HEADERS  += mainwindow/mainwindow.h
+HEADERS  += mainwindow/mainwindow.h \
+    lib/psfilesystemmodel/psfilesystemmodel.h
 
 FORMS    += mainwindow/mainwindow.ui
