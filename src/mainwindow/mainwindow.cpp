@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dialogopen.h"
+#include "dialognew.h"
 
 #include <QtDebug>
 #include <QFileSystemModel>
@@ -139,6 +140,13 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     qDebug() << "Click N";
+    DialogNew *newDialog = new DialogNew(this);
+
+    newDialog->exec();
+
+    if(newDialog->Accepted){
+        qDebug()<< "accepted";
+    }
 }
 
 void MainWindow::setPath()
