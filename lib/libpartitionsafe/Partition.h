@@ -9,15 +9,20 @@
 
 class Partition {
 
-    /**
-     * Label name of the partition
-     */
-    std::string label;
+public:
+    struct Header{
+        char identifier[5];
+        char label[40];
+        unsigned int size;
+    };
+
+private:
+
 
     /**
-     * Total size in bytes
-     */
-    unsigned int size;
+   * The partition header
+   */
+    Header* header;
 
     /**
      * File path to this partition
@@ -25,13 +30,18 @@ class Partition {
     const char* path;
 
     FILE * fh;
+
 public:
-    Partition(std::string label, unsigned int size,  const char* path);
+    static const char* IDENTIFIER;
+
+    Partition(Header* header, const char* path);
 
     /**
      * Open the partition
      */
-    void open();
+    static Partition open(const char* path);
+
+    static Partition create(char label[40], unsigned int size, const char* path);
 
 };
 

@@ -3,15 +3,19 @@
 //
 
 #include <iostream>
-#include "PartitionSafe.h"
+#include "Partition.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    PartitionSafe partitionSafe;
+    const char* path = "/tmp/marc.vault";
 
-    Partition partition = partitionSafe.createPartition("Marc", 1024 * 1024, "/tmp/marc.vault");
-    partition.open();
+    // Create a partition
+    char label[40] = "Marc";
+    Partition partition = Partition::create(label, 1024, path);
+
+    // Open an already created partition
+    partition = Partition::open(path);
 
     return 0;
 }
