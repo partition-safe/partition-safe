@@ -4,18 +4,30 @@
 
 #include <cstring>
 #include <sys/file.h>
-#include <unistd.h>
 #include "Partition.h"
+#include "common.c"
 
-const char* Partition::IDENTIFIER = "PS01";
+/**
+ * Set the const identifier.
+ *
+ * NEVER, NEVER, NEVER CHANGE THIS VALUE.
+ * WHO CHANGES THIS VALUE, WILL BE ASSASSINATED.
+ */
+const char* Partition::IDENTIFIER = "PartitionSafe";
 
-Partition::Partition(Header* header, const char* path) {
-    this->header = header;
-    this->path = path;
-}
+/**
+ * Set the current const version.
+ */
+const unsigned int Partition::VERSION = 1;
+
+Partition::Partition(Header* header, const char* path, FILE* fh):
+        header(header), path(path), fh(fh) {}
 
 Partition Partition::open(const char* path) {
+    // Open the file
     FILE* fh = fopen(path, "r+");
+
+    // Is the file locked?
     if(flock(fileno(fh), LOCK_EX) == 0){
         std::cout << "All good"<< std::endl;
     }else{
@@ -26,16 +38,21 @@ Partition Partition::open(const char* path) {
     Header* header = new Header;
     fread(&*header, sizeof(*header), 1, fh);
 
+    // Check the identifier of the drive
     if(strcmp(header->identifier, Partition::IDENTIFIER) == 0){
         std::cout << "Partition: Good";
     }else{
         std::cout << "Partition: Bad, " << header->identifier;
     }
 
+    // Print information
     std::cout<< std::endl;
     std::cout << "Label: " << header->label << std::endl;
     std::cout << "Size: " << header->size << std::endl;
+    std::cout << "Version: " << header->version << std::endl;
+    std::cout << "UUID: " << header->UUID << std::endl;
 
+    // Open the partition and set information
     Partition partition = Partition(header, path);
     partition.fh = fh;
 
@@ -45,14 +62,13 @@ Partition Partition::open(const char* path) {
 Partition Partition::create(char label[40], unsigned int size, const char* path) {
     FILE* fh = fopen(path, "w");
 
-    char identifier[5];
-    strncpy(identifier, Partition::IDENTIFIER, 5);
-
     // The partition header
     struct Header* header = new Header;
-    strcpy(header->identifier, identifier);
-    strcpy(header->label, label);
+    strncpy(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
+    strncpy(header->label, label, sizeof(header->label));
+    strncpy(header->UUID, newUUID().c_str(), sizeof(header->UUID));
     header->size = size;
+    header->version = Partition::VERSION;
 
     // Write our partition header
     fwrite(&*header, 1, sizeof(*header), fh);
@@ -65,3 +81,5 @@ Partition Partition::create(char label[40], unsigned int size, const char* path)
 
     return Partition(header, path);
 }
+
+
