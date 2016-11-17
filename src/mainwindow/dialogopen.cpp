@@ -2,6 +2,7 @@
 #include "ui_dialogopen.h"
 
 #include <QtDebug>
+#include <QFileDialog>
 
 DialogOpen::DialogOpen(QWidget *parent) :
     QDialog(parent),
@@ -15,12 +16,22 @@ DialogOpen::~DialogOpen()
     delete ui;
 }
 
-void DialogOpen::on_buttonBoxDialogOpen_accepted()
+void DialogOpen::on_buttonSelectKey_clicked()
 {
-    qDebug()<<"Accepted";
+    qDebug()<<"SlectKey";
+    QStringList filters;
+    filters << "Key files (*.key)";
+
+    QFileDialog qFile;
+    qFile.setNameFilters(filters);
+    qFile.exec();
+
+    qFile.dumpObjectInfo();
 }
 
-void DialogOpen::on_buttonBoxDialogOpen_rejected()
+void DialogOpen::on_buttonSelectPartition_clicked()
 {
-    qDebug()<<"Rejected";
+    qDebug()<<"SlectPartition";
+    QFileDialog qFile;
+    qFile.exec();
 }

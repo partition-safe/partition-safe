@@ -15,10 +15,13 @@ public:
     explicit DialogOpen(QWidget *parent = 0);
     ~DialogOpen();
 
+private slots:
+    void on_buttonSelectPartition_clicked();
+    void on_buttonSelectKey_clicked();
+
 private:
     Ui::DialogOpen *ui;
-    void on_buttonBoxDialogOpen_accepted();
-    void on_buttonBoxDialogOpen_rejected();
+
 };
 
 #endif // DIALOGOPEN_H
