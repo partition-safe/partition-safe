@@ -5,7 +5,7 @@
 #include <cstring>
 #include <sys/file.h>
 #include "Partition.h"
-#include "common.c"
+#include "common.cpp"
 
 /**
  * Set the const identifier.
