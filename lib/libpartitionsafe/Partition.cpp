@@ -27,7 +27,7 @@ Partition Partition::open(const char* path) {
     // Open the file
     FILE* fh = fopen(path, "r+");
 
-    // Is the file locked?
+    // Try to get an exclusive lock
     if(flock(fileno(fh), LOCK_EX) == 0){
         std::cout << "All good"<< std::endl;
     }else{
