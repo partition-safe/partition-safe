@@ -6,6 +6,7 @@
 #define PARTITIONSAFE_PARTITION_H
 
 #include <iostream>
+#include "guid/guid.h"
 
 class Partition {
 
@@ -40,7 +41,7 @@ public:
         /**
          * The personal UUID of the vault.
          */
-        char UUID[36];
+        Guid guid;
     };
 
 private:

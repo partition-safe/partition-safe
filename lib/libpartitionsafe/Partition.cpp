@@ -5,7 +5,6 @@
 #include <cstring>
 #include <sys/file.h>
 #include "Partition.h"
-#include "common.cpp"
 
 /**
  * Set the const identifier.
@@ -50,7 +49,7 @@ Partition Partition::open(const char* path) {
     std::cout << "Label: " << header->label << std::endl;
     std::cout << "Size: " << header->size << std::endl;
     std::cout << "Version: " << header->version << std::endl;
-    std::cout << "UUID: " << header->UUID << std::endl;
+    std::cout << "Guid: " << header->guid << std::endl;
 
     // Open the partition and set information
     Partition partition = Partition(header, path);
@@ -62,11 +61,15 @@ Partition Partition::open(const char* path) {
 Partition Partition::create(char label[40], unsigned int size, const char* path) {
     FILE* fh = fopen(path, "w");
 
+    // Create the UUID
+    GuidGenerator generator;
+    auto guid = generator.newGuid();
+
     // The partition header
     struct Header* header = new Header;
     strncpy(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
     strncpy(header->label, label, sizeof(header->label));
-    strncpy(header->UUID, newUUID(), sizeof(header->UUID));
+    header->guid = guid;
     header->size = size;
     header->version = Partition::VERSION;
 
