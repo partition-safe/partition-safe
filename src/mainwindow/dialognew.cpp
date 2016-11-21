@@ -18,7 +18,7 @@ DialogNew::~DialogNew()
 }
 void DialogNew::on_buttonKeyLoc_clicked()
 {
-    keyLocFilename = fd->getSaveFileName(this, "SaveFile", "", ".key");
+    keyLocFilename = fd->getSaveFileName(this, "SaveFile", "", "Key files (*.key)");
     qDebug()<<"log: "<< keyLocFilename;
 
     ui->textKeyLoc->setText(keyLocFilename);
@@ -26,7 +26,7 @@ void DialogNew::on_buttonKeyLoc_clicked()
 
 void DialogNew::on_buttonPartitionLoc_clicked()
 {
-    partitionLocFilename = fd->getSaveFileName(this, "SaveFile", "", ".vault");
+    partitionLocFilename = fd->getSaveFileName(this, "SaveFile", "", "Partition files (*.vault)");
     qDebug()<<"log: "<< partitionLocFilename;
 
     ui->textPartitionLoc->setText(partitionLocFilename);
