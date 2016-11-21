@@ -1,5 +1,6 @@
 #include "dialogopen.h"
 #include "ui_dialogopen.h"
+#include "../lib/libpartitionsafe/Partition.h"
 
 #include <QtDebug>
 #include <QFileDialog>
@@ -32,6 +33,12 @@ void DialogOpen::on_buttonSelectKey_clicked()
 void DialogOpen::on_buttonSelectPartition_clicked()
 {
     qDebug()<<"SlectPartition";
+    QStringList filters;
+    filters << "Partition files (*.vault)";
+
     QFileDialog qFile;
+    qFile.setNameFilters(filters);
     qFile.exec();
+
+    qDebug()<<qFile.objectName();
 }
