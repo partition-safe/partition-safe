@@ -14,9 +14,9 @@ std::string newUUID()
     SYSTEMTIME time;
     GetSystemTime(&time);
     WORD millis = (time.wSecond * 1000) + time.wMilliseconds;
-    std::stringStream stream;
-    stream << millis;
-    return stream.str();
+//    std::stringStream stream;
+//    stream << millis;
+    return std::to_string(millis);
 #else
     struct timeval tp;
     gettimeofday(&tp, NULL);

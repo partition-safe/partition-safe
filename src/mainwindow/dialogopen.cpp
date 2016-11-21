@@ -27,7 +27,7 @@ void DialogOpen::on_buttonSelectKey_clicked()
     qFile.setNameFilters(filters);
     qFile.exec();
 
-    qFile.dumpObjectInfo();
+    ui->textKey->setText(qFile.selectedFiles()[0]);
 }
 
 void DialogOpen::on_buttonSelectPartition_clicked()
@@ -40,5 +40,9 @@ void DialogOpen::on_buttonSelectPartition_clicked()
     qFile.setNameFilters(filters);
     qFile.exec();
 
-    qDebug()<<qFile.objectName();
+    ui->textPartition->setText(qFile.selectedFiles()[0]);
+
+    QByteArray ba = qFile.selectedFiles()[0].toLatin1();
+    const char *c_fileLocation = ba.data();
+    Partition::open(c_fileLocation);
 }
