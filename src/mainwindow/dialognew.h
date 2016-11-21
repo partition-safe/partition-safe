@@ -22,7 +22,7 @@ private slots:
 
     void on_buttonPartitionLoc_clicked();
 
-    void on_buttonBox_accepted();
+    void on_buttonBox_clicked();
 
 private:
     Ui::DialogNew *ui;
@@ -30,6 +30,7 @@ private:
 
     QString keyLocFilename;
     QString partitionLocFilename;
+    void show_error(const char* message);
 };
 
 #endif // DIALOGNEW_H

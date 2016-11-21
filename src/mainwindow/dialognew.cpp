@@ -1,7 +1,9 @@
 #include "dialognew.h"
 #include "ui_dialognew.h"
 #include <QtDebug>
+#include <QMessageBox>
 #include <qfiledialog>
+#include "../lib/libpartitionsafe/Partition.h"
 
 DialogNew::DialogNew(QWidget *parent) :
     QDialog(parent),
@@ -24,24 +26,46 @@ void DialogNew::on_buttonKeyLoc_clicked()
 
 void DialogNew::on_buttonPartitionLoc_clicked()
 {
-    partitionLocFilename = fd->getSaveFileName(this, "SaveFile", "", ".partition");
+    partitionLocFilename = fd->getSaveFileName(this, "SaveFile", "", ".vault");
     qDebug()<<"log: "<< partitionLocFilename;
 
     ui->textPartitionLoc->setText(partitionLocFilename);
 }
 
-void DialogNew::on_buttonBox_accepted()
+void DialogNew::on_buttonBox_clicked()
 {
-    //Just for testing
-    QFile kfile(keyLocFilename);
-    kfile.open(QIODevice::WriteOnly);
-    kfile.write("key file");
-    kfile.flush();
-    kfile.close();
+    if(!ui->textKeyLoc->text().isEmpty()
+            && !ui->textPartitionLoc->text().isEmpty()
+            && !ui->textPartitionName->text().isEmpty()
+            && !ui->textPartitionSize->text().isEmpty()
+            && !ui->textPassword->text().isEmpty()
+            && !ui->textUsername->text().isEmpty())
+    {
+        QByteArray baName = ui->textPartitionName->text().toLatin1();
+        char* label = baName.data();
+        QByteArray ba = partitionLocFilename.toLatin1();
+        const char* filePath = ba.data();
 
-    QFile pfile(partitionLocFilename);
-    pfile.open(QIODevice::WriteOnly);
-    pfile.write("partition file");
-    pfile.flush();
-    pfile.close();
+        QRegExp re("\\d*");
+        if(re.exactMatch(ui->textPartitionSize->text()))
+        {
+            int partitionSize = ui->textPartitionSize->text().toInt();
+            Partition::create(label, partitionSize, filePath);
+            this->accept();
+        }
+        else
+        {
+            show_error("Partition size is not a number");
+        }
+    }
+    else
+    {
+        show_error("Not all fields are filled in");
+    }
+}
+void DialogNew::show_error(const char* message)
+{
+    QMessageBox messageBox;
+    messageBox.warning(0,"Error",message);
+    messageBox.setFixedSize(500,200);
 }
