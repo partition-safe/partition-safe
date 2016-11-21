@@ -3,9 +3,14 @@
 //
 
 #include <cstring>
-#include <sys/file.h>
 #include "Partition.h"
 #include "common.cpp"
+
+#if defined(__APPLE__) || defined(_WIN32)
+#include <fcntl.h>
+#else
+#include <sys/file.h>
+#endif
 
 /**
  * Set the const identifier.
@@ -28,11 +33,11 @@ Partition Partition::open(const char* path) {
     FILE* fh = fopen(path, "r+");
 
     // Try to get an exclusive lock
-    if(flock(fileno(fh), LOCK_EX) == 0){
-        std::cout << "All good"<< std::endl;
-    }else{
-        std::cout << "Could not acquire lock" << std::endl;
-    }
+//    if(flock(fileno(fh), LOCK_EX) == 0){
+//        std::cout << "All good"<< std::endl;
+//    }else{
+//        std::cout << "Could not acquire lock" << std::endl;
+//    }
 
     // Read the partition header
     Header* header = new Header;
