@@ -29,6 +29,7 @@ private:
     QString keyLocFilename;
     QString partitionLocFilename;
     void show_warning(const char* message);
+    bool has_suffix(const QString &filePath, const QString &suffix);
 };
 
 #endif // DIALOGNEW_H

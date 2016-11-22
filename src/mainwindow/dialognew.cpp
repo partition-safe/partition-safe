@@ -49,7 +49,9 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
                 && !ui->textPartitionName->text().isEmpty()
                 && !ui->textPartitionSize->text().isEmpty()
                 && !ui->textPassword->text().isEmpty()
-                && !ui->textUsername->text().isEmpty())
+                && !ui->textUsername->text().isEmpty()
+                && has_suffix(ui->textPartitionLoc->text(), "*.vault")
+                && has_suffix(ui->textKeyLoc->text(), "*.key"))
         {
             // Convert name and path to partition file to *char
             QByteArray baName = ui->textPartitionName->text().toLatin1();
@@ -74,7 +76,7 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
         }
         else
         {
-            show_warning("Not all fields are filled in");
+            show_warning("Not all fields are correctly filled in");
         }
     }
 }
@@ -88,4 +90,20 @@ void DialogNew::show_warning(const char* message)
 {
     QMessageBox messageBox;
     messageBox.warning(0,"Warning",message);
+}
+
+/** Check if a given path has a given suffix
+ *
+ * @brief DialogOpen::has_suffix
+ * @param filePath - Path to check if contains suffix
+ * @param suffix - The suffix path sould contain
+ * @return
+ */
+bool DialogNew::has_suffix(const QString &filePath, const QString &suffix)
+{
+    // Regular expresion to check if key files end with '.key' and
+    // partition files with '.vault'
+    QRegExp re(suffix);
+    re.setPatternSyntax(QRegExp::Wildcard);
+    return re.exactMatch(filePath);
 }
