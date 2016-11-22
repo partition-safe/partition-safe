@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QFileDialog>
+#include <QAbstractButton>
 
 namespace Ui {
 class DialogNew;
@@ -22,7 +23,7 @@ private slots:
 
     void on_buttonPartitionLoc_clicked();
 
-    void on_buttonBox_clicked();
+    void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::DialogNew *ui;

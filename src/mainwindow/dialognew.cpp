@@ -10,6 +10,7 @@ DialogNew::DialogNew(QWidget *parent) :
     ui(new Ui::DialogNew)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 DialogNew::~DialogNew()
@@ -32,35 +33,38 @@ void DialogNew::on_buttonPartitionLoc_clicked()
     ui->textPartitionLoc->setText(partitionLocFilename);
 }
 
-void DialogNew::on_buttonBox_clicked()
+void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
 {
-    if(!ui->textKeyLoc->text().isEmpty()
-            && !ui->textPartitionLoc->text().isEmpty()
-            && !ui->textPartitionName->text().isEmpty()
-            && !ui->textPartitionSize->text().isEmpty()
-            && !ui->textPassword->text().isEmpty()
-            && !ui->textUsername->text().isEmpty())
+    if(button== ui->buttonBox->button(QDialogButtonBox::Ok))
     {
-        QByteArray baName = ui->textPartitionName->text().toLatin1();
-        char* label = baName.data();
-        QByteArray ba = partitionLocFilename.toLatin1();
-        const char* filePath = ba.data();
-
-        QRegExp re("\\d*");
-        if(re.exactMatch(ui->textPartitionSize->text()))
+        if(!ui->textKeyLoc->text().isEmpty()
+                && !ui->textPartitionLoc->text().isEmpty()
+                && !ui->textPartitionName->text().isEmpty()
+                && !ui->textPartitionSize->text().isEmpty()
+                && !ui->textPassword->text().isEmpty()
+                && !ui->textUsername->text().isEmpty())
         {
-            int partitionSize = ui->textPartitionSize->text().toInt();
-            Partition::create(label, partitionSize, filePath);
-            this->accept();
+            QByteArray baName = ui->textPartitionName->text().toLatin1();
+            char *label = baName.data();
+            QByteArray ba = partitionLocFilename.toLatin1();
+            const char *filePath = ba.data();
+
+            QRegExp re("\\d*");
+            if(re.exactMatch(ui->textPartitionSize->text()))
+            {
+                int partitionSize = ui->textPartitionSize->text().toInt();
+                Partition::create(label, partitionSize, filePath);
+                this->accept();
+            }
+            else
+            {
+                show_error("Partition size is not a number");
+            }
         }
         else
         {
-            show_error("Partition size is not a number");
+            show_error("Not all fields are filled in");
         }
-    }
-    else
-    {
-        show_error("Not all fields are filled in");
     }
 }
 void DialogNew::show_error(const char* message)
