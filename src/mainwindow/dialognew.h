@@ -20,18 +20,15 @@ public:
 
 private slots:
     void on_buttonKeyLoc_clicked();
-
     void on_buttonPartitionLoc_clicked();
-
     void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::DialogNew *ui;
     QFileDialog *fd;
-
     QString keyLocFilename;
     QString partitionLocFilename;
-    void show_error(const char* message);
+    void show_warning(const char* message);
 };
 
 #endif // DIALOGNEW_H

@@ -3,7 +3,6 @@
 #include "dialogopen.h"
 #include "dialognew.h"
 
-#include <QtDebug>
 #include <QFileSystemModel>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -126,27 +125,16 @@ void MainWindow::on_buttonForward_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    qDebug() << "Click O";
     DialogOpen *open = new DialogOpen(this);
 
     open->exec();
-
-    if(open->Accepted){
-        qDebug()<< "accepted";
-    }
-
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    qDebug() << "Click N";
     DialogNew *newDialog = new DialogNew(this);
 
     newDialog->exec();
-
-    if(newDialog->Accepted){
-        qDebug()<< "accepted";
-    }
 }
 
 void MainWindow::setPath()

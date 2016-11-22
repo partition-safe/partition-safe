@@ -2,6 +2,8 @@
 #define DIALOGOPEN_H
 
 #include <QDialog>
+#include <QAbstractButton>
+#include <QFileDialog>
 
 namespace Ui {
 class DialogOpen;
@@ -18,9 +20,11 @@ public:
 private slots:
     void on_buttonSelectPartition_clicked();
     void on_buttonSelectKey_clicked();
+    void on_buttonBoxDialogOpen_clicked(QAbstractButton *button);
 
 private:
     Ui::DialogOpen *ui;
+    void show_warning(const char* message);
 
 };
 

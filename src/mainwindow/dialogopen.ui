@@ -10,8 +10,14 @@
     <height>195</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Open a vault</string>
   </property>
   <widget class="QLineEdit" name="textPartition">
    <property name="geometry">
@@ -22,6 +28,12 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>1</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
   </widget>
   <widget class="QPushButton" name="buttonSelectPartition">
    <property name="geometry">
@@ -31,6 +43,12 @@
      <width>75</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>1</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>Select</string>
@@ -85,7 +103,7 @@
     <string>Key</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="txtUsername">
+  <widget class="QLineEdit" name="textUsername">
    <property name="geometry">
     <rect>
      <x>9</x>
@@ -93,6 +111,12 @@
      <width>181</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
   </widget>
   <widget class="QDialogButtonBox" name="buttonBoxDialogOpen">
@@ -111,7 +135,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="txtPassword">
+  <widget class="QLineEdit" name="textPassword">
    <property name="geometry">
     <rect>
      <x>212</x>
@@ -119,6 +143,9 @@
      <width>181</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
    </property>
   </widget>
   <widget class="QLabel" name="lblUsername">
@@ -150,22 +177,6 @@
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBoxDialogOpen</sender>
-   <signal>accepted()</signal>
-   <receiver>DialogOpen</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBoxDialogOpen</sender>
    <signal>rejected()</signal>
