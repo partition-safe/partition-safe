@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow/mainwindow.cpp \
     mainwindow/dialogopen.cpp \
-    mainwindow/dialognew.cpp
+    mainwindow/dialognew.cpp \
+    ../lib/libpartitionsafe/Partition.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
-    mainwindow/dialognew.h
+    mainwindow/dialognew.h \
+    ../lib/libpartitionsafe/Partition.h
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
