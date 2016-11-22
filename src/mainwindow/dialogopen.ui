@@ -82,12 +82,18 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>40</width>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="text">
-    <string>Partition</string>
+    <string>Path to vault location:</string>
    </property>
   </widget>
   <widget class="QLabel" name="lblKey">
@@ -95,12 +101,18 @@
     <rect>
      <x>9</x>
      <y>57</y>
-     <width>18</width>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="text">
-    <string>Key</string>
+    <string>Path to key location:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="textUsername">
@@ -153,9 +165,15 @@
     <rect>
      <x>9</x>
      <y>105</y>
-     <width>48</width>
+     <width>151</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>Username</string>
@@ -166,15 +184,29 @@
     <rect>
      <x>210</x>
      <y>105</y>
-     <width>46</width>
+     <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>Password</string>
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>textPartition</tabstop>
+  <tabstop>buttonSelectPartition</tabstop>
+  <tabstop>textKey</tabstop>
+  <tabstop>buttonSelectKey</tabstop>
+  <tabstop>textUsername</tabstop>
+  <tabstop>textPassword</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

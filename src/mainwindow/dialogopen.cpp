@@ -4,6 +4,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QFileInfo>
 
 DialogOpen::DialogOpen(QWidget *parent) :
     QDialog(parent),
@@ -25,23 +26,31 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
     // Check if the [OK] button is clicked
     if(button == ui->buttonBoxDialogOpen->button(QDialogButtonBox::Ok))
     {
+
         // Check if all fields are filled in
         if(!ui->textKey->text().isEmpty()
                 && !ui->textPartition->text().isEmpty()
                 && !ui->textPassword->text().isEmpty()
-                && !ui->textUsername->text().isEmpty())
+                && !ui->textUsername->text().isEmpty()
+                && has_suffix(ui->textPartition->text(), "*.vault")
+                && has_suffix(ui->textKey->text(), "*.key"))
         {
-            // Convert path to partition file to *char
-            QByteArray ba = ui->textPartition->text().toLatin1();
-            const char *c_fileLocation = ba.data();
-            // Open the partition
-            Partition::open(c_fileLocation);
-            // Send accept request to end dialog.
-            this->accept();
+            if (fileExists(ui->textPartition->text())
+                    && fileExists(ui->textKey->text())){
+                // Convert path to partition file to *char
+                QByteArray ba = ui->textPartition->text().toLatin1();
+                const char *c_fileLocation = ba.data();
+                // Open the partition
+                Partition::open(c_fileLocation);
+                // Send accept request to end dialog.
+                this->accept();
+            }else {
+                show_warning("Wrong Partition and/or Key file selected");
+            }
         }
         else
         {
-            show_warning("Not all fields are filled in");
+            show_warning("Not all fields are filled in correctly");
         }
     }
 }
@@ -87,4 +96,33 @@ void DialogOpen::show_warning(const char* message)
 {
     QMessageBox messageBox;
     messageBox.warning(0,"Warning",message);
+}
+
+/** Check if given path is an existing file
+ *
+ * @brief DialogOpen::fileExists
+ * @param path - Given path to check
+ * @return - true if file exists
+ */
+bool DialogOpen::fileExists(QString path)
+{
+    QFileInfo check_file(path);
+    // check if file exists and if it is a file and no directory
+    return check_file.exists() && check_file.isFile();
+}
+
+/** Check if a given path has a given suffix
+ *
+ * @brief DialogOpen::has_suffix
+ * @param filePath - Path to check if contains suffix
+ * @param suffix - The suffix path sould contain
+ * @return
+ */
+bool DialogOpen::has_suffix(const QString &filePath, const QString &suffix)
+{
+    // Regular expresion to check if key files end with '.key' and
+    // partition files with '.vault'
+    QRegExp re(suffix);
+    re.setPatternSyntax(QRegExp::Wildcard);
+    return re.exactMatch(filePath);
 }

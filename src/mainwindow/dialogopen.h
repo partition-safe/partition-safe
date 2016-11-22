@@ -24,7 +24,9 @@ private slots:
 
 private:
     Ui::DialogOpen *ui;
-    void show_warning(const char* message);
+    void show_warning(const char*);
+    bool fileExists(QString);
+    bool has_suffix(const QString &filePath, const QString &suffix);
 
 };
 
