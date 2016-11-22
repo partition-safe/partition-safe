@@ -64,7 +64,8 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
     this->setPath();
 }
 
-void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index) {
+void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
+{
     this->on_treeViewExplorer_doubleClicked(index);
 }
 
@@ -74,7 +75,8 @@ void MainWindow::on_buttonBack_clicked()
     QString dir;
 
     // More than only the home item
-    if(folderHistory->size() > 0) {
+    if(folderHistory->size() > 0)
+    {
         // Get the first item of the stack
         dir = folderHistory->pop();
 
@@ -92,7 +94,8 @@ void MainWindow::on_buttonBack_clicked()
     }
 
     // History empty?
-    if(folderHistory->size() == 0) {
+    if(folderHistory->size() == 0)
+    {
         // Append the last dir as it must be the starting point
         folderHistory->append(dir);
     }
@@ -107,7 +110,8 @@ void MainWindow::on_buttonForward_clicked()
     QString dir;
 
     // If there is a Forward
-    if(folderForwardHistory->size() > 0){
+    if(folderForwardHistory->size() > 0)
+    {
         // Get first item of the forward stack
         dir = folderForwardHistory->pop();
 

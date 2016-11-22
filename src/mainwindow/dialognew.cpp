@@ -67,11 +67,13 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
                 // Send accept request to end dialog.
                 this->accept();
             }
-            else {
+            else
+            {
                 show_warning("Partition size is not a number");
             }
         }
-        else {
+        else
+        {
             show_warning("Not all fields are filled in");
         }
     }

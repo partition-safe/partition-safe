@@ -38,7 +38,9 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
             Partition::open(c_fileLocation);
             // Send accept request to end dialog.
             this->accept();
-        } else{
+        }
+        else
+        {
             show_warning("Not all fields are filled in");
         }
     }
