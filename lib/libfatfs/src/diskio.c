@@ -13,6 +13,7 @@
 #define DEV_RAM		0	/* Example: Map Ramdisk to physical drive 0 */
 #define DEV_MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
 #define DEV_USB		2	/* Example: Map USB MSD to physical drive 2 */
+#define DEV_LCL		3	/* Example: Map local to physical drive 3 */
 
 
 /*-----------------------------------------------------------------------*/
@@ -23,32 +24,14 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
+    DSTATUS result = STA_NOINIT;
 
 	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
+	    case DEV_LCL :
+            result = 0x00;
+            break;
 	}
-	return STA_NOINIT;
+	return result;
 }
 
 
@@ -61,32 +44,14 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
+    DSTATUS result = STA_NOINIT;
 
 	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
+        case DEV_LCL :
+            result = 0x00;
+            break;
 	}
-	return STA_NOINIT;
+	return result;
 }
 
 
@@ -102,36 +67,38 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-	DRESULT res;
-	int result;
+    DRESULT result;
 
 	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
+        case DEV_LCL:
+            break;
 
-		result = RAM_disk_read(buff, sector, count);
+        case DEV_RAM :
+            // translate the arguments here
 
-		// translate the reslut code here
+            result = RAM_disk_read(buff, sector, count);
 
-		return res;
+            // translate the reslut code here
 
-	case DEV_MMC :
-		// translate the arguments here
+            return res;
 
-		result = MMC_disk_read(buff, sector, count);
+        case DEV_MMC :
+            // translate the arguments here
 
-		// translate the reslut code here
+            result = MMC_disk_read(buff, sector, count);
 
-		return res;
+            // translate the reslut code here
 
-	case DEV_USB :
-		// translate the arguments here
+            return res;
 
-		result = USB_disk_read(buff, sector, count);
+        case DEV_USB :
+            // translate the arguments here
 
-		// translate the reslut code here
+            result = USB_disk_read(buff, sector, count);
 
-		return res;
+            // translate the reslut code here
+
+            return res;
 	}
 
 	return RES_PARERR;
@@ -154,32 +121,34 @@ DRESULT disk_write (
 	int result;
 
 	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
+        case DEV_LCL:
+            break;
+        case DEV_RAM :
+            // translate the arguments here
 
-		result = RAM_disk_write(buff, sector, count);
+            result = RAM_disk_write(buff, sector, count);
 
-		// translate the reslut code here
+            // translate the reslut code here
 
-		return res;
+            return res;
 
-	case DEV_MMC :
-		// translate the arguments here
+        case DEV_MMC :
+            // translate the arguments here
 
-		result = MMC_disk_write(buff, sector, count);
+            result = MMC_disk_write(buff, sector, count);
 
-		// translate the reslut code here
+            // translate the reslut code here
 
-		return res;
+            return res;
 
-	case DEV_USB :
-		// translate the arguments here
+        case DEV_USB :
+            // translate the arguments here
 
-		result = USB_disk_write(buff, sector, count);
+            result = USB_disk_write(buff, sector, count);
 
-		// translate the reslut code here
+            // translate the reslut code here
 
-		return res;
+            return res;
 	}
 
 	return RES_PARERR;
@@ -201,23 +170,25 @@ DRESULT disk_ioctl (
 	int result;
 
 	switch (pdrv) {
-	case DEV_RAM :
+        case DEV_LCL:
+            break;
+        case DEV_RAM :
 
-		// Process of the command for the RAM drive
+            // Process of the command for the RAM drive
 
-		return res;
+            return res;
 
-	case DEV_MMC :
+        case DEV_MMC :
 
-		// Process of the command for the MMC/SD card
+            // Process of the command for the MMC/SD card
 
-		return res;
+            return res;
 
-	case DEV_USB :
+        case DEV_USB :
 
-		// Process of the command the USB drive
+            // Process of the command the USB drive
 
-		return res;
+            return res;
 	}
 
 	return RES_PARERR;
