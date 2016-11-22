@@ -43,6 +43,13 @@ public:
         char UUID[36];
     };
 
+    /**
+     * The file descriptor of this partition.
+     *
+     * This descriptor contains the real partition file.
+     */
+    FILE * fd;
+
 private:
     /**
      * The partition header
@@ -53,13 +60,6 @@ private:
      * File path to this partition
      */
     const char* path;
-
-    /**
-     * The file handler of this partition.
-     *
-     * This handler contains the real partition file.
-     */
-    FILE * fh;
 
 public:
     /**
@@ -103,6 +103,5 @@ public:
     static Partition create(char label[40], unsigned int size, const char* path);
 
 };
-
 
 #endif //PARTITIONSAFE_PARTITION_H

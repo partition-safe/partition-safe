@@ -26,11 +26,11 @@ const char* Partition::IDENTIFIER = "PartitionSafe";
 const unsigned int Partition::VERSION = 1;
 
 Partition::Partition(Header* header, const char* path, FILE* fh):
-        header(header), path(path), fh(fh) {}
+        header(header), path(path), fd(fh) {}
 
 Partition Partition::open(const char* path) {
     // Open the file
-    FILE* fh = fopen(path, "r+");
+    FILE* fd = fopen(path, "r+");
 
     // Try to get an exclusive lock
 //    if(flock(fileno(fh), LOCK_EX) == 0){
@@ -41,7 +41,7 @@ Partition Partition::open(const char* path) {
 
     // Read the partition header
     Header* header = new Header;
-    fread(&*header, sizeof(*header), 1, fh);
+    fread(&*header, sizeof(*header), 1, fd);
 
     // Check the identifier of the drive
     if(strcmp(header->identifier, Partition::IDENTIFIER) == 0){
@@ -59,30 +59,30 @@ Partition Partition::open(const char* path) {
 
     // Open the partition and set information
     Partition partition = Partition(header, path);
-    partition.fh = fh;
+    partition.fd = fd;
 
     return partition;
 }
 
 Partition Partition::create(char label[40], unsigned int size, const char* path) {
-    FILE* fh = fopen(path, "w");
+    FILE* fd = fopen(path, "w");
 
     // The partition header
     struct Header* header = new Header;
     strncpy(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
     strncpy(header->label, label, sizeof(header->label));
-    strncpy(header->UUID, newUUID().c_str(), sizeof(header->UUID));
+    strncpy(header->UUID, "23456", sizeof(header->UUID));
     header->size = size;
     header->version = Partition::VERSION;
 
     // Write our partition header
-    fwrite(&*header, 1, sizeof(*header), fh);
+    fwrite(&*header, 1, sizeof(*header), fd);
 
     // Make the partition file SIZE bytes long + header
-    fseek(fh, (size - 1) + sizeof(*header) + 10, SEEK_SET);
-    fputc('\0', fh);
+    fseek(fd, (size - 1) + sizeof(*header) + 10, SEEK_SET);
+    fputc('\0', fd);
 
-    fclose(fh);
+    fclose(fd);
 
     return Partition(header, path);
 }

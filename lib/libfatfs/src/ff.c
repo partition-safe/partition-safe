@@ -5258,12 +5258,12 @@ FRESULT f_mkfs (
 	buf = (BYTE*)work;		/* Working buffer */
 	sz_buf = len / ss;		/* Size of working buffer (sector) */
 	szb_buf = sz_buf * ss;	/* Size of working buffer (byte) */
-	if (!szb_buf) return FR_MKFS_ABORTED;
+	if (!szb_buf)  return FR_MKFS_ABORTED;
 
 	/* Determine where the volume to be located (b_vol, sz_vol) */
 	if (_MULTI_PARTITION && part != 0) {
 		/* Get partition information from partition table in the MBR */
-		if (disk_read(pdrv, buf, 0, 1) != RES_OK) return FR_DISK_ERR;	/* Load MBR */
+		if (disk_read(pdrv, buf, 0, 1) != RES_OK)return FR_DISK_ERR;	/* Load MBR */
 		if (ld_word(buf + BS_55AA) != 0xAA55) return FR_MKFS_ABORTED;	/* Check if MBR is valid */
 		pte = buf + (MBR_Table + (part - 1) * SZ_PTE);
 		if (!pte[PTE_System]) return FR_MKFS_ABORTED;	/* No partition? */
@@ -5499,7 +5499,7 @@ FRESULT f_mkfs (
 			}
 
 			/* Determine number of clusters and final check of validity of the FAT sub-type */
-			if (sz_vol < b_data + pau * 16 - b_vol) return FR_MKFS_ABORTED;	/* Too small volume */
+			if (sz_vol < b_data + pau * 16 - b_vol)return FR_MKFS_ABORTED;	/* Too small volume */
 			n_clst = (sz_vol - sz_rsv - sz_fat * n_fats - sz_dir) / pau;
 			if (fmt == FS_FAT32) {
 				if (n_clst <= MAX_FAT16) {	/* Too few clusters for FAT32 */

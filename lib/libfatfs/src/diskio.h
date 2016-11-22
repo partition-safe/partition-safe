@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #include "integer.h"
+#include "stdio.h"
 
 
 /* Status of Disk Functions */
@@ -78,3 +79,6 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 #endif
 
 #endif
+
+
+FILE * currentFileDescriptor;

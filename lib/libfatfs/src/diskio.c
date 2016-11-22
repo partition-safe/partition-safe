@@ -7,14 +7,22 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
+#include <stdio.h>
 #include "diskio.h"		/* FatFs lower layer API */
+#include "ffconf.h"
 
 /* Definitions of physical drive number for each drive */
-#define DEV_RAM		0	/* Example: Map Ramdisk to physical drive 0 */
-#define DEV_MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
-#define DEV_USB		2	/* Example: Map USB MSD to physical drive 2 */
-#define DEV_LCL		3	/* Example: Map local to physical drive 3 */
+#define DEV_PSV		0	/* Partition Safe Vault */
+#define DEV_RAM		1	/* Example: Map Ramdisk to physical drive 0 */
+#define DEV_MMC		2	/* Example: Map MMC/SD card to physical drive 1 */
+#define DEV_USB		3	/* Example: Map USB MSD to physical drive 2 */
 
+
+DWORD get_fattime(){
+	return 0;
+}
+
+int reservedSectors = 10;
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -27,7 +35,7 @@ DSTATUS disk_status (
     DSTATUS result = STA_NOINIT;
 
 	switch (pdrv) {
-	    case DEV_LCL :
+	    case DEV_PSV :
             result = 0x00;
             break;
 	}
@@ -47,7 +55,7 @@ DSTATUS disk_initialize (
     DSTATUS result = STA_NOINIT;
 
 	switch (pdrv) {
-        case DEV_LCL :
+        case DEV_PSV :
             result = 0x00;
             break;
 	}
@@ -70,38 +78,14 @@ DRESULT disk_read (
     DRESULT result;
 
 	switch (pdrv) {
-        case DEV_LCL:
+        case DEV_PSV:
+
+			fseek(currentFileDescriptor, _MAX_SS * sector + (reservedSectors * _MAX_SS), SEEK_SET);
+			fread(buff, _MAX_SS * count, 1, currentFileDescriptor);
             break;
-
-        case DEV_RAM :
-            // translate the arguments here
-
-            result = RAM_disk_read(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
-
-        case DEV_MMC :
-            // translate the arguments here
-
-            result = MMC_disk_read(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
-
-        case DEV_USB :
-            // translate the arguments here
-
-            result = USB_disk_read(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
 	}
 
-	return RES_PARERR;
+	return RES_OK;
 }
 
 
@@ -119,39 +103,16 @@ DRESULT disk_write (
 {
 	DRESULT res;
 	int result;
+	DWORD startPosition = _MAX_SS * sector + (reservedSectors * _MAX_SS);
 
 	switch (pdrv) {
-        case DEV_LCL:
+        case DEV_PSV:
+			fseek(currentFileDescriptor, startPosition, SEEK_SET);
+			fwrite(buff, _MAX_SS * count, 1, currentFileDescriptor);
             break;
-        case DEV_RAM :
-            // translate the arguments here
-
-            result = RAM_disk_write(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
-
-        case DEV_MMC :
-            // translate the arguments here
-
-            result = MMC_disk_write(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
-
-        case DEV_USB :
-            // translate the arguments here
-
-            result = USB_disk_write(buff, sector, count);
-
-            // translate the reslut code here
-
-            return res;
 	}
 
-	return RES_PARERR;
+	return RES_OK;
 }
 
 
@@ -170,27 +131,19 @@ DRESULT disk_ioctl (
 	int result;
 
 	switch (pdrv) {
-        case DEV_LCL:
+        case DEV_PSV:
+			switch (cmd){
+				case GET_SECTOR_COUNT:
+					*(DWORD*)buff =  10000;
+					break;
+				case GET_BLOCK_SIZE:
+					*(DWORD*)buff = 1024;
+					break;
+			}
             break;
-        case DEV_RAM :
 
-            // Process of the command for the RAM drive
-
-            return res;
-
-        case DEV_MMC :
-
-            // Process of the command for the MMC/SD card
-
-            return res;
-
-        case DEV_USB :
-
-            // Process of the command the USB drive
-
-            return res;
 	}
 
-	return RES_PARERR;
+	return RES_OK;
 }
 

@@ -7,6 +7,8 @@
 #include <sys/time.h>
 #endif
 
+/*
+std::string newUUID();
 
 std::string newUUID()
 {
@@ -24,3 +26,4 @@ std::string newUUID()
     return  std::to_string(ms);
 #endif
 }
+*/
