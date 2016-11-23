@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cstring>
 #include "Partition.h"
 #include "../libfatfs/src/ff.h"
 #include "../libfatfs/src/diskio.h"
@@ -54,6 +55,15 @@ int main() {
 
     // Close file
     f_close(&fil);
+
+    memset(line, 0, sizeof(line));
+
+
+
+    f_open(&fil, filename, FA_READ);
+    f_read(&fil, line, sizeof line, writtenBytes);
+
+    std::cout << std::endl << "Read from file: " << std::endl << line;
 
 
 
