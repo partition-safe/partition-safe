@@ -3,3 +3,6 @@
 //
 
 #include "KeyStore.h"
+
+KeyStore::KeyStore(const char *path, FILE *fh):
+    path(path), fd(fh) {}

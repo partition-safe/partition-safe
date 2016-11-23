@@ -6,42 +6,18 @@
 #define PARTITIONSAFE_PARTITION_H
 
 #include <iostream>
+#include "../libfatfs/src/ff.h"
 
 class Partition {
-
-public:
     /**
-     * Partitio header information struct.
-     *
-     * NEVER, NEVER, NEVER CHANGE THE ORDER OF THIS STRUCT.
-     * WHO CHANGES THE ORDER, WILL BE ASSASSINATED.
+     * The save version for compatibility checks.
      */
-    struct Header{
-        /**
-         * Identifier of the vault
-         */
-        char identifier[13];
+    static const TCHAR* LETTER;
 
-        /**
-         * The current version of the partition.
-         */
-        unsigned int version;
-
-        /**
-         * Custom partition label
-         */
-        char label[40];
-
-        /**
-         * Partition size in bytes
-         */
-        unsigned long size;
-
-        /**
-         * The personal UUID of the vault.
-         */
-        char UUID[36];
-    };
+    /**
+     * File path to this partition
+     */
+    const char* path;
 
     /**
      * The file descriptor of this partition.
@@ -49,17 +25,6 @@ public:
      * This descriptor contains the real partition file.
      */
     FILE * fd;
-
-private:
-    /**
-     * The partition header
-     */
-    Header* header;
-
-    /**
-     * File path to this partition
-     */
-    const char* path;
 
 public:
     /**
@@ -77,30 +42,57 @@ public:
     /**
      * Constructor of a partition.
      *
-     * @param header
      * @param path
      * @param fh
      * @return
      */
-    Partition(Header* header, const char* path, FILE* fh = nullptr);
+    Partition(const char* path, FILE* fh = nullptr);
 
     /**
      * Open the partition.
      *
      * @param path The path to the partition file
+     *
      * @return
      */
-    static Partition open(const char* path);
+    Partition* open(FATFS* fs);
 
     /**
      * Create a new partition.
      *
-     * @param label The label of the partition
-     * @param size The size of the partition in bytes
-     * @param path The path to place the new partition
      * @return
      */
-    static Partition create(char label[40], unsigned int size, const char* path);
+    Partition* create();
+
+    /**
+     * Write to a file on the partition.
+     *
+     * @param fileName
+     * @param buff
+     * @param size
+     *
+     * @return
+     */
+    Partition* writeFile(const TCHAR* fileName, const void* buff, const UINT size);
+
+    /**
+     * Get the size a the file on the partition.
+     *
+     * @param fileName
+     *
+     * @return
+     */
+    Partition* fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
+
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param fileName
+     * @param buff
+     *
+     * @return
+     */
+    Partition* readFile(const TCHAR *fileName, void *buff);
 
 };
 

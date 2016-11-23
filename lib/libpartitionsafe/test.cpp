@@ -3,69 +3,70 @@
 //
 
 #include <iostream>
-#include <cstring>
 #include "Partition.h"
-#include "../libfatfs/src/ff.h"
-#include "../libfatfs/src/diskio.h"
+#include "PartitionSafe.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "PartitionSafe :: Test script" << std::endl;
 
-    const char* path = "/tmp/marc.vault";
+    try {
 
-    // Create a partition
-    char label[40] = "Marc";
-    Partition partition = Partition::create(label, 1024, path);
+        //
+        // Create vault
+        //
 
-    // Open an already created partition
-    partition = Partition::open(path);
+        // Vault metadata
+        const char *vaultPath = "/tmp/marc.vault";
+        const char *keyStorePath = "/tmp/marc.vault";
+        char label[40] = "Marc";
 
-    currentFileDescriptor = partition.fd;
+        // Create the partition safe instance
+        PartitionSafe *ps = new PartitionSafe();
 
-    // Workspace buffer
-    BYTE work[_MAX_SS];
+        // Create the vault
+        ps->create(vaultPath, keyStorePath, label, 1024);
+        std::cout << "Partition created" << std::endl;
 
-    const TCHAR* letter = (const TCHAR *) "";
+        //
+        // Open vault
+        //
 
-    // Create a FAT16 filesytem
-    std::cout << "fmkfs " << f_mkfs(letter, FM_FAT, 4096, work, sizeof work) << std::endl;
+        // Init the vault
+        ps->init(vaultPath, keyStorePath)->open();
+        std::cout << "Partition opened" << std::endl;
 
+        //
+        // Write file
+        //
 
-    // Filename
-    const TCHAR* filename = (const TCHAR *) "sample.txt";
+        // File content
+        const TCHAR *filename = (const TCHAR *) "sample.txt";
+        char line[] = "Hello world";
 
-    FATFS FatFs;   // Filesystem
+        // Write content
+        ps->writeFile(filename, line, sizeof(line));
+        std::cout << "File written" << std::endl;
 
-    f_mount(&FatFs, letter, 0);
+        //
+        // Open file
+        //
 
-    FIL fil;
-    char line[82] = "Hello world";
-    FRESULT fr;
+        // File metadata
+        FILINFO fileInfo;
 
-    // Open file
-    fr = f_open(&fil, filename, FA_CREATE_NEW | FA_WRITE);
-    if (fr){
-        std::cout << "could not open file" << std::endl;
-        return fr;
-    };
+        // Get file info
+        ps->fileInfo(filename, &fileInfo);
 
-    // Write stuff
-    UINT * writtenBytes = new UINT;
-    std::cout << "fwrite " << f_write( &fil, line, sizeof line, writtenBytes) << std::endl;
+        // The file buffer
+        char readLines[fileInfo.fsize];
 
-    // Close file
-    f_close(&fil);
-
-    memset(line, 0, sizeof(line));
-
-
-
-    f_open(&fil, filename, FA_READ);
-    f_read(&fil, line, sizeof line, writtenBytes);
-
-    std::cout << std::endl << "Read from file: " << std::endl << line;
-
-
+        // Read content
+        ps->readFile(filename, readLines);
+        std::cout << "Read from file: " << std::endl << readLines;
+    } catch(const char* exception) {
+        // Hey, exception
+        std::cout << "Thrown exception: " << exception << std::endl;
+    }
 
     return 0;
 }
