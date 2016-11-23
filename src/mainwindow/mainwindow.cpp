@@ -4,6 +4,10 @@
 #include "dialognew.h"
 
 #include <QFileSystemModel>
+#include <QDirModel>
+#include <QFileDialog>
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -126,6 +130,14 @@ void MainWindow::on_buttonForward_clicked()
     // Show path in status bar
     this->setPath();
 }
+void MainWindow::on_buttonExport_clicked()
+{
+    exportFiles();
+}
+void MainWindow::on_buttonImport_clicked()
+{
+    importFiles();
+}
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -141,6 +153,16 @@ void MainWindow::on_actionNew_triggered()
     newDialog->exec();
 }
 
+void MainWindow::on_actionImport_triggered()
+{
+    importFiles();
+}
+
+void MainWindow::on_actionExport_triggered()
+{
+    exportFiles();
+}
+
 void MainWindow::setPath()
 {
     // Show message
@@ -151,4 +173,30 @@ void MainWindow::setPath()
 
     // At last forward item? Disable forward button.
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
+}
+
+void MainWindow::importFiles()
+{
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::ExistingFiles);
+    // Open File dialog
+    qFile.exec();
+
+    foreach (QString filePath, qFile.selectedFiles()) {
+        qDebug() << filePath;
+
+        // TODO: import file from filePath
+    }
+}
+
+void MainWindow::exportFiles()
+{
+    QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    foreach (QModelIndex index, selectedRowsList)
+    {
+        qDebug() << modelDirs->filePath(index);
+
+        // TODO: Export selected file.
+    }
 }
