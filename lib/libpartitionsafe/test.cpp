@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include "Partition.h"
 #include "PartitionSafe.h"
 
 int main() {
@@ -40,8 +39,8 @@ int main() {
         //
 
         // File content
-        const TCHAR *filename = (const TCHAR *) "sample.txt";
-        char line[] = "Hello world";
+        const std::string filename = "sample.txt";
+        const char line[] = "Hello world\nHai";
 
         // Write content
         ps->writeFile(filename, line, sizeof(line));
@@ -61,7 +60,7 @@ int main() {
         char readLines[fileInfo.fsize];
 
         // Read content
-        ps->readFile(filename, readLines);
+        ps->readFile(filename, readLines, sizeof(readLines));
         std::cout << "Read from file: " << std::endl << readLines;
     } catch(const char* exception) {
         // Hey, exception

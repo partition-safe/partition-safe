@@ -6,7 +6,6 @@
 #define PARTITIONSAFE_PARTITIONSAFE_H
 
 
-#include "Partition.h"
 #include "Vault.h"
 
 class PartitionSafe {
@@ -14,11 +13,6 @@ class PartitionSafe {
      * The current vault instance.
      */
     Vault* vault;
-
-    /**
-     * The FatFS instance.
-     */
-    FATFS* fs;
 
 public:
     /**
@@ -57,7 +51,7 @@ public:
      *
      * @return
      */
-    PartitionSafe* writeFile(const TCHAR* fileName, const void* buff, const UINT size);
+    PartitionSafe* writeFile(const std::string fileName, const void* buff, const UINT size);
 
     /**
      * Get the size a the file on the partition.
@@ -66,7 +60,7 @@ public:
      *
      * @return
      */
-    PartitionSafe* fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
+    PartitionSafe* fileInfo(const std::string fileName, FILINFO *fileInfo);
 
     /**
      * Read the contents of a file on the partition.
@@ -76,7 +70,7 @@ public:
      *
      * @return
      */
-    PartitionSafe* readFile(const TCHAR *fileName, void *buff);
+    PartitionSafe* readFile(const std::string fileName, void *buff, const UINT size);
 
 };
 

@@ -3,6 +3,7 @@
 //
 
 #include "PartitionSafe.h"
+#include "Common.h"
 
 void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size) {
     // Try to create the vault
@@ -19,31 +20,31 @@ PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePa
 
 PartitionSafe *PartitionSafe::open() {
     // Open the vault
-    vault->open(fs);
+    vault->open();
 
     // Return myself
     return this;
 }
 
-PartitionSafe *PartitionSafe::writeFile(const TCHAR *fileName, const void *buff, const UINT size) {
+PartitionSafe *PartitionSafe::writeFile(const std::string fileName, const void *buff, const UINT size) {
     // Write the file
-    vault->writeFile(fileName, buff, size);
+    vault->writeFile(Common::stdStringToTChar(fileName), buff, size);
 
     // Return myself
     return this;
 }
 
-PartitionSafe *PartitionSafe::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
+PartitionSafe *PartitionSafe::fileInfo(const std::string fileName, FILINFO *fileInfo) {
     // Get file info
-    vault->fileInfo(fileName, fileInfo);
+    vault->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
 
     // Return myself
     return this;
 }
 
-PartitionSafe *PartitionSafe::readFile(const TCHAR *fileName, void *buff) {
+PartitionSafe *PartitionSafe::readFile(const std::string fileName, void *buff, const UINT size) {
     // Read the file
-    vault->readFile(fileName, buff);
+    vault->readFile(Common::stdStringToTChar(fileName), buff, size);
 
     // Return myself
     return this;

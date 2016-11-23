@@ -79,9 +79,9 @@ Vault *Vault::init(const char* vaultPath, const char* keyStorePath) {
     return vault;
 }
 
-Vault *Vault::open(FATFS* fs) {
+Vault *Vault::open() {
     // Open the partition
-    partition->open(fs);
+    partition->open();
 
     // Return myself
     return this;
@@ -103,9 +103,9 @@ Vault *Vault::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     return this;
 }
 
-Vault *Vault::readFile(const TCHAR *fileName, void *buff) {
+Vault *Vault::readFile(const TCHAR *fileName, void *buff, const UINT size) {
     // Write the file
-    partition->readFile(fileName, buff);
+    partition->readFile(fileName, buff, size);
 
     // Return myself
     return this;

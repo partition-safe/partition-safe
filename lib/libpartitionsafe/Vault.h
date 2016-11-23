@@ -90,7 +90,7 @@ public:
      *
      * @return
      */
-    Vault* open(FATFS* fs);
+    Vault* open();
 
     /**
      * Write to a file on the partition.
@@ -120,7 +120,7 @@ public:
      *
      * @return
      */
-    Vault* readFile(const TCHAR *fileName, void *buff);
+    Vault* readFile(const TCHAR *fileName, void *buff, const UINT size);
 
 private:
     /**

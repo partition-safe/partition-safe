@@ -25,12 +25,12 @@ Partition::Partition(const char* path, FILE* fh):
     currentFileDescriptor = fd;
 }
 
-Partition *Partition::open(FATFS* fs) {
+Partition *Partition::open() {
     // The instances
     FRESULT res;
 
     // Mount the file system
-    res = f_mount(fs, Partition::LETTER, 0);
+    res = f_mount(&fs, Partition::LETTER, 0);
     if(res > FR_OK) throw "Could not mount partition";
 
     // Return myself
@@ -82,7 +82,7 @@ Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     return this;
 }
 
-Partition *Partition::readFile(const TCHAR *fileName, void *buff) {
+Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
     // The instances
     FIL fil;
     UINT *readBytes = new UINT;
@@ -93,7 +93,7 @@ Partition *Partition::readFile(const TCHAR *fileName, void *buff) {
     if(res > FR_OK) throw "Could not open file";
 
     // Read file data
-    res = f_read(&fil, buff, sizeof(buff), readBytes);
+    res = f_read(&fil, buff, size, readBytes);
     if(res > FR_OK) throw "Could not read file";
 
     // Close the file

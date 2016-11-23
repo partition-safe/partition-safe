@@ -26,6 +26,11 @@ class Partition {
      */
     FILE * fd;
 
+    /**
+     * The FatFS instance.
+     */
+    FATFS fs;
+
 public:
     /**
      * The identifier of the save.
@@ -55,7 +60,7 @@ public:
      *
      * @return
      */
-    Partition* open(FATFS* fs);
+    Partition* open();
 
     /**
      * Create a new partition.
@@ -92,7 +97,7 @@ public:
      *
      * @return
      */
-    Partition* readFile(const TCHAR *fileName, void *buff);
+    Partition* readFile(const TCHAR *fileName, void *buff, const UINT size);
 
 };
 
