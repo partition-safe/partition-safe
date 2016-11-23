@@ -33,4 +33,4 @@ HEADERS  += mainwindow/mainwindow.h \
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
-    mainwindow/dialognew.ui
+    mainwindow/dialognew.ui \
