@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new QFileSystemModel(this);
     model->setRootPath(QDir::homePath());
     modelDirs = new QFileSystemModel(this);
+    modelDirs->setRootPath("");
     modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
     // Set models in views
@@ -70,6 +71,7 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
 {
+
     this->on_treeViewExplorer_doubleClicked(index);
 }
 
