@@ -2,6 +2,7 @@
 // Created by marc on 15-11-16.
 //
 
+#include <cstring>
 #include "Vault.h"
 
 Vault::Vault(Partition *partition, KeyStore *keyStore):
