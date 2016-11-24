@@ -73,7 +73,12 @@ int main() {
 
         // Read directories/files for root
         std::cout << "-- List directories" << std::endl;
-        ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
+        std::vector<Entry*>* entries = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
+
+        // Print entries
+        for(Entry* const& value : *entries) {
+            std::cout << value->getFullPath() << std::endl;
+        }
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;
