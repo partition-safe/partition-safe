@@ -1,5 +1,6 @@
 #include "Common.h"
 #include <iostream>
+#include <sstream>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -37,4 +38,22 @@ TCHAR* Common::stdStringToTChar(std::string str) {
 
     // Return the TCHAR
     return param;
+}
+
+std::string Common::tCharToStdString(const TCHAR *chars, const UINT size) {
+    // Create string stream
+    std::stringstream ss;
+
+    // Iterate over chars
+    for(int i = 0; i <= size; i++) {
+        // Null byte?
+        if(chars[i] == 0x00) {
+            break;
+        } else {
+            ss << (char) chars[i];
+        }
+    }
+
+    // Return the result
+    return ss.str();
 }
