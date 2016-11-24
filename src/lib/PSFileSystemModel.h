@@ -5,15 +5,26 @@
 #ifndef PSFILESYSTEMMODEL_H
 #define PSFILESYSTEMMODEL_H
 
+#include <PartitionSafe.h>
 #include <QAbstractItemModel>
 
 class PSFileSystemModel : public QAbstractItemModel {
+    /**
+     * @brief psInstance The internal partition safe instance
+     */
+    PartitionSafe* psInstance;
+
 public:
     /**
      * @brief PSFileSystemModel File system model constructor.
      * @param parent
      */
-    PSFileSystemModel(QObject *parent = Q_NULLPTR);
+    PSFileSystemModel(QObject *parent = Q_NULLPTR, PartitionSafe* psInstance = Q_NULLPTR);
+
+    /**
+      * Destructor
+      */
+    ~PSFileSystemModel();
 
     /**
      * @brief index

@@ -17,20 +17,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Setup the UI
     ui->setupUi(this);
 
-    // Create file system models
-    model = new PSFileSystemModel(this);
-    model->setRootPath(QDir::homePath());
-    modelDirs = new PSFileSystemModel(this);
-    modelDirs->setRootPath("");
-    modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    // Create the partition safe instance
+    psInstance = new PartitionSafe();
 
-    // Set models in views
-    ui->treeViewExplorer->setModel(model);
-    ui->treeViewExplorer->setRootIndex(model->index(QDir::homePath()));
-    ui->treeViewFiles->setModel(modelDirs);
-    ui->treeViewFiles->hideColumn(3);
-    ui->treeViewFiles->hideColumn(2);
-    ui->treeViewFiles->hideColumn(1);
+    // Temporary
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
 
     // Add to stack
     folderHistory->append(QDir::homePath());
@@ -51,21 +42,21 @@ MainWindow::~MainWindow()
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 {
     // Get directory
-    QString dir(model->filePath(index));
+//    QString dir(model->filePath(index));
 
-    // clear forward if it doesn't contain dir
-    // else pop from ForwardHistory
-    if (!folderForwardHistory->contains(dir)) folderForwardHistory->clear();
-    else folderForwardHistory->pop();
+//    // clear forward if it doesn't contain dir
+//    // else pop from ForwardHistory
+//    if (!folderForwardHistory->contains(dir)) folderForwardHistory->clear();
+//    else folderForwardHistory->pop();
 
-    // Add to stack
-    folderHistory->append(dir);
+//    // Add to stack
+//    folderHistory->append(dir);
 
-    // Set root index
-    ui->treeViewExplorer->setRootIndex(model->index(dir));
+//    // Set root index
+//    ui->treeViewExplorer->setRootIndex(model->index(dir));
 
-    // Show path in status bar
-    this->setPath();
+//    // Show path in status bar
+//    this->setPath();
 }
 
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
@@ -89,13 +80,13 @@ void MainWindow::on_buttonBack_clicked()
         folderForwardHistory->append(dir);
 
         // Is it the current directory?
-        if(folderHistory->size() > 0 && ui->treeViewExplorer->rootIndex() == model->index(dir)) {
-            // Pop another
-            dir = folderHistory->last();
-        }
+//        if(folderHistory->size() > 0 && ui->treeViewExplorer->rootIndex() == model->index(dir)) {
+//            // Pop another
+//            dir = folderHistory->last();
+//        }
 
         // Set root index
-        ui->treeViewExplorer->setRootIndex(model->index(dir));
+//        ui->treeViewExplorer->setRootIndex(model->index(dir));
     }
 
     // History empty?
@@ -124,7 +115,7 @@ void MainWindow::on_buttonForward_clicked()
         folderHistory->append(dir);
 
         // Set root index
-        ui->treeViewExplorer->setRootIndex(model->index(dir));
+//        ui->treeViewExplorer->setRootIndex(model->index(dir));
 
     }
 
@@ -196,10 +187,33 @@ void MainWindow::exportFiles()
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
     foreach (QModelIndex index, selectedRowsList)
     {
-        qDebug() << modelDirs->filePath(index);
+//        qDebug() << modelDirs->filePath(index);
 
         // TODO: Export selected file.
     }
+}
+
+void MainWindow::initializeVault(const QString vaultPath, const QString keyStorePath)
+{
+    // Setup vault
+    psInstance->init(vaultPath.toStdString().c_str(), keyStorePath.toStdString().c_str())->open();
+
+    // Create file system models
+    model = new PSFileSystemModel(this, psInstance);
+    modelDirs = new PSFileSystemModel(this, psInstance);
+//    modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+
+    // Set models in views
+    ui->treeViewExplorer->setModel(model);
+//    ui->treeViewExplorer->setRootIndex(model->index(QDir::homePath()));
+    ui->treeViewFiles->setModel(modelDirs);
+    ui->treeViewFiles->hideColumn(3);
+    ui->treeViewFiles->hideColumn(2);
+    ui->treeViewFiles->hideColumn(1);
+
+    // Add to stack
+    folderHistory->append(QDir::homePath());
+
 }
 
 void MainWindow::setPath()

@@ -37,11 +37,13 @@ private:
     PSFileSystemModel *model;
     PSFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
+    PartitionSafe* psInstance;
 
     void setPath();
     void importFiles();
     void importFolder();
     void exportFiles();
+    void initializeVault(const QString vaultPath, const QString keyStorePath);
 };
 
 #endif // MAINWINDOW_H
