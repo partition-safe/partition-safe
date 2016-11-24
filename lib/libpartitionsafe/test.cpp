@@ -23,16 +23,16 @@ int main() {
         PartitionSafe *ps = new PartitionSafe();
 
         // Create the vault
+        std::cout << "-- Partition create" << std::endl;
         ps->create(vaultPath, keyStorePath, label, 1024);
-        std::cout << "-- Partition created" << std::endl;
 
         //
         // Open vault
         //
 
         // Init the vault
+        std::cout << "-- Partition open" << std::endl;
         ps->init(vaultPath, keyStorePath)->open();
-        std::cout << "-- Partition opened" << std::endl;
 
         //
         // Write file
@@ -43,8 +43,8 @@ int main() {
         const char line[] = "Hello world\nHai";
 
         // Write content
+        std::cout << "-- File write" << std::endl;
         ps->writeFile(filename, line, sizeof(line));
-        std::cout << "-- File written" << std::endl;
 
         //
         // Open file
@@ -60,8 +60,9 @@ int main() {
         char readLines[fileInfo.fsize];
 
         // Read content
+        std::cout << "-- Read from file: " << std::endl;
         ps->readFile(filename, readLines, sizeof(readLines));
-        std::cout << "-- Read from file: " << std::endl << readLines << std::endl;
+        std::cout << readLines << std::endl;
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;
