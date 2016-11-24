@@ -23,7 +23,7 @@ DialogNew::~DialogNew()
 void DialogNew::on_buttonKeyLoc_clicked()
 {
     // Get location to save the key file
-    keyLocFilename = fd->getSaveFileName(this, "SaveFile", "", "Key files (*.key)");
+    keyLocFilename = fd->getSaveFileName(this, "SaveFile", "", "Key files (*.keystore)");
 
     // Set path to key file in textbox
     ui->textKeyLoc->setText(keyLocFilename);
@@ -51,13 +51,15 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
                 && !ui->textPassword->text().isEmpty()
                 && !ui->textUsername->text().isEmpty()
                 && has_suffix(ui->textPartitionLoc->text(), "*.vault")
-                && has_suffix(ui->textKeyLoc->text(), "*.key"))
+                && has_suffix(ui->textKeyLoc->text(), "*.keystore"))
         {
             // Convert name and path to partition file to *char
             QByteArray baName = ui->textPartitionName->text().toLatin1();
             char *label = baName.data();
-            QByteArray ba = partitionLocFilename.toLatin1();
-            const char *filePath = ba.data();
+            QByteArray baPartLoc = partitionLocFilename.toLatin1();
+            const char *filePath = baPartLoc.data();
+            QByteArray baKeyLoc = keyLocFilename.toLatin1();
+            const char *keyPath = baKeyLoc.data();
 
             // Check if partition size is a number
             QRegExp re("\\d*");
@@ -66,7 +68,7 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
                 // Creat a partition
                 int partitionSize = ui->textPartitionSize->text().toInt();
                 PartitionSafe* ps = new PartitionSafe;
-                ps->create(filePath, filePath, label, partitionSize);
+                ps->create(filePath, keyPath, label, partitionSize);
                 // Send accept request to end dialog.
                 this->accept();
             }
