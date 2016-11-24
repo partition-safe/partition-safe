@@ -8,7 +8,7 @@
 #include <PartitionSafe.h>
 #include <QAbstractItemModel>
 
-class PSFileSystemModel : public QAbstractItemModel {
+class PSFileSystemModel : public QAbstractListModel {
     /**
      * @brief psInstance The internal partition safe instance
      */
@@ -37,48 +37,15 @@ public:
     ~PSFileSystemModel();
 
     /**
-     * @brief index
-     * @param row
-     * @param column
-     * @param parent
-     * @return
-     */
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-
-    /**
-     * @brief parent
-     * @param child
-     * @return
-     */
-    QModelIndex parent(const QModelIndex &child) const;
-
-    /**
-     * @brief rowCount
-     * @param parent
-     * @return
-     */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-    /**
-     * @brief columnCount
-     * @param parent
-     * @return
-     */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
-    /**
-     * @brief data
-     * @param index
-     * @param role
-     * @return
-     */
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-
-    /**
      * @brief setCurrentDirectory
      * @param path
      */
     void setCurrentDirectory(QString path);
+
+
+    int rowCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    int columnCount(const QModelIndex &parent) const;
 
 };
 

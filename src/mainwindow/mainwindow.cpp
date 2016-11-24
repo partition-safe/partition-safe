@@ -205,11 +205,7 @@ void MainWindow::initializeVault(const QString vaultPath, const QString keyStore
 
     // Set models in views
     ui->treeViewExplorer->setModel(model);
-//    ui->treeViewExplorer->setRootIndex(model->index(QDir::homePath()));
     ui->treeViewFiles->setModel(modelDirs);
-    ui->treeViewFiles->hideColumn(3);
-    ui->treeViewFiles->hideColumn(2);
-    ui->treeViewFiles->hideColumn(1);
 
     // Add to stack
     folderHistory->append(QDir::homePath());

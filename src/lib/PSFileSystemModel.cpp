@@ -6,7 +6,7 @@
 
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
-    QAbstractItemModel(parent), psInstance(psInstance)
+    QAbstractListModel(parent), psInstance(psInstance)
 {
     setCurrentDirectory(QString("/"));
 }
@@ -14,16 +14,6 @@ PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance)
 PSFileSystemModel::~PSFileSystemModel()
 {
 
-}
-
-QModelIndex PSFileSystemModel::index(int row, int column, const QModelIndex &parent) const
-{
-    return createIndex(row, column);
-}
-
-QModelIndex PSFileSystemModel::parent(const QModelIndex &child) const
-{
-    return child;
 }
 
 int PSFileSystemModel::rowCount(const QModelIndex &parent) const
@@ -38,7 +28,13 @@ int PSFileSystemModel::columnCount(const QModelIndex &parent) const
 
 QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 {
-    return QVariant("test");
+    switch(role)
+    {
+    case Qt::DisplayRole:
+        Entry* entry = currentDirectoryListing->at(index.row());
+        return QVariant(QString(entry->name.c_str()));
+    }
+    return QVariant();
 }
 
 void PSFileSystemModel::setCurrentDirectory(QString path)
