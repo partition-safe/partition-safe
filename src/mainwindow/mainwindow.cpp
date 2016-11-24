@@ -4,6 +4,10 @@
 #include "dialognew.h"
 
 #include <QFileSystemModel>
+#include <QDirModel>
+#include <QFileDialog>
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new QFileSystemModel(this);
     model->setRootPath(QDir::homePath());
     modelDirs = new QFileSystemModel(this);
+    modelDirs->setRootPath("");
     modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
     // Set models in views
@@ -66,6 +71,7 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
 {
+
     this->on_treeViewExplorer_doubleClicked(index);
 }
 
@@ -139,6 +145,62 @@ void MainWindow::on_actionNew_triggered()
     DialogNew *newDialog = new DialogNew(this);
 
     newDialog->exec();
+}
+
+void MainWindow::on_buttonExport_clicked()
+{
+    exportFiles();
+}
+
+void MainWindow::on_buttonImport_clicked()
+{
+    importFiles();
+}
+
+void MainWindow::on_actionFolder_triggered()
+{
+    importFolder();
+}
+
+void MainWindow::on_actionFile_triggered()
+{
+    importFiles();
+}
+
+void MainWindow::on_actionExport_triggered()
+{
+    exportFiles();
+}
+
+void MainWindow::importFiles()
+{
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::Directory);
+    // Open File dialog
+    qFile.exec();
+
+    qDebug() << qFile.directory().entryList();
+    foreach (QString filePath, qFile.selectedFiles()) {
+        qDebug() << filePath;
+
+        // TODO: import file from filePath
+    }
+}
+
+void MainWindow::importFolder(){
+        qDebug() << "importFolder() called";
+}
+
+void MainWindow::exportFiles()
+{
+    QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    foreach (QModelIndex index, selectedRowsList)
+    {
+        qDebug() << modelDirs->filePath(index);
+
+        // TODO: Export selected file.
+    }
 }
 
 void MainWindow::setPath()
