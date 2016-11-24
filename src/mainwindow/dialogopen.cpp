@@ -40,9 +40,11 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                 // Convert path to partition file to *char
                 QByteArray ba = ui->textPartition->text().toLatin1();
                 const char *c_fileLocation = ba.data();
+                QByteArray baKeyLoc = ui->textKey->text().toLatin1();
+                const char *c_keyLocation = baKeyLoc.data();
                 // Open the partition
                 PartitionSafe* ps = new PartitionSafe;
-                ps->init(c_fileLocation, c_fileLocation)->open();
+                ps->init(c_fileLocation, c_keyLocation)->open();
                 // Send accept request to end dialog.
                 this->accept();
             }else {
