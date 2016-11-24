@@ -3,19 +3,69 @@
 //
 
 #include <iostream>
-#include "Partition.h"
+#include "PartitionSafe.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "PartitionSafe :: Test script" << std::endl;
 
-    const char* path = "/tmp/marc.vault";
+    try {
 
-    // Create a partition
-    char label[40] = "Marc";
-    Partition partition = Partition::create(label, 1024, path);
+        //
+        // Create vault
+        //
 
-    // Open an already created partition
-    partition = Partition::open(path);
+        // Vault metadata
+        const char *vaultPath = "/tmp/marc.vault";
+        const char *keyStorePath = "/tmp/marc.vault";
+        char label[40] = "Marc";
+
+        // Create the partition safe instance
+        PartitionSafe *ps = new PartitionSafe();
+
+        // Create the vault
+        ps->create(vaultPath, keyStorePath, label, 1024);
+        std::cout << "Partition created" << std::endl;
+
+        //
+        // Open vault
+        //
+
+        // Init the vault
+        ps->init(vaultPath, keyStorePath)->open();
+        std::cout << "Partition opened" << std::endl;
+
+        //
+        // Write file
+        //
+
+        // File content
+        const std::string filename = "sample.txt";
+        const char line[] = "Hello world\nHai";
+
+        // Write content
+        ps->writeFile(filename, line, sizeof(line));
+        std::cout << "File written" << std::endl;
+
+        //
+        // Open file
+        //
+
+        // File metadata
+        FILINFO fileInfo;
+
+        // Get file info
+        ps->fileInfo(filename, &fileInfo);
+
+        // The file buffer
+        char readLines[fileInfo.fsize];
+
+        // Read content
+        ps->readFile(filename, readLines, sizeof(readLines));
+        std::cout << "Read from file: " << std::endl << readLines;
+    } catch(const char* exception) {
+        // Hey, exception
+        std::cout << "Thrown exception: " << exception << std::endl;
+    }
 
     return 0;
 }

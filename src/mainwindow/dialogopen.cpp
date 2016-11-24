@@ -1,6 +1,6 @@
 #include "dialogopen.h"
 #include "ui_dialogopen.h"
-#include "../lib/libpartitionsafe/Partition.h"
+#include "../lib/libpartitionsafe/PartitionSafe.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -41,7 +41,8 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                 QByteArray ba = ui->textPartition->text().toLatin1();
                 const char *c_fileLocation = ba.data();
                 // Open the partition
-                Partition::open(c_fileLocation);
+                PartitionSafe* ps = new PartitionSafe;
+                ps->init(c_fileLocation, c_fileLocation)->open();
                 // Send accept request to end dialog.
                 this->accept();
             }else {
