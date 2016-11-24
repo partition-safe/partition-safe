@@ -4,6 +4,7 @@
 
 #include "Partition.h"
 #include "../libfatfs/src/diskio.h"
+#include "Common.h"
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
@@ -104,4 +105,48 @@ Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT siz
 
     // Return myself
     return this;
+}
+
+FRESULT Partition::listDirectory(const TCHAR *directoryName) {
+    // The instances
+    FRESULT res;
+    DIR dir;
+    UINT i;
+    FILINFO fno;
+
+    // Open the directory
+    res = f_opendir(&dir, directoryName);
+    if(res != FR_OK) throw "Could not open directory";
+
+    // Find all directories
+    for (;;) {
+        // Read a directory item
+        res = f_readdir(&dir, &fno);
+
+        // Break on error or end of dir
+        if (res != FR_OK || fno.fname[0] == 0) break;
+
+        // Is it a directory
+        if (fno.fattrib & AM_DIR) {
+//            i = strlen(directoryName);
+            std::string fileName = Common::tCharToStdString(fno.fname, sizeof(fno.fname));
+            printf("%s/%s\n", directoryName, fileName.c_str());
+//            res = listDirectory(directoryName);
+//            if (res != FR_OK) break;
+//            directoryName[i] = 0;
+        }
+
+        // Is it a file
+        else {
+            std::string fileName = Common::tCharToStdString(fno.fname, sizeof(fno.fname));
+            printf("%s/%s\n", directoryName, fileName.c_str());
+        }
+    }
+
+    // Close the directory
+    res = f_closedir(&dir);
+    if(res != FR_OK) throw "Could not close directory";
+
+    // Return myself
+    return res;
 }

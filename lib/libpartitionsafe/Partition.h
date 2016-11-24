@@ -99,6 +99,15 @@ public:
      */
     Partition* readFile(const TCHAR *fileName, void *buff, const UINT size);
 
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
+     * @return
+     */
+    FRESULT listDirectory(const TCHAR *directoryName);
+
 };
 
 #endif //PARTITIONSAFE_PARTITION_H

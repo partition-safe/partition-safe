@@ -55,3 +55,11 @@ PartitionSafe *PartitionSafe::readFile(const std::string fileName, void *buff, c
     // Return myself
     return this;
 }
+
+Vault *PartitionSafe::getVault() {
+    return vault;
+}
+
+KeyStore *PartitionSafe::getKeyStore() {
+    return keyStore;
+}

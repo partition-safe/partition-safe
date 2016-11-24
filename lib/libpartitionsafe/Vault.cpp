@@ -101,3 +101,7 @@ Vault *Vault::readFile(const TCHAR *fileName, void *buff, const UINT size) {
     // Return myself
     return this;
 }
+
+Partition *Vault::getPartition() {
+    return partition;
+}

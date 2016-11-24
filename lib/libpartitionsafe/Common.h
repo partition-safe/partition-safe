@@ -15,13 +15,22 @@ public:
     static std::string newUUID();
 
     /**
-     * Convert a std string to TCHAR.
+     * Convert a std string to a tchar array.
      *
      * @param str The string to convert
      *
      * @return
      */
     static TCHAR* stdStringToTChar(std::string str);
+
+    /**
+     * Convert a tchar array to string.
+     *
+     * @param chars The array to convert
+     *
+     * @return
+     */
+    static std::string tCharToStdString(const TCHAR *chars, const UINT size = 256);
 
 };
 

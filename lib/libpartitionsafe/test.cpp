@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "PartitionSafe.h"
+#include "Common.h"
 
 int main() {
     std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
@@ -39,12 +40,14 @@ int main() {
         //
 
         // File content
-        const std::string filename = "sample.txt";
+        const std::string filename = "/sample.txt";
+        const std::string filename2 = "/sample2222222222.txt";
         const char line[] = "Hello world\nHai";
 
         // Write content
         std::cout << "-- File write" << std::endl;
         ps->writeFile(filename, line, sizeof(line));
+        ps->writeFile(filename2, line, sizeof(line));
 
         //
         // Open file
@@ -63,6 +66,14 @@ int main() {
         std::cout << "-- Read from file: " << std::endl;
         ps->readFile(filename, readLines, sizeof(readLines));
         std::cout << readLines << std::endl;
+
+        //
+        // Read directory structure
+        //
+
+        // Read directories/files for root
+        std::cout << "-- List directories" << std::endl;
+        ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;
