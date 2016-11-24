@@ -26,9 +26,9 @@ private slots:
     void on_buttonExport_clicked();
     void on_actionOpen_triggered();
     void on_actionNew_triggered();
-    void on_actionImport_triggered();
     void on_actionExport_triggered();
-
+    void on_actionFile_triggered();
+    void on_actionFolder_triggered();
     void on_buttonImport_clicked();
 
 private:
@@ -39,6 +39,7 @@ private:
 
     void setPath();
     void importFiles();
+    void importFolder();
     void exportFiles();
 };
 
