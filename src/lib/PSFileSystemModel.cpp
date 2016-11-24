@@ -5,30 +5,35 @@
 #include "PSFileSystemModel.h"
 
 
-PSFileSystemModel::PSFileSystemModel(QObject *parent = Q_NULLPTR):
-    QAbstractItemModel(parent) {}
+PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
+    QAbstractItemModel(parent), psInstance(psInstance) {}
 
-QModelIndex QAbstractItemModel::index(int row, int column, const QModelIndex &parent) const
+PSFileSystemModel::~PSFileSystemModel()
 {
-    return NULL;
+
 }
 
-QModelIndex QAbstractItemModel::parent(const QModelIndex &child) const
+QModelIndex PSFileSystemModel::index(int row, int column, const QModelIndex &parent) const
 {
-    return NULL;
+    return parent;
 }
 
-int QAbstractItemModel::rowCount(const QModelIndex &parent) const
+QModelIndex PSFileSystemModel::parent(const QModelIndex &child) const
 {
-    return NULL;
+    return child;
 }
 
-int QAbstractItemModel::columnCount(const QModelIndex &parent) const
+int PSFileSystemModel::rowCount(const QModelIndex &parent) const
 {
-    return NULL;
+    return 0;
 }
 
-QVariant QAbstractItemModel::data(const QModelIndex &index, int role) const
+int PSFileSystemModel::columnCount(const QModelIndex &parent) const
 {
-    return NULL;
+    return 0;
+}
+
+QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
+{
+    return QVariant();
 }
