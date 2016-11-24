@@ -1,10 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QFileSystemModel>
 #include <QMainWindow>
 #include <QStack>
 #include <QString>
+
+#include <lib/PSFileSystemModel.h>
 
 namespace Ui {
 class MainWindow;
@@ -33,8 +34,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QFileSystemModel *model;
-    QFileSystemModel *modelDirs;
+    PSFileSystemModel *model;
+    PSFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
 
     void setPath();

@@ -16,6 +16,7 @@ SOURCES += main.cpp\
         mainwindow/mainwindow.cpp \
     mainwindow/dialogopen.cpp \
     mainwindow/dialognew.cpp \
+    lib/PSFileSystemModel.cpp \
     ../lib/libfatfs/src/diskio.h \
     ../lib/libfatfs/src/diskio.c \
     ../lib/libfatfs/src/ff.h \
@@ -33,6 +34,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
     mainwindow/dialognew.h \
+    lib/PSFileSystemModel.h \
     ../lib/libpartitionsafe/Partition.h \
     ../lib/libpartitionsafe/KeyStore.h \
     ../lib/libpartitionsafe/PartitionSafe.h \
