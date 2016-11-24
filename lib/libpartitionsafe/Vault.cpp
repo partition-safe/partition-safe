@@ -5,8 +5,8 @@
 #include <cstring>
 #include "Vault.h"
 
-Vault::Vault(Partition *partition, KeyStore *keyStore):
-    partition(partition), keyStore(keyStore) {}
+Vault::Vault(Partition *partition):
+    partition(partition) {}
 
 void Vault::create(const char *label, const unsigned size, const char *path) {
     // Open the file path
@@ -42,21 +42,14 @@ void Vault::create(const char *label, const unsigned size, const char *path) {
     fclose(fd);
 }
 
-Vault *Vault::init(const char* vaultPath, const char* keyStorePath) {
+Vault *Vault::init(const char* vaultPath) {
     // Open the vault file
     FILE* vaultFileDescriptor = fopen(vaultPath, "r+");
-
-    // Open the key store file
-    FILE* keyStoreFileDescriptor = fopen(keyStorePath, "r+");
 
     // Check both descriptors
     if(vaultFileDescriptor == nullptr) {
         throw "Could not open vault file";
-    } else if(keyStoreFileDescriptor == nullptr) {
-        throw "Could not open key store file";
     }
-
-    // Create the vault
 
     // Read the partition header
     Header* header = new Header;
@@ -70,11 +63,8 @@ Vault *Vault::init(const char* vaultPath, const char* keyStorePath) {
     // Open the partition and set information
     Partition* partition = new Partition(vaultPath, vaultFileDescriptor);
 
-    // Open the key store
-    KeyStore* keyStore = new KeyStore(keyStorePath, keyStoreFileDescriptor);
-
     // Create the vault
-    Vault* vault = new Vault(partition, keyStore);
+    Vault* vault = new Vault(partition);
 
     // Return the vault
     return vault;

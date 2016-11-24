@@ -7,9 +7,13 @@
 
 
 #include "Partition.h"
-#include "KeyStore.h"
 
 class Vault {
+    /**
+     * Our file storage
+     */
+    Partition* partition;
+
 public:
     /**
      * Partitio header information struct.
@@ -45,32 +49,21 @@ public:
     };
 
     /**
-     * Our file storage
-     */
-    Partition* partition;
-
-    /**
-     * Our key storage
-     */
-    KeyStore* keyStore;
-
-    /**
      * The vault constructor.
      *
      * @param partition
      * @param keyStore
      */
-    Vault(Partition* partition, KeyStore* keyStore);
+    Vault(Partition* partition);
 
     /**
      * Open a vault instance.
      *
      * @param vaultPath The path to the vault file
-     * @param keyStorePath The path to the key store file
      *
      * @return The opened vault instance
      */
-    static Vault* init(const char* vaultPath, const char* keyStorePath);
+    static Vault* init(const char* vaultPath);
 
     /**
      * Create a new partition.

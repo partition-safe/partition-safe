@@ -8,11 +8,17 @@
 void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size) {
     // Try to create the vault
     Vault::create(label, size, vaultPath);
+
+    // Try to create the key store
+    KeyStore::create(keyStorePath);
 }
 
 PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePath) {
     // Get the vault instance
-    vault = Vault::init(vaultPath, keyStorePath);
+    vault = Vault::init(vaultPath);
+
+    // Get the key store instance
+    keyStore = KeyStore::init(keyStorePath);
 
     // Return myself
     return this;

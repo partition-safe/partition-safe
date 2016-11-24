@@ -14,7 +14,6 @@ class KeyStore {
      */
     const char* path;
 
-public:
     /**
      * The file descriptor of this partition.
      *
@@ -22,14 +21,33 @@ public:
      */
     FILE * fd;
 
+public:
     /**
-     * Constructor of a partition.
+     * Constructor of a key store.
      *
      * @param path
      * @param fh
      * @return
      */
     KeyStore(const char* path, FILE* fh = nullptr);
+
+    /**
+     * Create a new key store.
+     *
+     * @param path The path to place the new key store
+     *
+     * @return
+     */
+    static void create(const char* path);
+
+    /**
+     * Open a key store instance.
+     *
+     * @param keyStorePath The path to the key store file
+     *
+     * @return The opened vault instance
+     */
+    static KeyStore* init(const char* keyStorePath);
 
 };
 

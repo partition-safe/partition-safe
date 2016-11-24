@@ -14,6 +14,11 @@ class PartitionSafe {
      */
     Vault* vault;
 
+    /**
+     * Our key storage
+     */
+    KeyStore* keyStore;
+
 public:
     /**
      * Create a new vault with key store.

@@ -31,7 +31,7 @@ Partition *Partition::open() {
 
     // Mount the file system
     res = f_mount(&fs, Partition::LETTER, 0);
-    if(res > FR_OK) throw "Could not mount partition";
+    if(res != FR_OK) throw "Could not mount partition";
 
     // Return myself
     return this;
@@ -40,9 +40,11 @@ Partition *Partition::open() {
 Partition *Partition::create() {
     // Workspace buffer
     BYTE work[_MAX_SS];
+    FRESULT res;
 
     // Make the file system
-    if(f_mkfs(Partition::LETTER, FM_FAT, 4096, work, sizeof work)) throw "Could not create file system";
+    res = f_mkfs(Partition::LETTER, FM_FAT, 4096, work, sizeof work);
+    if(res != FR_OK) throw "Could not create file system";
 
     // Return myself
     return this;
@@ -56,15 +58,15 @@ Partition *Partition::writeFile(const TCHAR *fileName, const void *buff, const U
 
     // Open file
     res = f_open(&fil, fileName, FA_CREATE_NEW | FA_WRITE);
-    if (res > FR_OK) throw "Could not open file";
+    if (res != FR_OK) throw "Could not open file";
 
     // Write stuff
     res = f_write(&fil, buff, size, writtenBytes);
-    if (res > FR_OK) throw "Could not write file";
+    if (res != FR_OK) throw "Could not write file";
 
     // Close the file
     res = f_close(&fil);
-    if(res > FR_OK) throw "Could not close file";
+    if(res != FR_OK) throw "Could not close file";
 
     // Return myself
     return this;
@@ -76,7 +78,7 @@ Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
 
     // Retrieve file status
     res = f_stat(fileName, fileInfo);
-    if(res > FR_OK) throw "Could not get file status";
+    if(res != FR_OK) throw "Could not get file status";
 
     // Return myself
     return this;
@@ -90,15 +92,15 @@ Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT siz
 
     // Open the file
     res = f_open(&fil, fileName, FA_READ);
-    if(res > FR_OK) throw "Could not open file";
+    if(res != FR_OK) throw "Could not open file";
 
     // Read file data
     res = f_read(&fil, buff, size, readBytes);
-    if(res > FR_OK) throw "Could not read file";
+    if(res != FR_OK) throw "Could not read file";
 
     // Close the file
     res = f_close(&fil);
-    if(res > FR_OK) throw "Could not close file";
+    if(res != FR_OK) throw "Could not close file";
 
     // Return myself
     return this;
