@@ -7,6 +7,7 @@
 
 
 #include "Vault.h"
+#include "KeyStore.h"
 
 class PartitionSafe {
     /**
