@@ -6,7 +6,7 @@
 #include "PartitionSafe.h"
 
 int main() {
-    std::cout << "PartitionSafe :: Test script" << std::endl;
+    std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
 
     try {
 
@@ -16,7 +16,7 @@ int main() {
 
         // Vault metadata
         const char *vaultPath = "/tmp/marc.vault";
-        const char *keyStorePath = "/tmp/marc.vault";
+        const char *keyStorePath = "/tmp/marc.keystore";
         char label[40] = "Marc";
 
         // Create the partition safe instance
@@ -24,7 +24,7 @@ int main() {
 
         // Create the vault
         ps->create(vaultPath, keyStorePath, label, 1024);
-        std::cout << "Partition created" << std::endl;
+        std::cout << "-- Partition created" << std::endl;
 
         //
         // Open vault
@@ -32,7 +32,7 @@ int main() {
 
         // Init the vault
         ps->init(vaultPath, keyStorePath)->open();
-        std::cout << "Partition opened" << std::endl;
+        std::cout << "-- Partition opened" << std::endl;
 
         //
         // Write file
@@ -44,7 +44,7 @@ int main() {
 
         // Write content
         ps->writeFile(filename, line, sizeof(line));
-        std::cout << "File written" << std::endl;
+        std::cout << "-- File written" << std::endl;
 
         //
         // Open file
@@ -61,7 +61,7 @@ int main() {
 
         // Read content
         ps->readFile(filename, readLines, sizeof(readLines));
-        std::cout << "Read from file: " << std::endl << readLines;
+        std::cout << "-- Read from file: " << std::endl << readLines << std::endl;
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;
