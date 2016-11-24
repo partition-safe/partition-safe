@@ -3207,7 +3207,11 @@ FRESULT f_mount (
 
 
 	/* Get logical drive number */
-	vol = get_ldnumber(&rp);
+    if((char *)path == "") {
+        vol = 0;
+    } else {
+        vol = get_ldnumber(&rp);
+    }
 	if (vol < 0) return FR_INVALID_DRIVE;
 	cfs = FatFs[vol];					/* Pointer to fs object */
 

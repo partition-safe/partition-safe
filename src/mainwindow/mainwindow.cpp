@@ -195,8 +195,13 @@ void MainWindow::exportFiles()
 
 void MainWindow::initializeVault(const QString vaultPath, const QString keyStorePath)
 {
+    // Convert names
+    const char *cVaultPath = vaultPath.toStdString().c_str();
+    const char *cKeyStorePath = keyStorePath.toStdString().c_str();
+
     // Setup vault
-    psInstance->init(vaultPath.toStdString().c_str(), keyStorePath.toStdString().c_str())->open();
+    psInstance->init(cVaultPath, cKeyStorePath);
+    psInstance->open();
 
     // Create file system models
     model = new PSFileSystemModel(this, psInstance);
