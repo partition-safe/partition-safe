@@ -3,7 +3,6 @@
 #include "dialogopen.h"
 #include "dialognew.h"
 
-#include <QFileSystemModel>
 #include <QDirModel>
 #include <QFileDialog>
 
@@ -19,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Create file system models
-    model = new QFileSystemModel(this);
+    model = new PSFileSystemModel(this);
     model->setRootPath(QDir::homePath());
-    modelDirs = new QFileSystemModel(this);
+    modelDirs = new PSFileSystemModel(this);
     modelDirs->setRootPath("");
     modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
