@@ -110,6 +110,24 @@ public:
      */
     std::vector<Entry*> *listDirectory(const TCHAR *directoryName);
 
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
+     * @return The list of found entries
+     */
+    std::vector<Entry*> *listDirectory(const std::string directoryName);
+
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
+     * @return The list of found entries
+     */
+    std::vector<Entry*> *listDirectory(const char *directoryName);
+
 };
 
 #endif //PARTITIONSAFE_PARTITION_H

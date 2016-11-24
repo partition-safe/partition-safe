@@ -142,3 +142,11 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     // Return myself
     return entries;
 }
+
+std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) {
+    return listDirectory(Common::stdStringToTChar(directoryName));
+}
+
+std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
+    return listDirectory(std::string(directoryName));
+}

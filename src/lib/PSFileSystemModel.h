@@ -14,6 +14,16 @@ class PSFileSystemModel : public QAbstractItemModel {
      */
     PartitionSafe* psInstance;
 
+    /**
+     * @brief currentDirectory The current directory path
+     */
+    QString currentDirectory;
+
+    /**
+     * @brief currentDirectoryListing The contents of the current directory
+     */
+    std::vector<Entry*>* currentDirectoryListing;
+
 public:
     /**
      * @brief PSFileSystemModel File system model constructor.
@@ -63,6 +73,12 @@ public:
      * @return
      */
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+    /**
+     * @brief setCurrentDirectory
+     * @param path
+     */
+    void setCurrentDirectory(QString path);
 
 };
 
