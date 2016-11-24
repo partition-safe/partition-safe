@@ -6,7 +6,9 @@
 #define PARTITIONSAFE_PARTITION_H
 
 #include <iostream>
+#include <vector>
 #include "../libfatfs/src/ff.h"
+#include "Entry.h"
 
 class Partition {
     /**
@@ -104,9 +106,9 @@ public:
      *
      * @param directoryName
      *
-     * @return
+     * @return The list of found entries
      */
-    FRESULT listDirectory(const TCHAR *directoryName);
+    std::vector<Entry*> *listDirectory(const TCHAR *directoryName);
 
 };
 
