@@ -1,7 +1,7 @@
 #include "dialognew.h"
 #include "ui_dialognew.h"
 #include <QMessageBox>
-#include "../lib/libpartitionsafe/Partition.h"
+#include "../lib/libpartitionsafe/PartitionSafe.h"
 
 DialogNew::DialogNew(QWidget *parent) :
     QDialog(parent),
@@ -65,7 +65,8 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
             {
                 // Creat a partition
                 int partitionSize = ui->textPartitionSize->text().toInt();
-                Partition::create(label, partitionSize, filePath);
+                PartitionSafe* ps = new PartitionSafe;
+                ps->create(filePath, filePath, label, partitionSize);
                 // Send accept request to end dialog.
                 this->accept();
             }
