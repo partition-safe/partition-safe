@@ -42,6 +42,18 @@ public:
      */
     void setCurrentDirectory(QString path);
 
+    /**
+     * @brief getCurrentDirectory Get the current directory
+     * @return
+     */
+    QString getCurrentDirectory();
+
+    /**
+     * @brief getFile Get a file by it's index
+     * @param index
+     * @return
+     */
+    Entry* getFile(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;

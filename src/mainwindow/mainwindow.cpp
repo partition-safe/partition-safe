@@ -23,9 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Temporary
     initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
 
-    // Add to stack
-    folderHistory->append(QDir::homePath());
-
     // Show path in status bar
     this->setPath();
 }
@@ -41,59 +38,48 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 {
-    // Get directory
-//    QString dir(model->filePath(index));
+    // We should get the selected item
+    Entry* item = model->getFile(index);
 
-//    // clear forward if it doesn't contain dir
-//    // else pop from ForwardHistory
-//    if (!folderForwardHistory->contains(dir)) folderForwardHistory->clear();
-//    else folderForwardHistory->pop();
+    // Only continue if it's a directory
+    if(!item->isDirectory()) return;
 
-//    // Add to stack
-//    folderHistory->append(dir);
+    // Get the path
+    QString path = QString(item->getFullPath().c_str());
 
-//    // Set root index
-//    ui->treeViewExplorer->setRootIndex(model->index(dir));
+    // Set directory
+    model->setCurrentDirectory(path);
 
-//    // Show path in status bar
-//    this->setPath();
+    // clear forward if it doesn't contain dir
+    // else pop from ForwardHistory
+    if (!folderForwardHistory->contains(path)) folderForwardHistory->clear();
+    else folderForwardHistory->pop();
+
+    // Add to stack
+    folderHistory->append(path);
+
+    // Show path in status bar
+    this->setPath();
 }
 
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
 {
-
-    this->on_treeViewExplorer_doubleClicked(index);
+//    this->on_treeViewExplorer_doubleClicked(index);
 }
 
 void MainWindow::on_buttonBack_clicked()
 {
-    // Track dir
-    QString dir;
-
     // More than only the home item
     if(folderHistory->size() > 0)
     {
         // Get the first item of the stack
-        dir = folderHistory->pop();
+        QString dir = folderHistory->pop();
 
         // Add to folderForwardHistory
         folderForwardHistory->append(dir);
 
-        // Is it the current directory?
-//        if(folderHistory->size() > 0 && ui->treeViewExplorer->rootIndex() == model->index(dir)) {
-//            // Pop another
-//            dir = folderHistory->last();
-//        }
-
-        // Set root index
-//        ui->treeViewExplorer->setRootIndex(model->index(dir));
-    }
-
-    // History empty?
-    if(folderHistory->size() == 0)
-    {
-        // Append the last dir as it must be the starting point
-        folderHistory->append(dir);
+        // Set directory
+        model->setCurrentDirectory(dir);
     }
 
     // Show path in status bar
@@ -102,21 +88,17 @@ void MainWindow::on_buttonBack_clicked()
 
 void MainWindow::on_buttonForward_clicked()
 {
-    // Track dir
-    QString dir;
-
     // If there is a Forward
     if(folderForwardHistory->size() > 0)
     {
         // Get first item of the forward stack
-        dir = folderForwardHistory->pop();
+        QString dir = folderForwardHistory->pop();
 
         // Append dir to folderHistory
         folderHistory->append(dir);
 
-        // Set root index
-//        ui->treeViewExplorer->setRootIndex(model->index(dir));
-
+        // Set directory
+        model->setCurrentDirectory(dir);
     }
 
     // Show path in status bar
@@ -206,24 +188,19 @@ void MainWindow::initializeVault(const QString vaultPath, const QString keyStore
     // Create file system models
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
-//    modelDirs->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
     // Set models in views
     ui->treeViewExplorer->setModel(model);
     ui->treeViewFiles->setModel(modelDirs);
-
-    // Add to stack
-    folderHistory->append(QDir::homePath());
-
 }
 
 void MainWindow::setPath()
 {
     // Show message
-    ui->statusBar->showMessage(folderHistory->last());
+    ui->statusBar->showMessage(model->getCurrentDirectory());
 
     // At last item? Disable back button.
-    ui->buttonBack->setEnabled(folderHistory->size() > 1);
+    ui->buttonBack->setEnabled(folderHistory->size() > 0);
 
     // At last forward item? Disable forward button.
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);

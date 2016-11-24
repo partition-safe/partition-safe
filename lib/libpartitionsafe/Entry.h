@@ -47,11 +47,6 @@ public:
     const std::string directory;
 
     /**
-     * Is the entry a directory
-     */
-    const bool isDirectory;
-
-    /**
      * The entry constructor.
      *
      * @param filinfo The raw file info
@@ -62,7 +57,13 @@ public:
      * Get the full path of this entry.
      * @return
      */
-    std::string getFullPath();
+    const std::string getFullPath();
+
+    /**
+     * Is the entry a directory.
+     * @return
+     */
+    const bool isDirectory();
 
 };
 

@@ -106,6 +106,33 @@ public:
      *
      * @param directoryName
      *
+     * @return
+     */
+    Partition* createDirectory(const TCHAR *directoryName);
+
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
+     * @return
+     */
+    Partition* createDirectory(const std::string directoryName);
+
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
+     * @return
+     */
+    Partition* createDirectory(const char *directoryName);
+
+    /**
+     * Read the contents of a file on the partition.
+     *
+     * @param directoryName
+     *
      * @return The list of found entries
      */
     std::vector<Entry*> *listDirectory(const TCHAR *directoryName);

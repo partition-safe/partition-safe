@@ -4,6 +4,8 @@
 
 #include "PSFileSystemModel.h"
 
+#include <mainwindow/mainwindow.h>
+
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
@@ -41,4 +43,15 @@ void PSFileSystemModel::setCurrentDirectory(QString path)
 {
     currentDirectory = path;
     currentDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
+    emit dataChanged(index(0), index(rowCount(QModelIndex())));
+}
+
+QString PSFileSystemModel::getCurrentDirectory()
+{
+    return currentDirectory;
+}
+
+Entry *PSFileSystemModel::getFile(const QModelIndex &index) const
+{
+    return currentDirectoryListing->at(index.row());
 }

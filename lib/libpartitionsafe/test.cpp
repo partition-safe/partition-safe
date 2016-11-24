@@ -68,6 +68,18 @@ int main() {
         std::cout << readLines << std::endl;
 
         //
+        // Create directory and populate
+        //
+
+        // The directory name
+        const std::string directoryName = "Test directory";
+
+        // Create directory
+        ps->getVault()->getPartition()->createDirectory(directoryName);
+        ps->writeFile(directoryName + "\\" + filename, line, sizeof(line));
+        ps->writeFile(directoryName + "\\" + filename2, line, sizeof(line));
+
+        //
         // Read directory structure
         //
 

@@ -150,3 +150,23 @@ std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) 
 std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
     return listDirectory(std::string(directoryName));
 }
+
+Partition *Partition::createDirectory(const TCHAR *directoryName) {
+    // Instances
+    FRESULT res;
+
+    // Retrieve file status
+    res = f_mkdir(directoryName);
+    if(res != FR_OK) throw "Could not create directory";
+
+    // Return myself
+    return this;
+}
+
+Partition *Partition::createDirectory(const std::string directoryName) {
+    return createDirectory(Common::stdStringToTChar(directoryName));
+}
+
+Partition *Partition::createDirectory(const char *directoryName) {
+    return createDirectory(std::string(directoryName));
+}
