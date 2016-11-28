@@ -155,6 +155,27 @@ public:
      */
     std::vector<Entry*> *listDirectory(const char *directoryName);
 
+    /**
+     * Delete the given file or directory.
+     *
+     * @param path
+     */
+    Partition *deleteFileDirectory(const TCHAR *path);
+
+    /**
+     * Delete the given file or directory.
+     *
+     * @param path
+     */
+    Partition *deleteFileDirectory(const std::string path);
+
+    /**
+     * Delete the given file or directory.
+     *
+     * @param path
+     */
+    Partition *deleteFileDirectory(const char *path);
+
 };
 
 #endif //PARTITIONSAFE_PARTITION_H

@@ -170,3 +170,23 @@ Partition *Partition::createDirectory(const std::string directoryName) {
 Partition *Partition::createDirectory(const char *directoryName) {
     return createDirectory(std::string(directoryName));
 }
+
+Partition *Partition::deleteFileDirectory(const TCHAR *path) {
+    // Instances
+    FRESULT res;
+
+    // Retrieve file status
+    res = f_unlink(path);
+    if(res != FR_OK) throw "Could not delete directory";
+
+    // Return myself
+    return this;
+}
+
+Partition *Partition::deleteFileDirectory(const std::string path) {
+    return deleteFileDirectory(Common::stdStringToTChar(path));
+}
+
+Partition *Partition::deleteFileDirectory(const char *path) {
+    return deleteFileDirectory(std::string(path));
+}
