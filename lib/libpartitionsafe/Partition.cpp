@@ -73,6 +73,14 @@ Partition *Partition::writeFile(const TCHAR *fileName, const void *buff, const U
     return this;
 }
 
+Partition *Partition::writeFile(const std::string fileName, const void *buff, const UINT size) {
+    return writeFile(Common::stdStringToTChar(fileName), buff, size);
+}
+
+Partition *Partition::writeFile(const char *fileName, const void *buff, const UINT size) {
+    return writeFile(std::string(fileName), buff, size);
+}
+
 Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     // Instances
     FRESULT res;
@@ -83,6 +91,14 @@ Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
 
     // Return myself
     return this;
+}
+
+Partition *Partition::fileInfo(const std::string fileName, FILINFO *fileInfo) {
+    return fileInfo(Common::stdStringToTChar(fileName), fileInfo);
+}
+
+Partition *Partition::fileInfo(const char *fileName, FILINFO *fileInfo) {
+    return fileInfo(std::string(fileName), fileInfo);
 }
 
 Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
@@ -105,6 +121,14 @@ Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT siz
 
     // Return myself
     return this;
+}
+
+Partition *Partition::readFile(const std::string fileName, void *buff, const UINT size) {
+    return readFile(Common::stdStringToTChar(fileName), buff, size);
+}
+
+Partition *Partition::readFile(const char *fileName, void *buff, const UINT size) {
+    return readFile(std::string(fileName), buff, size);
 }
 
 std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
