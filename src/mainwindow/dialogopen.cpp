@@ -37,18 +37,30 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
         {
             if (fileExists(ui->textPartition->text())
                     && fileExists(ui->textKey->text())){
-                // Convert path to partition file to *char
-                QByteArray ba = ui->textPartition->text().toLatin1();
-                const char *c_fileLocation = ba.data();
-                QByteArray baKeyLoc = ui->textKey->text().toLatin1();
-                const char *c_keyLocation = baKeyLoc.data();
-                // Open the partition
-                PartitionSafe* ps = new PartitionSafe;
-                ps->init(c_fileLocation, c_keyLocation)->open();
-                // Send accept request to end dialog.
-                this->accept();
+                try {
+                    // Convert path to partition file to *char
+                    QByteArray ba = ui->textPartition->text().toLatin1();
+                    locationVault = ba.toStdString();
+
+                    // Convert path to key store file to *char
+                    ba = ui->textKey->text().toLatin1();
+                    locationKeyStore = ba.toStdString();
+
+                    // Open the partition
+                    PartitionSafe* ps = new PartitionSafe;
+                    ps->init(locationVault.c_str(), locationKeyStore.c_str())->open();
+
+                    // Send accept request to end dialog.
+                    this->accept();
+                } catch(...) {
+                    // Reset data
+                    locationVault = "";
+                    locationKeyStore = "";
+
+                    show_warning("Could not open the selected vault and/or keystore.");
+                }
             }else {
-                show_warning("Wrong Partition and/or Key file selected");
+                show_warning("Wrong vault and/or keystore selected.");
             }
         }
         else

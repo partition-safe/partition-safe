@@ -22,6 +22,18 @@ class PartitionSafe {
 
 public:
     /**
+     * Get the vault instance.
+     * @return
+     */
+    Vault* getVault();
+
+    /**
+     * Get the key store instance.
+     * @return
+     */
+    KeyStore* getKeyStore();
+
+    /**
      * Create a new vault with key store.
      *
      * @param vaultPath The path to place the new vault

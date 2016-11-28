@@ -4,6 +4,7 @@
 
 #include "Partition.h"
 #include "../libfatfs/src/diskio.h"
+#include "Common.h"
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
@@ -72,6 +73,14 @@ Partition *Partition::writeFile(const TCHAR *fileName, const void *buff, const U
     return this;
 }
 
+Partition *Partition::writeFile(const std::string fileName, const void *buff, const UINT size) {
+    return writeFile(Common::stdStringToTChar(fileName), buff, size);
+}
+
+Partition *Partition::writeFile(const char *fileName, const void *buff, const UINT size) {
+    return writeFile(std::string(fileName), buff, size);
+}
+
 Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     // Instances
     FRESULT res;
@@ -82,6 +91,14 @@ Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
 
     // Return myself
     return this;
+}
+
+Partition *Partition::fileInfo(const std::string fileName, FILINFO *fileInfo) {
+    return this->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
+}
+
+Partition *Partition::fileInfo(const char *fileName, FILINFO *fileInfo) {
+    return this->fileInfo(std::string(fileName), fileInfo);
 }
 
 Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
@@ -104,4 +121,96 @@ Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT siz
 
     // Return myself
     return this;
+}
+
+Partition *Partition::readFile(const std::string fileName, void *buff, const UINT size) {
+    return readFile(Common::stdStringToTChar(fileName), buff, size);
+}
+
+Partition *Partition::readFile(const char *fileName, void *buff, const UINT size) {
+    return readFile(std::string(fileName), buff, size);
+}
+
+std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
+    // The instances
+    FRESULT res;
+    DIR dir;
+    FILINFO fno;
+
+    // Open the directory
+    res = f_opendir(&dir, directoryName);
+    if(res != FR_OK) throw "Could not open directory";
+
+    // Convert directory name to string
+    std::string sDirectoryName = Common::tCharToStdString(directoryName);
+
+    // The result list
+    std::vector<Entry*>* entries = new std::vector<Entry*>();
+
+    // Find all directories
+    for (;;) {
+        // Read a directory item
+        res = f_readdir(&dir, &fno);
+
+        // Break on error or end of dir
+        if (res != FR_OK || fno.fname[0] == 0) break;
+
+        // Create the entry and add it to the list
+        entries->push_back(new Entry(fno, sDirectoryName));
+    }
+
+    // Close the directory
+    res = f_closedir(&dir);
+    if(res != FR_OK) throw "Could not close directory";
+
+    // Return myself
+    return entries;
+}
+
+std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) {
+    return listDirectory(Common::stdStringToTChar(directoryName));
+}
+
+std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
+    return listDirectory(std::string(directoryName));
+}
+
+Partition *Partition::createDirectory(const TCHAR *directoryName) {
+    // Instances
+    FRESULT res;
+
+    // Retrieve file status
+    res = f_mkdir(directoryName);
+    if(res != FR_OK) throw "Could not create directory";
+
+    // Return myself
+    return this;
+}
+
+Partition *Partition::createDirectory(const std::string directoryName) {
+    return createDirectory(Common::stdStringToTChar(directoryName));
+}
+
+Partition *Partition::createDirectory(const char *directoryName) {
+    return createDirectory(std::string(directoryName));
+}
+
+Partition *Partition::deleteFileDirectory(const TCHAR *path) {
+    // Instances
+    FRESULT res;
+
+    // Retrieve file status
+    res = f_unlink(path);
+    if(res != FR_OK) throw "Could not delete directory";
+
+    // Return myself
+    return this;
+}
+
+Partition *Partition::deleteFileDirectory(const std::string path) {
+    return deleteFileDirectory(Common::stdStringToTChar(path));
+}
+
+Partition *Partition::deleteFileDirectory(const char *path) {
+    return deleteFileDirectory(std::string(path));
 }

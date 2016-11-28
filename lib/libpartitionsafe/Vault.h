@@ -16,6 +16,12 @@ class Vault {
 
 public:
     /**
+     * Get the partition instance.
+     * @return
+     */
+    Partition* getPartition();
+
+    /**
      * Partitio header information struct.
      *
      * NEVER, NEVER, NEVER CHANGE THE ORDER OF THIS STRUCT.
