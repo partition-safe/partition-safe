@@ -33,7 +33,7 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                 && !ui->textPassword->text().isEmpty()
                 && !ui->textUsername->text().isEmpty()
                 && has_suffix(ui->textPartition->text(), "*.vault")
-                && has_suffix(ui->textKey->text(), "*.key"))
+                && has_suffix(ui->textKey->text(), "*.keystore"))
         {
             if (fileExists(ui->textPartition->text())
                     && fileExists(ui->textKey->text())){
@@ -60,9 +60,9 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
 
 void DialogOpen::on_buttonSelectKey_clicked()
 {
-    // Filter for selecting a .key file
+    // Filter for selecting a .keystore file
     QStringList filters;
-    filters << "Key files (*.key)";
+    filters << "Key files (*.keystore)";
 
     // Create new FileDialog, Set the filters and execute the Dialog
     // Select a key file.
@@ -123,7 +123,7 @@ bool DialogOpen::fileExists(QString path)
  */
 bool DialogOpen::has_suffix(const QString &filePath, const QString &suffix)
 {
-    // Regular expresion to check if key files end with '.key' and
+    // Regular expresion to check if key files end with '.keystore' and
     // partition files with '.vault'
     QRegExp re(suffix);
     re.setPatternSyntax(QRegExp::Wildcard);
