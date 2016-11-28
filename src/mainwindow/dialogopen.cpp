@@ -72,7 +72,7 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
 
 void DialogOpen::on_buttonSelectKey_clicked()
 {
-    // Filter for selecting a .key file
+    // Filter for selecting a .keystore file
     QStringList filters;
     filters << "Key files (*.keystore)";
 
@@ -135,7 +135,7 @@ bool DialogOpen::fileExists(QString path)
  */
 bool DialogOpen::has_suffix(const QString &filePath, const QString &suffix)
 {
-    // Regular expresion to check if key files end with '.key' and
+    // Regular expresion to check if key files end with '.keystore' and
     // partition files with '.vault'
     QRegExp re(suffix);
     re.setPatternSyntax(QRegExp::Wildcard);

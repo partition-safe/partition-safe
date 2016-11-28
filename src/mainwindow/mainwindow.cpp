@@ -156,11 +156,10 @@ void MainWindow::importFiles()
 {
     QFileDialog qFile;
     // Allow selecting of multiple files
-    qFile.setFileMode(QFileDialog::Directory);
+    qFile.setFileMode(QFileDialog::ExistingFiles);
     // Open File dialog
     qFile.exec();
 
-    qDebug() << qFile.directory().entryList();
     foreach (QString filePath, qFile.selectedFiles()) {
         qDebug() << filePath;
 
@@ -170,6 +169,18 @@ void MainWindow::importFiles()
 
 void MainWindow::importFolder(){
         qDebug() << "importFolder() called";
+
+        QFileDialog qFile;
+        // Allow selecting of multiple files
+        qFile.setFileMode(QFileDialog::Directory);
+        // Open File dialog
+        qFile.exec();
+
+        foreach (QString folderPath, qFile.selectedFiles()) {
+            qDebug() << folderPath;
+
+            // TODO: import folder from filePath
+        }
 }
 
 void MainWindow::exportFiles()
@@ -203,6 +214,9 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         // Set models in views
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
+
+        // Set paths
+        this->setPath();
     } catch(const char *exception) {
         std::cout << "Exception: " << exception << std::endl;
     }

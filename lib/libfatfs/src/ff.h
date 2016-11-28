@@ -59,7 +59,7 @@ extern PARTITION VolToPart[];	/* Volume - Partition resolution table */
 #if _USE_LFN == 0
 #error _LFN_UNICODE must be 0 at non-LFN cfg.
 #endif
-#ifndef _INC_TCHAR
+#if !defined(_INC_TCHAR) && !defined(_WIN32)
 typedef WCHAR TCHAR;
 #define _T(x) L ## x
 #define _TEXT(x) L ## x
