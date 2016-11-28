@@ -212,6 +212,9 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         // Set models in views
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
+
+        // Set paths
+        this->setPath();
     } catch(const char *exception) {
         std::cout << "Exception: " << exception << std::endl;
     }
