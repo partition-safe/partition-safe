@@ -43,7 +43,7 @@ private:
     void importFiles();
     void importFolder();
     void exportFiles();
-    void initializeVault(const QString vaultPath, const QString keyStorePath);
+    void initializeVault(const std::string vaultPath, const std::string keyStorePath);
 };
 
 #endif // MAINWINDOW_H

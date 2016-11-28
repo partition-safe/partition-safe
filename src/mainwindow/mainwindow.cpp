@@ -114,7 +114,7 @@ void MainWindow::on_actionOpen_triggered()
     // Accepted dialog?
     if(dialogResult == QDialog::Accepted) {
         // Open the vault
-        initializeVault(QString(open->locationVault.c_str()), QString(open->locationKeyStore.c_str()));
+        initializeVault(open->locationVault, open->locationKeyStore);
     }
 }
 
@@ -181,12 +181,12 @@ void MainWindow::exportFiles()
     }
 }
 
-void MainWindow::initializeVault(const QString vaultPath, const QString keyStorePath)
+void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
 {
     try {
         // Convert names
-        const char *cVaultPath = vaultPath.toLatin1().data();
-        const char *cKeyStorePath = keyStorePath.toLatin1().data();
+        const char *cVaultPath = vaultPath.c_str();
+        const char *cKeyStorePath = keyStorePath.c_str();
 
         // Setup vault
         psInstance->init(cVaultPath, cKeyStorePath);
