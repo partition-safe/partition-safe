@@ -162,9 +162,13 @@ void MainWindow::importFiles()
 
     foreach (QString filePath, qFile.selectedFiles()) {
         qDebug() << filePath;
+        QFileInfo fileInfo(filePath);
 
-        // TODO: import file from filePath
+        QString destinationPath  = model->getCurrentDirectory().append("/").append(fileInfo.fileName());
+        qDebug() << destinationPath;
+        psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
     }
+    model->setCurrentDirectory(model->getCurrentDirectory());
 }
 
 void MainWindow::importFolder(){
