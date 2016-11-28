@@ -16,6 +16,8 @@ class DialogOpen : public QDialog
 public:
     explicit DialogOpen(QWidget *parent = 0);
     ~DialogOpen();
+    std::string locationVault;
+    std::string locationKeyStore;
 
 private slots:
     void on_buttonSelectPartition_clicked();

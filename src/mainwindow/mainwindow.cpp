@@ -21,10 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
     psInstance = new PartitionSafe();
 
     // Temporary
-    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
+//    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
 
     // Show path in status bar
-    this->setPath();
+//    this->setPath();
 }
 
 MainWindow::~MainWindow()
@@ -107,9 +107,15 @@ void MainWindow::on_buttonForward_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
+    // Open the dialog
     DialogOpen *open = new DialogOpen(this);
+    int dialogResult = open->exec();
 
-    open->exec();
+    // Accepted dialog?
+    if(dialogResult == QDialog::Accepted) {
+        // Open the vault
+        initializeVault(QString(open->locationVault.c_str()), QString(open->locationKeyStore.c_str()));
+    }
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -177,27 +183,33 @@ void MainWindow::exportFiles()
 
 void MainWindow::initializeVault(const QString vaultPath, const QString keyStorePath)
 {
-    // Convert names
-    const char *cVaultPath = vaultPath.toStdString().c_str();
-    const char *cKeyStorePath = keyStorePath.toStdString().c_str();
+    try {
+        // Convert names
+        const char *cVaultPath = vaultPath.toStdString().c_str();
+        const char *cKeyStorePath = keyStorePath.toStdString().c_str();
 
-    // Setup vault
-    psInstance->init(cVaultPath, cKeyStorePath);
-    psInstance->open();
+        // Setup vault
+        psInstance->init(cVaultPath, cKeyStorePath);
+        psInstance->open();
 
-    // Create file system models
-    model = new PSFileSystemModel(this, psInstance);
-    modelDirs = new PSFileSystemModel(this, psInstance);
+        // Create file system models and other instances
+        model = new PSFileSystemModel(this, psInstance);
+        modelDirs = new PSFileSystemModel(this, psInstance);
+        folderHistory = new QStack<QString>();
+        folderForwardHistory = new QStack<QString>();
 
-    // Set models in views
-    ui->treeViewExplorer->setModel(model);
-    ui->treeViewFiles->setModel(modelDirs);
+        // Set models in views
+        ui->treeViewExplorer->setModel(model);
+        ui->treeViewFiles->setModel(modelDirs);
+    } catch(const char *exception) {
+        std::cout << "Exception: " << exception << std::endl;
+    }
 }
 
 void MainWindow::setPath()
 {
     // Show message
-    ui->statusBar->showMessage(model->getCurrentDirectory());
+    if(model != nullptr) ui->statusBar->showMessage(model->getCurrentDirectory());
 
     // At last item? Disable back button.
     ui->buttonBack->setEnabled(folderHistory->size() > 0);

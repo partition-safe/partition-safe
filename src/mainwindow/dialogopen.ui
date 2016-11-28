@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Open a vault</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QLineEdit" name="textPartition">
    <property name="geometry">
     <rect>
