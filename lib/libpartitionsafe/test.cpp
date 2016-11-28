@@ -81,6 +81,10 @@ int main() {
         ps->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
         ps->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
 
+
+        // Import a file
+        ps->importFile("/tmp/test.txt", "/marc.txt");
+
         //
         // Read directory structure
         //

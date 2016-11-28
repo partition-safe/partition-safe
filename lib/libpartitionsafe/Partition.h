@@ -236,6 +236,8 @@ public:
      */
     Partition *deleteFileDirectory(const char *path);
 
+    int importFile(const char* source, const char* destination);
+
 };
 
 #endif //PARTITIONSAFE_PARTITION_H

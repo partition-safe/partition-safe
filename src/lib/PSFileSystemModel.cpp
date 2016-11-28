@@ -48,7 +48,11 @@ QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
     {
     case Qt::DisplayRole:
         Entry* entry = currentDirectoryListing->at(index.row());
-        return QVariant(QString(entry->name.c_str()));
+        switch (index.column()) {
+                case 0: return QString(entry->name.c_str());
+               // case 1: return entry->size;
+        }
+
     }
     return QVariant();
 }

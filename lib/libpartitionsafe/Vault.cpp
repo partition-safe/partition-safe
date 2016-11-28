@@ -47,8 +47,8 @@ Vault *Vault::init(const char* vaultPath) {
     FILE* vaultFileDescriptor = fopen(vaultPath, "r+");
 
     // Check both descriptors
-    if(vaultFileDescriptor == nullptr) {
-        throw "Could not open vault file";
+    if(vaultFileDescriptor == NULL) {
+        throw strerror(errno);
     }
 
     // Read the partition header
@@ -104,4 +104,8 @@ Vault *Vault::readFile(const TCHAR *fileName, void *buff, const UINT size) {
 
 Partition *Vault::getPartition() {
     return partition;
+}
+
+int Vault::importFile(const char *source, const char *destination) {
+    return partition->importFile(source, destination);
 }
