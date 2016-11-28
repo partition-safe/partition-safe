@@ -63,7 +63,7 @@ public:
      * Is the entry a directory.
      * @return
      */
-    const bool isDirectory();
+    bool isDirectory();
 
 };
 

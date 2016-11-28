@@ -28,6 +28,20 @@ int PSFileSystemModel::columnCount(const QModelIndex &parent) const
     return 1;
 }
 
+QVariant PSFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    switch(role)
+    {
+    case Qt::DisplayRole:
+        switch(section)
+        {
+        case 0:
+            return QVariant("Filename");
+        }
+    }
+    return QVariant();
+}
+
 QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 {
     switch(role)

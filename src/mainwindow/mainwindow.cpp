@@ -76,7 +76,7 @@ void MainWindow::on_buttonBack_clicked()
         QString dir = folderHistory->pop();
 
         // Add to folderForwardHistory
-        folderForwardHistory->append(dir);
+        folderForwardHistory->append(model->getCurrentDirectory());
 
         // Set directory
         model->setCurrentDirectory(dir);
@@ -95,7 +95,7 @@ void MainWindow::on_buttonForward_clicked()
         QString dir = folderForwardHistory->pop();
 
         // Append dir to folderHistory
-        folderHistory->append(dir);
+        folderHistory->append(model->getCurrentDirectory());
 
         // Set directory
         model->setCurrentDirectory(dir);

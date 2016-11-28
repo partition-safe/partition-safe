@@ -15,6 +15,6 @@ const std::string Entry::getFullPath() {
     return (directory.compare("/") > 0 ? directory : "") + "/" + name;
 }
 
-const bool Entry::isDirectory() {
+bool Entry::isDirectory() {
     return (attribute & AM_DIR) > 0;
 }

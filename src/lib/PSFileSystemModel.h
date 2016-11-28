@@ -55,9 +55,36 @@ public:
      */
     Entry* getFile(const QModelIndex &index) const;
 
+    /**
+     * @brief rowCount Get the number of rows in the current directory
+     * @param parent
+     * @return
+     */
     int rowCount(const QModelIndex &parent) const;
+
+    /**
+     * @brief data Data handling for a given index
+     * @param index
+     * @param role
+     * @return
+     */
     QVariant data(const QModelIndex &index, int role) const;
+
+    /**
+     * @brief columnCount Get the number of visible columns
+     * @param parent
+     * @return
+     */
     int columnCount(const QModelIndex &parent) const;
+
+    /**
+     * @brief headerData
+     * @param section
+     * @param orientation
+     * @param role
+     * @return
+     */
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 };
 
