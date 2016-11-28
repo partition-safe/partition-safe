@@ -47,6 +47,9 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
     // Get the path
     QString path = QString(item->getFullPath().c_str());
 
+    // Add history to stack
+    folderHistory->append(model->getCurrentDirectory());
+
     // Set directory
     model->setCurrentDirectory(path);
 
@@ -54,9 +57,6 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
     // else pop from ForwardHistory
     if (!folderForwardHistory->contains(path)) folderForwardHistory->clear();
     else folderForwardHistory->pop();
-
-    // Add to stack
-    folderHistory->append(path);
 
     // Show path in status bar
     this->setPath();

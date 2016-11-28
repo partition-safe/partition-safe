@@ -94,11 +94,11 @@ Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
 }
 
 Partition *Partition::fileInfo(const std::string fileName, FILINFO *fileInfo) {
-    return fileInfo(Common::stdStringToTChar(fileName), fileInfo);
+    return this->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
 }
 
 Partition *Partition::fileInfo(const char *fileName, FILINFO *fileInfo) {
-    return fileInfo(std::string(fileName), fileInfo);
+    return this->fileInfo(std::string(fileName), fileInfo);
 }
 
 Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
