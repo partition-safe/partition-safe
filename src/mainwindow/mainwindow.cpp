@@ -20,11 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // Create the partition safe instance
     psInstance = new PartitionSafe();
 
-    // Temporary
-//    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
-
+#ifdef QT_DEBUG
+    // Debug mode only, load a default vault
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
     // Show path in status bar
-//    this->setPath();
+    this->setPath();
+#endif
+
 }
 
 MainWindow::~MainWindow()
