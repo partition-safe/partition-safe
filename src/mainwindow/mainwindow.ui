@@ -100,6 +100,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="buttonBack">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Back</string>
         </property>
@@ -110,6 +113,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="buttonForward">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Forward</string>
         </property>
@@ -117,6 +123,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="buttonImport">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Import</string>
         </property>
@@ -124,6 +133,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="buttonExport">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Export</string>
         </property>
@@ -152,7 +164,7 @@
      <x>0</x>
      <y>0</y>
      <width>789</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPartitionSafe">
