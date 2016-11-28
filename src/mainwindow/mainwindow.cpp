@@ -185,8 +185,8 @@ void MainWindow::initializeVault(const QString vaultPath, const QString keyStore
 {
     try {
         // Convert names
-        const char *cVaultPath = vaultPath.toStdString().c_str();
-        const char *cKeyStorePath = keyStorePath.toStdString().c_str();
+        const char *cVaultPath = vaultPath.toLatin1().data();
+        const char *cKeyStorePath = keyStorePath.toLatin1().data();
 
         // Setup vault
         psInstance->init(cVaultPath, cKeyStorePath);
