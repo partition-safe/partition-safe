@@ -214,3 +214,33 @@ Partition *Partition::deleteFileDirectory(const std::string path) {
 Partition *Partition::deleteFileDirectory(const char *path) {
     return deleteFileDirectory(std::string(path));
 }
+
+int Partition::importFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fDestination;
+    UINT *writtenBytes = new UINT;
+    FRESULT res;
+
+    FILE* fSource = fopen(source, "r");
+
+    if(fSource == NULL){
+        return FR_NO_FILE;
+    }
+
+    res = f_open(&fDestination, Common::stdStringToTChar(std::string(destination)), FA_CREATE_NEW | FA_WRITE);
+    if (res != FR_OK) throw "Could not open destination file";
+
+    char buffer[SIZE];
+    size_t bytes;
+
+    while (0 < (bytes = fread(buffer, 1, sizeof(buffer), fSource))){
+        res = f_write(&fDestination, buffer, bytes, writtenBytes);
+        if (res != FR_OK) throw "Could not write import file";
+    }
+
+    fclose(fSource);
+    f_close(&fDestination);
+}
+
