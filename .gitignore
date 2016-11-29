@@ -1,4 +1,5 @@
 .idea
+/build-src-*
 
 # Compiled Object files
 *.slo
@@ -29,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+*.pro.user
+cmake-build-debug/
