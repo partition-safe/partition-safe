@@ -86,6 +86,11 @@ public:
      */
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
+    /**
+     * @brief init Initialize the model.
+     */
+    void init();
+
 };
 
 

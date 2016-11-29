@@ -11,15 +11,21 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    folderHistory(new QStack<QString>),
-    folderForwardHistory(new QStack<QString>)
+    ui(new Ui::MainWindow)
 {
     // Setup the UI
     ui->setupUi(this);
 
+    // Setup history stuff
+    folderHistory = new QStack<QString>();
+    folderForwardHistory = new QStack<QString>();
+
     // Create the partition safe instance
     psInstance = new PartitionSafe();
+
+    // Setup models
+    model = new PSFileSystemModel(this, psInstance);
+    modelDirs = new PSFileSystemModel(this, psInstance);
 
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
@@ -27,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Show path in status bar
     this->setPath();
 #endif
-
 }
 
 MainWindow::~MainWindow()
@@ -170,6 +175,7 @@ void MainWindow::importFiles()
     dialog.setVisible(true);
     dialog.setModal(true);
 
+    // Import files one by one
     foreach (QString filePath, qFile.selectedFiles()) {
         qDebug() << filePath;
         QFileInfo fileInfo(filePath);
@@ -227,14 +233,20 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         psInstance->open();
 
         // Create file system models and other instances
-        model = new PSFileSystemModel(this, psInstance);
-        modelDirs = new PSFileSystemModel(this, psInstance);
-        folderHistory = new QStack<QString>();
-        folderForwardHistory = new QStack<QString>();
+        folderHistory->clear();
+        folderForwardHistory->clear();
+
+        // Initialize models
+        model->init();
+        modelDirs->init();
 
         // Set models in views
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
+
+        // Enable import/export
+        ui->buttonImport->setEnabled(true);
+        ui->buttonExport->setEnabled(true);
 
         // Set paths
         this->setPath();

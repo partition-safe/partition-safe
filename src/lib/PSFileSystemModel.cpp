@@ -9,9 +9,7 @@
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
-{
-    setCurrentDirectory(QString("/"));
-}
+{}
 
 PSFileSystemModel::~PSFileSystemModel()
 {
@@ -40,6 +38,11 @@ QVariant PSFileSystemModel::headerData(int section, Qt::Orientation orientation,
         }
     }
     return QVariant();
+}
+
+void PSFileSystemModel::init()
+{
+    setCurrentDirectory(QString("/"));
 }
 
 QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const

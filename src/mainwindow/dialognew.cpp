@@ -43,44 +43,71 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
     // Check if the [OK] button is clicked
     if(button== ui->buttonBox->button(QDialogButtonBox::Ok))
     {
-        // Check if all fields are filled in
-        if(!ui->textKeyLoc->text().isEmpty()
-                && !ui->textPartitionLoc->text().isEmpty()
-                && !ui->textPartitionName->text().isEmpty()
-                && !ui->textPartitionSize->text().isEmpty()
-                && !ui->textPassword->text().isEmpty()
-                && !ui->textUsername->text().isEmpty()
-                && has_suffix(ui->textPartitionLoc->text(), "*.vault")
-                && has_suffix(ui->textKeyLoc->text(), "*.keystore"))
-        {
-            // Convert name and path to partition file to *char
-            QByteArray baName = ui->textPartitionName->text().toLatin1();
-            char *label = baName.data();
-            QByteArray baPartLoc = partitionLocFilename.toLatin1();
-            const char *filePath = baPartLoc.data();
-            QByteArray baKeyLoc = keyLocFilename.toLatin1();
-            const char *keyPath = baKeyLoc.data();
+        // Partition size check
+        QRegExp re("\\d*");
 
-            // Check if partition size is a number
-            QRegExp re("\\d*");
-            if(re.exactMatch(ui->textPartitionSize->text()))
-            {
-                // Creat a partition
-                int partitionSize = ui->textPartitionSize->text().toInt();
-                PartitionSafe* ps = new PartitionSafe;
-                ps->create(filePath, keyPath, label, partitionSize);
-                // Send accept request to end dialog.
-                this->accept();
-            }
-            else
-            {
-                show_warning("Partition size is not a number");
-            }
-        }
-        else
+        // Check per field
+        if(ui->textKeyLoc->text().isEmpty())
         {
-            show_warning("Not all fields are correctly filled in");
+            show_warning("No keystore location selected.");
+            return;
         }
+        else if(ui->textPartitionLoc->text().isEmpty())
+        {
+            show_warning("No vault location selected.");
+            return;
+        }
+        else if(ui->textPartitionName->text().isEmpty())
+        {
+            show_warning("No partion name inserted.");
+            return;
+        }
+        else if(ui->textPartitionSize->text().isEmpty())
+        {
+            show_warning("No partition size inserted.");
+            return;
+        }
+        else if(ui->textPassword->text().isEmpty())
+        {
+            show_warning("No password inserted.");
+            return;
+        }
+        else if(ui->textUsername->text().isEmpty())
+        {
+            show_warning("No username inserted.");
+            return;
+        }
+        else if(!has_suffix(ui->textPartitionLoc->text(), "*.vault"))
+        {
+            show_warning("No valid vault extension (use .vault).");
+            return;
+        }
+        else if(!has_suffix(ui->textKeyLoc->text(), "*.keystore"))
+        {
+            show_warning("No valid keystore extension (use .keystore).");
+            return;
+        }
+        else if(!re.exactMatch(ui->textPartitionSize->text()))
+        {
+            show_warning("No valid partition size inserted.");
+            return;
+        }
+
+        // Convert name and path to partition file to *char
+        QByteArray baName = ui->textPartitionName->text().toLatin1();
+        char *label = baName.data();
+        QByteArray baPartLoc = ui->textPartitionLoc->text().toLatin1();
+        const char *filePath = baPartLoc.data();
+        QByteArray baKeyLoc = ui->textKeyLoc->text().toLatin1();
+        const char *keyPath = baKeyLoc.data();
+
+        // Creat a partition
+        int partitionSize = ui->textPartitionSize->text().toInt();
+        PartitionSafe* ps = new PartitionSafe;
+        ps->create(filePath, keyPath, label, partitionSize);
+
+        // Send accept request to end dialog.
+        this->accept();
     }
 }
 
