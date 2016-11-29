@@ -224,6 +224,11 @@ int Partition::importFile(const char *source, const char *destination) {
     FRESULT res;
 
     FILE* fSource = fopen(source, "r");
+
+    if(fSource == NULL){
+        return FR_NO_FILE;
+    }
+
     res = f_open(&fDestination, Common::stdStringToTChar(std::string(destination)), FA_CREATE_NEW | FA_WRITE);
     if (res != FR_OK) throw "Could not open destination file";
 

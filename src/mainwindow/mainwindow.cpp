@@ -5,6 +5,7 @@
 
 #include <QDirModel>
 #include <QFileDialog>
+#include <QProgressDialog>
 
 #include <QDebug>
 
@@ -160,14 +161,30 @@ void MainWindow::importFiles()
     // Open File dialog
     qFile.exec();
 
+    int filesSelected =qFile.selectedFiles().count();
+    int current = 0;
+
+    QProgressDialog dialog(this);
+    dialog.setLabelText(tr("Importing file..."));
+    dialog.setRange(0, filesSelected);
+    dialog.setVisible(true);
+    dialog.setModal(true);
+
     foreach (QString filePath, qFile.selectedFiles()) {
         qDebug() << filePath;
         QFileInfo fileInfo(filePath);
 
+        dialog.setLabelText(tr("Importing file: %1").arg(fileInfo.fileName()));
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
         QString destinationPath  = model->getCurrentDirectory().append("/").append(fileInfo.fileName());
         qDebug() << destinationPath;
         psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
+
+        dialog.setValue(++current);
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
+
     model->setCurrentDirectory(model->getCurrentDirectory());
 }
 
