@@ -46,9 +46,9 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                     ba = ui->textKey->text().toLatin1();
                     locationKeyStore = ba.toStdString();
 
-                    // Open the partition
-                    PartitionSafe* ps = new PartitionSafe;
-                    ps->init(locationVault.c_str(), locationKeyStore.c_str())->open();
+//                    // Open the partition
+//                    PartitionSafe* ps = new PartitionSafe;
+//                    ps->init(locationVault.c_str(), locationKeyStore.c_str())->open();
 
                     // Send accept request to end dialog.
                     this->accept();
