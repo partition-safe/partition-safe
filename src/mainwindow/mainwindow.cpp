@@ -192,8 +192,7 @@ void MainWindow::importFiles()
     }
 
     model->setCurrentDirectory(model->getCurrentDirectory());
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-
+    model->layoutChanged();
 }
 
 void MainWindow::importFolder(){
