@@ -11,9 +11,6 @@
 #include "database/User.h"
 #include "../libmbedtls/include/mbedtls/rsa.h"
 
-#define KEY_SIZE 2048
-#define EXPONENT 65537
-
 class KeyStore {
     /**
      * File path to this partition
@@ -58,12 +55,20 @@ public:
     void close();
 
     /**
-     * Create a new user and add it to the database.
+     * Set a metadata item.
      *
-     * @param username
-     * @return
+     * @param key
+     * @param value
      */
-    User *createUser(const char* username);
+    void setMetadata(const char *key, const char *value);
+
+    /**
+     * Set a metadata item.
+     *
+     * @param key
+     * @param value
+     */
+    void getMetadata(const char *key, char **value);
 
 private:
     /**
@@ -86,13 +91,51 @@ private:
      */
     static const char *STMT_CREATE_TABLE_NOTIFICATIONS;
 
+    //
+    // Database handling
+    //
+
     /**
-     * Create a new key pair.
+     * Execute an query with error handling.
      *
-     * @param pubKey
-     * @param privKey
+     * @param db The sqlite instance
+     * @param query The query to run
      */
-    static mbedtls_rsa_context createKeyPair(unsigned char* *pubKey, unsigned char* *privKey);
+    static void execute(sqlite3 **db, const char *query);
+
+    /**
+     * Prepare a SQL statement.
+     *
+     * @param db
+     * @param stmt
+     * @param sql
+     */
+    static void prepare(sqlite3 **db, sqlite3_stmt **stmt, const char *sql);
+
+    /**
+     * Bind a param for a prepared SQL statement.
+     *
+     * @param stmt
+     * @param key
+     * @param value
+     */
+    static void bindParam(sqlite3_stmt **stmt, const char *key, const char *value);
+
+    /**
+     * Bind a param for a prepared SQL statement.
+     *
+     * @param stmt
+     * @param key
+     * @param value
+     */
+    static void bindParam(sqlite3_stmt **stmt, const char *key, const int value);
+
+    /**
+     * Execute a statement with error handling.
+     *
+     * @param stmt The statement
+     */
+    static void execute(sqlite3_stmt **stmt);
 
 };
 

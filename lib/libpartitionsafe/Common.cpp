@@ -8,6 +8,10 @@
 #else
 #include <sys/time.h>
 #include "../libfatfs/src/ff.h"
+#include "../libmbedtls/include/mbedtls/entropy.h"
+#include "../libmbedtls/include/mbedtls/ctr_drbg.h"
+#include "../libmbedtls/include/mbedtls/rsa.h"
+
 #endif
 
 std::string Common::newUUID()
@@ -56,4 +60,36 @@ std::string Common::tCharToStdString(const TCHAR *chars, const UINT size) {
 
     // Return the result
     return ss.str();
+}
+
+void Common::createKeyPair(unsigned char* *pubKey, unsigned char* *privKey) {
+    int ret;
+    mbedtls_rsa_context rsa;
+    mbedtls_entropy_context entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+    const char *pers = "rsa_genkey";
+
+    // Initialize
+    mbedtls_ctr_drbg_init( &ctr_drbg );
+
+    // Setup entropy (feed random generator)
+    mbedtls_entropy_init( &entropy );
+    if( ( ret = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy,
+                                       (const unsigned char *) pers,
+                                       strlen( pers ) ) ) != 0 )
+    {
+        throw "Could not create seed: " + ret;
+    }
+
+    // Create RSA key
+    mbedtls_rsa_init( &rsa, MBEDTLS_RSA_PKCS_V15, 0 );
+    if( ( ret = mbedtls_rsa_gen_key( &rsa, mbedtls_ctr_drbg_random, &ctr_drbg, KEY_SIZE, EXPONENT ) ) != 0 )
+    {
+        throw "Could not create key: " + ret;
+    }
+
+    // Freeup some space
+    mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_entropy_free(&entropy);
+    mbedtls_rsa_free(&rsa);
 }

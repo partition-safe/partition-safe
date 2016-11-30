@@ -50,7 +50,6 @@ KeyStore::KeyStore(const char *path):
 KeyStore *KeyStore::create(const char *path) {
     // Setup the handle for creation
     sqlite3 *db;
-    char *zErrMsg = 0;
 
     // Open the SQlite 3 database path
     int rc = sqlite3_open(path, &db);
@@ -60,26 +59,12 @@ KeyStore *KeyStore::create(const char *path) {
     bool errorThrown = false;
 
     try {
-        // Create metadata table
-        rc = sqlite3_exec(db, STMT_CREATE_TABLE_METADATA, nullptr, 0, &zErrMsg);
-        if (rc != SQLITE_OK) throw zErrMsg;
-
-        // Create metadata table
-        rc = sqlite3_exec(db, STMT_CREATE_TABLE_USERS, nullptr, 0, &zErrMsg);
-        if (rc != SQLITE_OK) throw zErrMsg;
-
-        // Create metadata table
-        rc = sqlite3_exec(db, STMT_CREATE_TABLE_KEYS, nullptr, 0, &zErrMsg);
-        if (rc != SQLITE_OK) throw zErrMsg;
-
-        // Create metadata table
-        rc = sqlite3_exec(db, STMT_CREATE_TABLE_NOTIFICATIONS, nullptr, 0, &zErrMsg);
-        if (rc != SQLITE_OK) throw zErrMsg;
+        // Create tables
+        execute(&db, STMT_CREATE_TABLE_METADATA);
+        execute(&db, STMT_CREATE_TABLE_USERS);
+        execute(&db, STMT_CREATE_TABLE_KEYS);
+        execute(&db, STMT_CREATE_TABLE_NOTIFICATIONS);
     } catch(...) {
-        // Free up the error message
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-
         // Set error thrown
         errorThrown = true;
     }
@@ -107,51 +92,88 @@ void KeyStore::close() {
     sqlite3_close(sqliteHandle);
 }
 
-User *KeyStore::createUser(const char *username) {
-    // Create all fields
+//
+// Database handling
+//
 
-    // Create key pairs
-    unsigned char *pubKey;
-    unsigned char *privKey;
-    createKeyPair(&pubKey, &privKey);
+void KeyStore::execute(sqlite3 **db, const char *query) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    prepare(db, &stmt, query);
 
-    // Create the new user object
-    User *user = new User(0, username, "", (const char *)pubKey, (const char *)privKey);
-
-    // Return the user
-    return user;
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK) throw "SQL error thrown, check debug output";
 }
 
-mbedtls_rsa_context KeyStore::createKeyPair(unsigned char* *pubKey, unsigned char* *privKey) {
-    int ret;
-    mbedtls_rsa_context rsa;
-    mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context ctr_drbg;
-    const char *pers = "rsa_genkey";
-
-    // Initialize
-    mbedtls_ctr_drbg_init( &ctr_drbg );
-
-    // Setup entropy (feed random generator)
-    mbedtls_entropy_init( &entropy );
-    if( ( ret = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy,
-                                       (const unsigned char *) pers,
-                                       strlen( pers ) ) ) != 0 )
-    {
-        throw "Could not create seed: " + ret;
+void KeyStore::prepare(sqlite3 **db, sqlite3_stmt **stmt, const char *sql) {
+    if (*stmt == NULL) {
+        // Prepare the stement
+        int res = sqlite3_prepare_v2(*db, sql, -1, stmt, NULL);
+        if(res != SQLITE_OK) throw "Could not prepare a statement";
     }
+}
 
-    // Create RSA key
-    mbedtls_rsa_init( &rsa, MBEDTLS_RSA_PKCS_V15, 0 );
-    if( ( ret = mbedtls_rsa_gen_key( &rsa, mbedtls_ctr_drbg_random, &ctr_drbg, KEY_SIZE, EXPONENT ) ) != 0 )
-    {
-        throw "Could not create key: " + ret;
-    }
+void KeyStore::bindParam(sqlite3_stmt **stmt, const char *key, const char *value) {
+    // Retrieve the index
+    int index = sqlite3_bind_parameter_index(*stmt, key);
+    if (index <= 0) throw "Could not retrieve parameter index in the statement";
 
-    // Freeup some space
-    mbedtls_ctr_drbg_free( &ctr_drbg );
-    mbedtls_entropy_free( &entropy );
+    // Bind param
+    int res = sqlite3_bind_text(*stmt, index, value, -1, SQLITE_TRANSIENT);
+    if(res != SQLITE_OK) throw "Could not bind parameter";
+}
 
-    // Return rsa
-    return rsa;
+void KeyStore::bindParam(sqlite3_stmt **stmt, const char *key, const int value) {
+    // Retrieve the index
+    int index = sqlite3_bind_parameter_index(*stmt, key);
+    if (index <= 0) throw "Could not retrieve parameter index in the statement";
+
+    // Bind param
+    int res = sqlite3_bind_int(*stmt, index, value);
+    if(res != SQLITE_OK) throw "Could not bind parameter";
+}
+
+void KeyStore::execute(sqlite3_stmt **stmt) {
+    // Execute query
+    int rc = sqlite3_step(*stmt);
+    if (rc != SQLITE_OK) throw "Could not execute query";
+}
+
+//
+// Metadata
+//
+
+void KeyStore::setMetadata(const char *key, const char *value) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    prepare(&sqliteHandle, &stmt, "INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES (:key, :value);");
+
+    // Bind parameters
+    bindParam(&stmt, "key", key);
+    bindParam(&stmt, "key", value);
+
+    // Execute query and retrieve result
+    execute(&stmt);
+}
+
+void KeyStore::getMetadata(const char *key, char **value) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    prepare(&sqliteHandle, &stmt, "SELECT VALUE FROM METADATA WHERE KEY = :key;");
+
+    // Bind parameters
+    bindParam(&stmt, "key", key);
+
+    // Execute query and retrieve result
+    execute(&stmt);
+
+    // Get the result of the current row
+    const char *tempVal = (const char *) sqlite3_column_text(stmt, 0);
+
+    // Write the result
+    strncpy(*value, tempVal, sizeof(tempVal));
+
+    // Delete temp val
+    delete tempVal;
 }

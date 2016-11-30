@@ -5,6 +5,9 @@
 #include <string>
 #include "../libfatfs/src/ff.h"
 
+#define KEY_SIZE 2048
+#define EXPONENT 65537
+
 class Common {
 public:
     /**
@@ -31,6 +34,14 @@ public:
      * @return
      */
     static std::string tCharToStdString(const TCHAR *chars, const UINT size = 256);
+
+    /**
+     * Create a new key pair.
+     *
+     * @param pubKey
+     * @param privKey
+     */
+    static void createKeyPair(unsigned char* *pubKey, unsigned char* *privKey);
 
 };
 
