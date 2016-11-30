@@ -6,7 +6,6 @@
 
 #include <mainwindow/mainwindow.h>
 
-
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
 {}
@@ -52,8 +51,8 @@ QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         Entry* entry = currentDirectoryListing->at(index.row());
         switch (index.column()) {
-                case 0: return QString(entry->name.c_str());
-               // case 1: return entry->size;
+        case 0: return QString(entry->name.c_str());
+            // case 1: return entry->size;
         }
 
     }
@@ -65,6 +64,22 @@ void PSFileSystemModel::setCurrentDirectory(QString path)
     currentDirectory = path;
     currentDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
     emit dataChanged(index(0), index(rowCount(QModelIndex())));
+}
+
+void PSFileSystemModel::importFile(char* source, char* destination){
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->importFile(source, destination);
+    endInsertRows();
+
+    setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::deleteFileDirectory(const char *source){
+    beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->deleteFileDirectory(source);
+    endRemoveRows();
+
+    setCurrentDirectory(getCurrentDirectory());
 }
 
 QString PSFileSystemModel::getCurrentDirectory()

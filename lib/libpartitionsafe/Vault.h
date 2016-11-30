@@ -122,6 +122,7 @@ public:
     Vault* readFile(const TCHAR *fileName, void *buff, const UINT size);
 
     int importFile(const char* source, const char* destination);
+    Partition* deleteFileDirectory(const char* source);
 
 private:
     /**

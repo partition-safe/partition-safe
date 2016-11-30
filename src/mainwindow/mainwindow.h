@@ -32,6 +32,8 @@ private slots:
     void on_actionFolder_triggered();
     void on_buttonImport_clicked();
 
+    void on_buttonDelete_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
@@ -43,6 +45,7 @@ private:
     void importFiles();
     void importFolder();
     void exportFiles();
+    void deleteFileDirectory();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath);
 };
 

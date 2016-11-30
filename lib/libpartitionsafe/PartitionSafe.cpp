@@ -67,3 +67,7 @@ KeyStore *PartitionSafe::getKeyStore() {
 int PartitionSafe::importFile(const char *source, const char *destination) {
     return vault->importFile(source, destination);
 }
+
+Partition *PartitionSafe::deleteFileDirectory(const char *source) {
+    return vault->deleteFileDirectory(source);
+}

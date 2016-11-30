@@ -99,6 +99,14 @@ public:
      */
     int importFile(const char* source, const char* destination);
 
+    /**
+     * Delete the given source file from the partition
+     *
+     * @param source
+     * @return
+     */
+    Partition* deleteFileDirectory(const char* source);
+
 };
 
 

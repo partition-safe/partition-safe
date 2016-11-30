@@ -72,7 +72,7 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
 {
-//    this->on_treeViewExplorer_doubleClicked(index);
+    //    this->on_treeViewExplorer_doubleClicked(index);
 }
 
 void MainWindow::on_buttonBack_clicked()
@@ -143,6 +143,11 @@ void MainWindow::on_buttonImport_clicked()
     importFiles();
 }
 
+void MainWindow::on_buttonDelete_clicked()
+{
+    deleteFileDirectory();
+}
+
 void MainWindow::on_actionFolder_triggered()
 {
     importFolder();
@@ -185,31 +190,29 @@ void MainWindow::importFiles()
 
         QString destinationPath  = model->getCurrentDirectory().append("/").append(fileInfo.fileName());
         qDebug() << destinationPath;
-        psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
-
+        model->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
+        //psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
         dialog.setValue(++current);
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
-    model->setCurrentDirectory(model->getCurrentDirectory());
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-
 }
 
 void MainWindow::importFolder(){
-        qDebug() << "importFolder() called";
+    qDebug() << "importFolder() called";
 
-        QFileDialog qFile;
-        // Allow selecting of multiple files
-        qFile.setFileMode(QFileDialog::Directory);
-        // Open File dialog
-        qFile.exec();
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::Directory);
+    // Open File dialog
+    qFile.exec();
 
-        foreach (QString folderPath, qFile.selectedFiles()) {
-            qDebug() << folderPath;
+    foreach (QString folderPath, qFile.selectedFiles()) {
+        qDebug() << folderPath;
 
-            // TODO: import folder from filePath
-        }
+        // TODO: import folder from filePath
+    }
 }
 
 void MainWindow::exportFiles()
@@ -217,10 +220,20 @@ void MainWindow::exportFiles()
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
     foreach (QModelIndex index, selectedRowsList)
     {
-//        qDebug() << modelDirs->filePath(index);
+        //        qDebug() << modelDirs->filePath(index);
 
         // TODO: Export selected file.
     }
+}
+
+void MainWindow::deleteFileDirectory()
+{
+    QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    foreach (QModelIndex index, selectedRowsList)
+    {
+        model->deleteFileDirectory(model->getFile(index)->getFullPath().c_str());
+    }
+
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
@@ -246,9 +259,10 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
 
-        // Enable import/export
+        // Enable import/export/Delete
         ui->buttonImport->setEnabled(true);
         ui->buttonExport->setEnabled(true);
+        ui->buttonDelete->setEnabled(true);
 
         // Set paths
         this->setPath();
