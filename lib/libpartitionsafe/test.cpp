@@ -20,6 +20,10 @@ int main() {
         const char *keyStorePath = "/tmp/marc.keystore";
         char label[40] = "Marc";
 
+        // Delete old files
+        std::remove(vaultPath);
+        std::remove(keyStorePath);
+
         // Create the partition safe instance
         PartitionSafe *ps = new PartitionSafe();
 
