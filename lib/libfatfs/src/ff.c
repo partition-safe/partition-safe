@@ -5238,7 +5238,12 @@ FRESULT f_mkfs (
 
 
 	/* Check mounted drive and clear work area */
-	vol = get_ldnumber(&path);					/* Get target logical drive */
+	if((char *)path == "") {
+		vol = 0;
+	} else {
+		vol = get_ldnumber(&path);
+	}
+
 	if (vol < 0) return FR_INVALID_DRIVE;
 	if (FatFs[vol]) FatFs[vol]->fs_type = 0;	/* Clear mounted volume */
 	pdrv = LD2PD(vol);	/* Physical drive */

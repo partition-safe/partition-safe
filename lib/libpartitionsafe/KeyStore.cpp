@@ -7,9 +7,6 @@
 #include "../libmbedtls/include/mbedtls/entropy.h"
 #include "../libmbedtls/include/mbedtls/ctr_drbg.h"
 
-/**
- * Create metadata table statement.
- */
 const char *KeyStore::STMT_CREATE_TABLE_METADATA =
         "CREATE TABLE `METADATA` ("
                 " `KEY` TEXT NOT NULL UNIQUE,"
@@ -17,9 +14,6 @@ const char *KeyStore::STMT_CREATE_TABLE_METADATA =
                 " PRIMARY KEY(`KEY`)"
                 ");";
 
-/**
- * Create users table statement.
- */
 const char *KeyStore::STMT_CREATE_TABLE_USERS =
         "CREATE TABLE `USERS` ("
                 " `ID` INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -29,9 +23,6 @@ const char *KeyStore::STMT_CREATE_TABLE_USERS =
                 " `PRIVATE_KEY` TEXT NOT NULL UNIQUE"
                 ");";
 
-/**
- * Create keys table statement.
- */
 const char *KeyStore::STMT_CREATE_TABLE_KEYS =
         "CREATE TABLE `KEYS` ("
                 " `ID` INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -40,9 +31,6 @@ const char *KeyStore::STMT_CREATE_TABLE_KEYS =
                 " `KEY` INTEGER NOT NULL"
                 ");";
 
-/**
- * Create notifications table statement.
- */
 const char *KeyStore::STMT_CREATE_TABLE_NOTIFICATIONS =
         "CREATE TABLE `NOTIFICATIONS` ("
                 " `ID` INTEGER PRIMARY KEY AUTOINCREMENT,"
