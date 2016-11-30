@@ -99,6 +99,15 @@ public:
      */
     int importFile(const char* source, const char* destination);
 
+    /**
+     * Export the given source file from the partition to its destination outside the partition
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    int exportFile(const char* source, const char* destination);
+
 };
 
 

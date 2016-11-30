@@ -123,6 +123,8 @@ public:
 
     int importFile(const char* source, const char* destination);
 
+    int exportFile(const char* source, const char* destination);
+
 private:
     /**
      * The vault header

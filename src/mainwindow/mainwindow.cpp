@@ -213,12 +213,28 @@ void MainWindow::importFolder(){
 
 void MainWindow::exportFiles()
 {
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::DirectoryOnly);
+
+    // Get the destination directory from the user
+    QString destinationDir = qFile.getExistingDirectory();
+
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
     foreach (QModelIndex index, selectedRowsList)
     {
-//        qDebug() << modelDirs->filePath(index);
+        QFileInfo fileInfo(model->getFile(index)->getFullPath().data());
 
-        // TODO: Export selected file.
+        // Get the source and destination paths
+        QString sourcePath = model->getFile(index)->getFullPath().data();
+        QString destinationPath = destinationDir + "/" + fileInfo.fileName();
+
+        qDebug() << sourcePath;
+        qDebug() << destinationDir;
+        qDebug() << destinationPath;
+
+        // export the current file
+        psInstance->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
     }
 }
 

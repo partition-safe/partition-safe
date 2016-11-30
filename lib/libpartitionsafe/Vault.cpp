@@ -109,3 +109,7 @@ Partition *Vault::getPartition() {
 int Vault::importFile(const char *source, const char *destination) {
     return partition->importFile(source, destination);
 }
+
+int Vault::exportFile(const char *source, const char *destination) {
+    return partition->exportFile(source, destination);
+}

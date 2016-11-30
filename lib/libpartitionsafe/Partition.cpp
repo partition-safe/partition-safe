@@ -226,7 +226,7 @@ int Partition::importFile(const char *source, const char *destination) {
     FILE* fSource = fopen(source, "r");
 
     if(fSource == NULL){
-        return FR_NO_FILE;
+        throw "Could not open source file";
     }
 
     res = f_open(&fDestination, Common::stdStringToTChar(std::string(destination)), FA_CREATE_ALWAYS | FA_WRITE);
@@ -242,5 +242,38 @@ int Partition::importFile(const char *source, const char *destination) {
 
     fclose(fSource);
     f_close(&fDestination);
+}
+
+int Partition::exportFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fSource;
+    UINT *bytesRead = new UINT;
+    FRESULT res;
+
+    res = f_open(&fSource, Common::stdStringToTChar(std::string(source)), FA_OPEN_ALWAYS | FA_READ);
+    if (res != FR_OK) throw "Could not open source file";
+
+    FILE* fDestination = fopen(destination, "w");
+    if(fDestination == NULL){
+        throw "Could not open destination file";
+    }
+
+    char buffer[SIZE];
+
+    for(;;){
+        f_read(&fSource, buffer, sizeof buffer, bytesRead);
+
+        // Done reading so we can break out now
+        if(*bytesRead == 0){
+            break;
+        }
+
+        fwrite(buffer, 1, *bytesRead, fDestination);
+    }
+
+    fclose(fDestination);
+    f_close(&fSource);
 }
 
