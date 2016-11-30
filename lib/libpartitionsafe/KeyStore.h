@@ -7,6 +7,12 @@
 
 
 #include <cstdio>
+#include "../libsqlite/sqlite3.h"
+#include "database/User.h"
+#include "../libmbedtls/include/mbedtls/rsa.h"
+
+#define KEY_SIZE 2048
+#define EXPONENT 65537
 
 class KeyStore {
     /**
@@ -15,21 +21,18 @@ class KeyStore {
     const char* path;
 
     /**
-     * The file descriptor of this partition.
-     *
-     * This descriptor contains the real partition file.
+     * The sqlite handle.
      */
-    FILE * fd;
+    sqlite3 *sqliteHandle;
 
 public:
     /**
      * Constructor of a key store.
      *
      * @param path
-     * @param fh
      * @return
      */
-    KeyStore(const char* path, FILE* fh = nullptr);
+    KeyStore(const char* path);
 
     /**
      * Create a new key store.
@@ -38,7 +41,7 @@ public:
      *
      * @return
      */
-    static void create(const char* path);
+    static KeyStore *create(const char* path);
 
     /**
      * Open a key store instance.
@@ -47,7 +50,49 @@ public:
      *
      * @return The opened vault instance
      */
-    static KeyStore* init(const char* keyStorePath);
+    static KeyStore *init(const char* keyStorePath);
+
+    /**
+     * Close the current key store instance.
+     */
+    void close();
+
+    /**
+     * Create a new user and add it to the database.
+     *
+     * @param username
+     * @return
+     */
+    User *createUser(const char* username);
+
+private:
+    /**
+     * Create metadata table statement.
+     */
+    static const char *STMT_CREATE_TABLE_METADATA;
+
+    /**
+     * Create users table statement.
+     */
+    static const char *STMT_CREATE_TABLE_USERS;
+
+    /**
+     * Create keys table statement.
+     */
+    static const char *STMT_CREATE_TABLE_KEYS;
+
+    /**
+     * Create notifications table statement.
+     */
+    static const char *STMT_CREATE_TABLE_NOTIFICATIONS;
+
+    /**
+     * Create a new key pair.
+     *
+     * @param pubKey
+     * @param privKey
+     */
+    static mbedtls_rsa_context createKeyPair(unsigned char* *pubKey, unsigned char* *privKey);
 
 };
 
