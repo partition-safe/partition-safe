@@ -41,7 +41,7 @@ public:
      * @param pubKey
      * @param privKey
      */
-    static void createKeyPair(unsigned char* *pubKey, unsigned char* *privKey);
+    static void createKeyPair(char **pubKey, char **privKey);
 
 };
 

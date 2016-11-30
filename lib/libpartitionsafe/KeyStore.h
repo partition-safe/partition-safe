@@ -101,7 +101,7 @@ private:
      * @param db The sqlite instance
      * @param query The query to run
      */
-    static void execute(sqlite3 **db, const char *query);
+    static void execute(sqlite3 *db, const char *query);
 
     /**
      * Prepare a SQL statement.

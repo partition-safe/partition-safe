@@ -44,6 +44,15 @@ public:
      */
     User(const unsigned id, const char *username, const char *salt, const char *publicKey, const char *privateKey);
 
+    /**
+     * Create a new user.
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    static User *create(const char *username, const char *password);
+
 };
 
 

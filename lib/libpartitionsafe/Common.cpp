@@ -6,8 +6,6 @@
 #include <windows.h>
 #include <sstream>
 #else
-#include <sys/time.h>
-#include "../libfatfs/src/ff.h"
 #include "../libmbedtls/include/mbedtls/entropy.h"
 #include "../libmbedtls/include/mbedtls/ctr_drbg.h"
 #include "../libmbedtls/include/mbedtls/rsa.h"
@@ -62,7 +60,7 @@ std::string Common::tCharToStdString(const TCHAR *chars, const UINT size) {
     return ss.str();
 }
 
-void Common::createKeyPair(unsigned char* *pubKey, unsigned char* *privKey) {
+void Common::createKeyPair(char **pubKey, char **privKey) {
     int ret;
     mbedtls_rsa_context rsa;
     mbedtls_entropy_context entropy;
@@ -87,6 +85,11 @@ void Common::createKeyPair(unsigned char* *pubKey, unsigned char* *privKey) {
     {
         throw "Could not create key: " + ret;
     }
+
+    // Write pub and priv keys
+    size_t length;
+    mbedtls_mpi_write_string(&rsa.N, 16, *pubKey, sizeof(rsa), &length);
+    mbedtls_mpi_write_string(&rsa.E, 16, *pubKey, sizeof(rsa), &length);
 
     // Freeup some space
     mbedtls_ctr_drbg_free(&ctr_drbg);

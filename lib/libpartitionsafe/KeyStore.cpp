@@ -60,10 +60,10 @@ KeyStore *KeyStore::create(const char *path) {
 
     try {
         // Create tables
-        execute(&db, STMT_CREATE_TABLE_METADATA);
-        execute(&db, STMT_CREATE_TABLE_USERS);
-        execute(&db, STMT_CREATE_TABLE_KEYS);
-        execute(&db, STMT_CREATE_TABLE_NOTIFICATIONS);
+        execute(db, STMT_CREATE_TABLE_METADATA);
+        execute(db, STMT_CREATE_TABLE_USERS);
+        execute(db, STMT_CREATE_TABLE_KEYS);
+        execute(db, STMT_CREATE_TABLE_NOTIFICATIONS);
     } catch(...) {
         // Set error thrown
         errorThrown = true;
@@ -96,10 +96,10 @@ void KeyStore::close() {
 // Database handling
 //
 
-void KeyStore::execute(sqlite3 **db, const char *query) {
+void KeyStore::execute(sqlite3 *db, const char *query) {
     // Prepare the query
     sqlite3_stmt *stmt;
-    prepare(db, &stmt, query);
+    prepare(&db, &stmt, query);
 
     // Execute query
     int rc = sqlite3_step(stmt);

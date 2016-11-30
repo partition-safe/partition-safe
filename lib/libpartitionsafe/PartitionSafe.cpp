@@ -11,6 +11,9 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
 
     // Try to create the key store
     KeyStore::create(keyStorePath);
+
+    // Create the user
+    User *user = User::create("test", "test");
 }
 
 PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePath) {
