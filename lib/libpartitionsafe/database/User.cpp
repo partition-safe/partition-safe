@@ -13,9 +13,9 @@ User *User::create(const char *username, const char *password) {
     const char *salt = "";
 
     // Create public and private keys
-    char *pubKey;
-    char *privKey;
-    Common::createKeyPair(&pubKey, &privKey);
+    char *pubKey = new char[1024];
+    char *privKey = new char[3072];
+//    Common::createKeyPair(pubKey, privKey, password);
 
     // Create the user
     User *user = new User(0, username, salt, pubKey, privKey);

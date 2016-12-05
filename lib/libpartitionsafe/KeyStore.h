@@ -9,7 +9,6 @@
 #include <cstdio>
 #include "../libsqlite/sqlite3.h"
 #include "database/User.h"
-#include "../libmbedtls/include/mbedtls/rsa.h"
 
 class KeyStore {
     /**
@@ -110,7 +109,7 @@ private:
      * @param stmt
      * @param sql
      */
-    static void prepare(sqlite3 **db, sqlite3_stmt **stmt, const char *sql);
+    static void prepare(sqlite3 *db, sqlite3_stmt *stmt, const char *sql);
 
     /**
      * Bind a param for a prepared SQL statement.
@@ -119,7 +118,7 @@ private:
      * @param key
      * @param value
      */
-    static void bindParam(sqlite3_stmt **stmt, const char *key, const char *value);
+    static void bindParam(sqlite3_stmt *stmt, const char *key, const char *value);
 
     /**
      * Bind a param for a prepared SQL statement.
@@ -128,14 +127,21 @@ private:
      * @param key
      * @param value
      */
-    static void bindParam(sqlite3_stmt **stmt, const char *key, const int value);
+    static void bindParam(sqlite3_stmt *stmt, const char *key, const int value);
 
     /**
      * Execute a statement with error handling.
      *
      * @param stmt The statement
      */
-    static void execute(sqlite3_stmt **stmt);
+    static void execute(sqlite3_stmt *stmt);
+
+    /**
+     * Finalize the statement.
+     *
+     * @param stmt
+     */
+    static void close(sqlite3_stmt *stmt);
 
 };
 

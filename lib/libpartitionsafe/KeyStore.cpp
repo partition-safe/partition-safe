@@ -4,8 +4,6 @@
 
 #include <cstring>
 #include "KeyStore.h"
-#include "../libmbedtls/include/mbedtls/entropy.h"
-#include "../libmbedtls/include/mbedtls/ctr_drbg.h"
 
 const char *KeyStore::STMT_CREATE_TABLE_METADATA =
         "CREATE TABLE `METADATA` ("
@@ -59,6 +57,8 @@ KeyStore *KeyStore::create(const char *path) {
     bool errorThrown = false;
 
     try {
+        sqlite3_stmt *stmt;
+
         // Create tables
         execute(db, STMT_CREATE_TABLE_METADATA);
         execute(db, STMT_CREATE_TABLE_USERS);
@@ -97,47 +97,48 @@ void KeyStore::close() {
 //
 
 void KeyStore::execute(sqlite3 *db, const char *query) {
-    // Prepare the query
-    sqlite3_stmt *stmt;
-    prepare(&db, &stmt, query);
-
-    // Execute query
-    int rc = sqlite3_step(stmt);
+    // Run the query
+    int rc = sqlite3_exec(db, query, NULL, NULL, NULL);
     if (rc != SQLITE_OK) throw "SQL error thrown, check debug output";
 }
 
-void KeyStore::prepare(sqlite3 **db, sqlite3_stmt **stmt, const char *sql) {
-    if (*stmt == NULL) {
+void KeyStore::prepare(sqlite3 *db, sqlite3_stmt *stmt, const char *sql) {
+    if (stmt == NULL) {
         // Prepare the stement
-        int res = sqlite3_prepare_v2(*db, sql, -1, stmt, NULL);
+        int res = sqlite3_prepare(db, sql, -1, &stmt, NULL);
         if(res != SQLITE_OK) throw "Could not prepare a statement";
     }
 }
 
-void KeyStore::bindParam(sqlite3_stmt **stmt, const char *key, const char *value) {
+void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const char *value) {
     // Retrieve the index
-    int index = sqlite3_bind_parameter_index(*stmt, key);
+    int index = sqlite3_bind_parameter_index(stmt, key);
     if (index <= 0) throw "Could not retrieve parameter index in the statement";
 
     // Bind param
-    int res = sqlite3_bind_text(*stmt, index, value, -1, SQLITE_TRANSIENT);
+    int res = sqlite3_bind_text(stmt, index, value, -1, SQLITE_TRANSIENT);
     if(res != SQLITE_OK) throw "Could not bind parameter";
 }
 
-void KeyStore::bindParam(sqlite3_stmt **stmt, const char *key, const int value) {
+void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const int value) {
     // Retrieve the index
-    int index = sqlite3_bind_parameter_index(*stmt, key);
+    int index = sqlite3_bind_parameter_index(stmt, key);
     if (index <= 0) throw "Could not retrieve parameter index in the statement";
 
     // Bind param
-    int res = sqlite3_bind_int(*stmt, index, value);
+    int res = sqlite3_bind_int(stmt, index, value);
     if(res != SQLITE_OK) throw "Could not bind parameter";
 }
 
-void KeyStore::execute(sqlite3_stmt **stmt) {
+void KeyStore::execute(sqlite3_stmt *stmt) {
     // Execute query
-    int rc = sqlite3_step(*stmt);
+    int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK) throw "Could not execute query";
+}
+
+void KeyStore::close(sqlite3_stmt *stmt) {
+    // Close statement
+    sqlite3_finalize(stmt);
 }
 
 //
@@ -147,26 +148,26 @@ void KeyStore::execute(sqlite3_stmt **stmt) {
 void KeyStore::setMetadata(const char *key, const char *value) {
     // Prepare the query
     sqlite3_stmt *stmt;
-    prepare(&sqliteHandle, &stmt, "INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES (:key, :value);");
+    prepare(sqliteHandle, stmt, "INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES (:key, :value);");
 
     // Bind parameters
-    bindParam(&stmt, "key", key);
-    bindParam(&stmt, "key", value);
+    bindParam(stmt, "key", key);
+    bindParam(stmt, "key", value);
 
     // Execute query and retrieve result
-    execute(&stmt);
+    execute(stmt);
 }
 
 void KeyStore::getMetadata(const char *key, char **value) {
     // Prepare the query
     sqlite3_stmt *stmt;
-    prepare(&sqliteHandle, &stmt, "SELECT VALUE FROM METADATA WHERE KEY = :key;");
+    prepare(sqliteHandle, stmt, "SELECT VALUE FROM METADATA WHERE KEY = :key;");
 
     // Bind parameters
-    bindParam(&stmt, "key", key);
+    bindParam(stmt, "key", key);
 
     // Execute query and retrieve result
-    execute(&stmt);
+    execute(stmt);
 
     // Get the result of the current row
     const char *tempVal = (const char *) sqlite3_column_text(stmt, 0);

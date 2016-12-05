@@ -60,12 +60,11 @@ std::string Common::tCharToStdString(const TCHAR *chars, const UINT size) {
     return ss.str();
 }
 
-void Common::createKeyPair(char **pubKey, char **privKey) {
+void Common::createKeyPair(char *pubKey, char *privKey, const char *pers) {
     int ret;
     mbedtls_rsa_context rsa;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
-    const char *pers = "rsa_genkey";
 
     // Initialize
     mbedtls_ctr_drbg_init( &ctr_drbg );
@@ -73,8 +72,7 @@ void Common::createKeyPair(char **pubKey, char **privKey) {
     // Setup entropy (feed random generator)
     mbedtls_entropy_init( &entropy );
     if( ( ret = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy,
-                                       (const unsigned char *) pers,
-                                       strlen( pers ) ) ) != 0 )
+                                       (const unsigned char *) pers, strlen( pers ) ) ) != 0 )
     {
         throw "Could not create seed: " + ret;
     }
@@ -86,10 +84,33 @@ void Common::createKeyPair(char **pubKey, char **privKey) {
         throw "Could not create key: " + ret;
     }
 
-    // Write pub and priv keys
+    // Write pub key
     size_t length;
-    mbedtls_mpi_write_string(&rsa.N, 16, *pubKey, sizeof(rsa), &length);
-    mbedtls_mpi_write_string(&rsa.E, 16, *pubKey, sizeof(rsa), &length);
+    pubKey = (char *)malloc(512 + 6 + 1);
+    char *t = new char[1024];
+    mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
+    strcpy(pubKey, t);
+    mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
+    strcat(pubKey, t);
+
+    // Write priv key
+    privKey = (char *)malloc(512 + 6 + 512 + (256 * 5) + 1);
+    mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
+    strcpy(privKey, t);
+    mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.D, 16, t, 1024, &length); // 512
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.P, 16, t, 1024, &length); // 256
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.Q, 16, t, 1024, &length); // 256
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.DP, 16, t, 1024, &length); // 256
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.DQ, 16, t, 1024, &length); // 256
+    strcat(privKey, t);
+    mbedtls_mpi_write_string(&rsa.QP, 16, t, 1024, &length); // 256
+    strcat(privKey, t);
 
     // Freeup some space
     mbedtls_ctr_drbg_free(&ctr_drbg);
