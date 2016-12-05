@@ -150,7 +150,7 @@ DRESULT disk_ioctl (
 			// Switch for the command
 			switch (cmd) {
 				case GET_SECTOR_COUNT:
-					*(DWORD*)buff =  10000;
+					*(DWORD*)buff =  500000;
 					break;
 
 				case GET_BLOCK_SIZE:

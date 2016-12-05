@@ -214,3 +214,66 @@ Partition *Partition::deleteFileDirectory(const std::string path) {
 Partition *Partition::deleteFileDirectory(const char *path) {
     return deleteFileDirectory(std::string(path));
 }
+
+int Partition::importFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fDestination;
+    UINT *writtenBytes = new UINT;
+    FRESULT res;
+
+    FILE* fSource = fopen(source, "r");
+
+    if(fSource == NULL){
+        throw "Could not open source file";
+    }
+
+    res = f_open(&fDestination, Common::stdStringToTChar(std::string(destination)), FA_CREATE_ALWAYS | FA_WRITE);
+    if (res != FR_OK) throw "Could not open destination file";
+
+    char buffer[SIZE];
+    size_t bytes;
+
+    while (0 < (bytes = fread(buffer, 1, sizeof(buffer), fSource))){
+        res = f_write(&fDestination, buffer, bytes, writtenBytes);
+        if (res != FR_OK) throw "Could not write import file";
+    }
+
+    fclose(fSource);
+    f_close(&fDestination);
+}
+
+int Partition::exportFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fSource;
+    UINT *bytesRead = new UINT;
+    FRESULT res;
+
+    res = f_open(&fSource, Common::stdStringToTChar(std::string(source)), FA_OPEN_ALWAYS | FA_READ);
+    if (res != FR_OK) throw "Could not open source file";
+
+    FILE* fDestination = fopen(destination, "w");
+    if(fDestination == NULL){
+        throw "Could not open destination file";
+    }
+
+    char buffer[SIZE];
+
+    for(;;){
+        f_read(&fSource, buffer, sizeof buffer, bytesRead);
+
+        // Done reading so we can break out now
+        if(*bytesRead == 0){
+            break;
+        }
+
+        fwrite(buffer, 1, *bytesRead, fDestination);
+    }
+
+    fclose(fDestination);
+    f_close(&fSource);
+}
+

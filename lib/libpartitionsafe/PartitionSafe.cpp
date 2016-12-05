@@ -63,3 +63,11 @@ Vault *PartitionSafe::getVault() {
 KeyStore *PartitionSafe::getKeyStore() {
     return keyStore;
 }
+
+int PartitionSafe::importFile(const char *source, const char *destination) {
+    return vault->importFile(source, destination);
+}
+
+int PartitionSafe::exportFile(const char *source, const char *destination) {
+    return vault->exportFile(source, destination);
+}

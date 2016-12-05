@@ -90,6 +90,24 @@ public:
      */
     PartitionSafe* readFile(const std::string fileName, void *buff, const UINT size);
 
+    /**
+     * Import the given source file to its destination in the partition
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    int importFile(const char* source, const char* destination);
+
+    /**
+     * Export the given source file from the partition to its destination outside the partition
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    int exportFile(const char* source, const char* destination);
+
 };
 
 

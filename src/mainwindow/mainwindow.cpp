@@ -5,6 +5,7 @@
 
 #include <QDirModel>
 #include <QFileDialog>
+#include <QProgressDialog>
 
 #include <QDebug>
 
@@ -26,11 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
 
-    // Temporary
-//    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
-
+#ifdef QT_DEBUG
+    // Debug mode only, load a default vault
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
     // Show path in status bar
-//    this->setPath();
+    this->setPath();
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -164,11 +166,33 @@ void MainWindow::importFiles()
     // Open File dialog
     qFile.exec();
 
+    int filesSelected =qFile.selectedFiles().count();
+    int current = 0;
+
+    QProgressDialog dialog(this);
+    dialog.setLabelText(tr("Importing file..."));
+    dialog.setRange(0, filesSelected);
+    dialog.setVisible(true);
+    dialog.setModal(true);
+
+    // Import files one by one
     foreach (QString filePath, qFile.selectedFiles()) {
         qDebug() << filePath;
+        QFileInfo fileInfo(filePath);
 
-        // TODO: import file from filePath
+        dialog.setLabelText(tr("Importing file: %1").arg(fileInfo.fileName()));
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        QString destinationPath  = model->getCurrentDirectory().append("/").append(fileInfo.fileName());
+        qDebug() << destinationPath;
+        psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
+
+        dialog.setValue(++current);
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
+
+    model->setCurrentDirectory(model->getCurrentDirectory());
+    model->layoutChanged();
 }
 
 void MainWindow::importFolder(){
@@ -189,12 +213,28 @@ void MainWindow::importFolder(){
 
 void MainWindow::exportFiles()
 {
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::DirectoryOnly);
+
+    // Get the destination directory from the user
+    QString destinationDir = qFile.getExistingDirectory();
+
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
     foreach (QModelIndex index, selectedRowsList)
     {
-//        qDebug() << modelDirs->filePath(index);
+        QFileInfo fileInfo(model->getFile(index)->getFullPath().data());
 
-        // TODO: Export selected file.
+        // Get the source and destination paths
+        QString sourcePath = model->getFile(index)->getFullPath().data();
+        QString destinationPath = destinationDir + "/" + fileInfo.fileName();
+
+        qDebug() << sourcePath;
+        qDebug() << destinationDir;
+        qDebug() << destinationPath;
+
+        // export the current file
+        psInstance->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
     }
 }
 
