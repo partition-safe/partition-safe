@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
 
+    connect(ui->treeViewFiles->selectionModel(), SIGNAL(ui->treeViewFiles->selectionModel()->selectionChanged();), this, SLOT(enableButtonsSelect();));
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
     initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
@@ -262,7 +263,8 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         // Enable import/export/Delete
         ui->buttonImport->setEnabled(true);
         ui->buttonExport->setEnabled(true);
-        ui->buttonDelete->setEnabled(true);
+        ui->actionImports->setEnabled(true);
+        ui->actionFile->setEnabled(true);
 
         // Set paths
         this->setPath();
@@ -281,4 +283,10 @@ void MainWindow::setPath()
 
     // At last forward item? Disable forward button.
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
+}
+
+void MainWindow::enableButtonsSelect()
+{
+    QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    ui->buttonDelete->setEnabled(selectedRowsList.size()>=1);
 }

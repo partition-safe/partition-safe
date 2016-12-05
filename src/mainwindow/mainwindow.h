@@ -47,6 +47,7 @@ private:
     void exportFiles();
     void deleteFileDirectory();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath);
+    void enableButtonsSelect();
 };
 
 #endif // MAINWINDOW_H
