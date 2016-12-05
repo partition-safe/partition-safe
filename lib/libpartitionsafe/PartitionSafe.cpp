@@ -71,3 +71,7 @@ int PartitionSafe::importFile(const char *source, const char *destination) {
 Partition *PartitionSafe::deleteFileDirectory(const char *source) {
     return vault->deleteFileDirectory(source);
 }
+
+int PartitionSafe::exportFile(const char *source, const char *destination) {
+    return vault->exportFile(source, destination);
+}

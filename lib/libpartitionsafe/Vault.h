@@ -124,6 +124,8 @@ public:
     int importFile(const char* source, const char* destination);
     Partition* deleteFileDirectory(const char* source);
 
+    int exportFile(const char* source, const char* destination);
+
 private:
     /**
      * The vault header
