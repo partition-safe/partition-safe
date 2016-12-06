@@ -121,7 +121,6 @@ public:
      */
     Vault* readFile(const TCHAR *fileName, void *buff, const UINT size);
 
-private:
     /**
      * The vault header
      */

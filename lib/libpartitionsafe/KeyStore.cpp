@@ -74,9 +74,6 @@ KeyStore *KeyStore::create(const char *path) {
 
     // Error thrown?
     if(errorThrown) throw "SQL error thrown, check debug output";
-
-    // Create and return the new instance
-    return init(path);
 }
 
 KeyStore *KeyStore::init(const char *keyStorePath) {
@@ -103,11 +100,9 @@ void KeyStore::execute(sqlite3 *db, const char *query) {
 }
 
 void KeyStore::prepare(sqlite3 *db, sqlite3_stmt *stmt, const char *sql) {
-    if (stmt == NULL) {
-        // Prepare the stement
-        int res = sqlite3_prepare(db, sql, -1, &stmt, NULL);
-        if(res != SQLITE_OK) throw "Could not prepare a statement";
-    }
+    // Prepare the statement
+    int res = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+    if(res != SQLITE_OK) throw "Could not prepare a statement";
 }
 
 void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const char *value) {
@@ -133,7 +128,7 @@ void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const int value) {
 void KeyStore::execute(sqlite3_stmt *stmt) {
     // Execute query
     int rc = sqlite3_step(stmt);
-    if (rc != SQLITE_OK) throw "Could not execute query";
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
 }
 
 void KeyStore::close(sqlite3_stmt *stmt) {
@@ -148,33 +143,41 @@ void KeyStore::close(sqlite3_stmt *stmt) {
 void KeyStore::setMetadata(const char *key, const char *value) {
     // Prepare the query
     sqlite3_stmt *stmt;
-    prepare(sqliteHandle, stmt, "INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES (:key, :value);");
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES (:key, :value)", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
 
     // Bind parameters
-    bindParam(stmt, "key", key);
-    bindParam(stmt, "key", value);
+    if ((index = sqlite3_bind_parameter_index(stmt, ":key")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":value")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, value, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
 
-    // Execute query and retrieve result
-    execute(stmt);
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
 }
 
 void KeyStore::getMetadata(const char *key, char **value) {
     // Prepare the query
     sqlite3_stmt *stmt;
-    prepare(sqliteHandle, stmt, "SELECT VALUE FROM METADATA WHERE KEY = :key;");
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT VALUE FROM METADATA WHERE KEY = :key", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
 
     // Bind parameters
-    bindParam(stmt, "key", key);
+    if ((index = sqlite3_bind_parameter_index(stmt, ":key")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
 
-    // Execute query and retrieve result
-    execute(stmt);
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
     const char *tempVal = (const char *) sqlite3_column_text(stmt, 0);
 
     // Write the result
     strncpy(*value, tempVal, sizeof(tempVal));
-
-    // Delete temp val
-    delete tempVal;
 }

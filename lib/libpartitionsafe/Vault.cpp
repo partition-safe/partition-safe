@@ -65,6 +65,7 @@ Vault *Vault::init(const char* vaultPath) {
 
     // Create the vault
     Vault* vault = new Vault(partition);
+    vault->header = header;
 
     // Return the vault
     return vault;
