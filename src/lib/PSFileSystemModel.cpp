@@ -74,9 +74,12 @@ void PSFileSystemModel::importFile(char* source, char* destination){
     setCurrentDirectory(getCurrentDirectory());
 }
 
-void PSFileSystemModel::deleteFileDirectory(const char *source){
+void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList){
     beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
-    psInstance->deleteFileDirectory(source);
+    foreach (QModelIndex index, selectedRowsList)
+    {
+    psInstance->deleteFileDirectory(this->getFile(index)->getFullPath().c_str());
+    }
     endRemoveRows();
 
     setCurrentDirectory(getCurrentDirectory());

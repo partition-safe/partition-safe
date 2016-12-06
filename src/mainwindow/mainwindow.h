@@ -33,6 +33,7 @@ private slots:
     void on_buttonImport_clicked();
 
     void on_buttonDelete_clicked();
+    void slot_enableButtonsSelect();
 
 private:
     Ui::MainWindow *ui;
@@ -47,7 +48,6 @@ private:
     void exportFiles();
     void deleteFileDirectory();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath);
-    void enableButtonsSelect();
 };
 
 #endif // MAINWINDOW_H

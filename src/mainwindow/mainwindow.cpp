@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
 
-    connect(ui->treeViewFiles->selectionModel(), SIGNAL(ui->treeViewFiles->selectionModel()->selectionChanged();), this, SLOT(enableButtonsSelect();));
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
     initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
@@ -246,11 +245,7 @@ void MainWindow::exportFiles()
 void MainWindow::deleteFileDirectory()
 {
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
-    foreach (QModelIndex index, selectedRowsList)
-    {
-        model->deleteFileDirectory(model->getFile(index)->getFullPath().c_str());
-    }
-
+    model->deleteFileDirectory(selectedRowsList);
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
@@ -276,9 +271,11 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
 
+        // TreeViewExplorer: Add signal slot for detecting selection.
+        connect(ui->treeViewExplorer->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(slot_enableButtonsSelect()));
+
         // Enable import/export/Delete
         ui->buttonImport->setEnabled(true);
-        ui->buttonExport->setEnabled(true);
         ui->actionImports->setEnabled(true);
         ui->actionFile->setEnabled(true);
 
@@ -301,8 +298,14 @@ void MainWindow::setPath()
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
 }
 
-void MainWindow::enableButtonsSelect()
+void MainWindow::slot_enableButtonsSelect()
 {
+    //checks if someting is selected
     QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
-    ui->buttonDelete->setEnabled(selectedRowsList.size()>=1);
+    bool hasSelection = selectedRowsList.size()>=1;
+
+    // Enable export/delete
+    ui->buttonDelete->setEnabled(hasSelection);
+    ui->buttonExport->setEnabled(hasSelection);
+    ui->actionExport->setEnabled(hasSelection);
 }
