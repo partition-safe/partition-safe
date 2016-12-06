@@ -21,6 +21,11 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     User *user = User::create(username, password);
     keyStore->saveUser(user);
     keyStore->getUser(username, &user);
+
+    // Create the first encryption key
+    Key *key = Key::create(user, password, 0);
+    keyStore->saveKey(key);
+    keyStore->getKey(0, user, &key);
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {

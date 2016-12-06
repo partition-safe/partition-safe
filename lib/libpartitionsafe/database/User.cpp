@@ -37,5 +37,5 @@ void User::saltedPassword(const char *password, const char *salt, char **saltedP
 }
 
 void User::generateSalt(char **salt) {
-    *salt = "test";
+    Common::randomChars(16, salt);
 }

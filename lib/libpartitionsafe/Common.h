@@ -43,6 +43,14 @@ public:
      */
     static void createKeyPair(const char *pers, char **pubKey, char **privKey);
 
+    /**
+     * Generate a random string.
+     *
+     * @param size
+     * @param output
+     */
+    static void randomChars(unsigned size, char **output);
+
 };
 
 #endif //PARTITIONSAFE_COMMON_H

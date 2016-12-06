@@ -9,6 +9,7 @@
 #include <cstdio>
 #include "../libsqlite/sqlite3.h"
 #include "database/User.h"
+#include "database/Key.h"
 
 class KeyStore {
     /**
@@ -110,7 +111,7 @@ public:
      * @param id
      * @param user
      */
-    void getUser(int id, User **user);
+    void getUser(const int id, User **user);
 
     /**
      * Retrieve an user by it's username.
@@ -135,6 +136,42 @@ public:
      * @param value
      */
     void deleteUser(const User *user);
+
+    //
+    // Keys
+    //
+
+    /**
+     * Retrieve a key by it's ID.
+     *
+     * @param id
+     * @param user
+     */
+    void getKey(const int id, Key **key);
+
+    /**
+     * Retrieve a key by it's inode and user ID.
+     *
+     * @param username
+     * @param user
+     */
+    void getKey(const unsigned inode, const User *user, Key **key);
+
+    /**
+     * Save a (new) key.
+     *
+     * @param key
+     * @param value
+     */
+    void saveKey(Key *key);
+
+    /**
+     * Delete a key.
+     *
+     * @param key
+     * @param value
+     */
+    void deleteKey(const Key *key);
 
 };
 

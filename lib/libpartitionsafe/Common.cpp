@@ -117,3 +117,29 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
     mbedtls_entropy_free(&entropy);
     mbedtls_rsa_free(&rsa);
 }
+
+void Common::randomChars(unsigned size, char **output) {
+    // The options
+    static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+
+    // Setup the output
+    char *temp = new char[size];
+
+    // Populate the string
+    for (int i = 0; i < size; ++i) {
+        temp[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    // End the output
+    temp[size - 1] = 0;
+
+    // Copy to output
+    *output = (char*) malloc(size + 1);
+    strcpy(*output, temp);
+
+    // Free temp
+    free(temp);
+}

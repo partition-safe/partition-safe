@@ -202,7 +202,7 @@ void KeyStore::deleteUser(const User *user) {
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
 }
 
-void KeyStore::getUser(int id, User **user) {
+void KeyStore::getUser(const int id, User **user) {
     // Prepare the query
     sqlite3_stmt *stmt;
     int index;
@@ -221,9 +221,9 @@ void KeyStore::getUser(int id, User **user) {
     // Get the result of the current row
     const int _id = sqlite3_column_int(stmt, 0);
     const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 0);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 0);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
+    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
+    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
 
     // Create the user
     *user = new User((const unsigned) _id, _username, _salt, _public, _private);
@@ -254,4 +254,113 @@ void KeyStore::getUser(const char *username, User **user) {
 
     // Create the user
     *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+}
+
+//
+// Keys
+//
+
+void KeyStore::getKey(const int id, Key **key) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, INODE, KEY FROM KEYS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_ROW) throw "Could not execute query";
+
+    // Get the result of the current row
+    const int _id = sqlite3_column_int(stmt, 0);
+    const int _user = sqlite3_column_int(stmt, 1);
+    const int _inode = sqlite3_column_int(stmt, 2);
+    const char *_key = (const char *) sqlite3_column_text(stmt, 3);
+
+    // Create the user
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+}
+
+void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, INODE, KEY FROM KEYS WHERE INODE = :inode AND USER = :user", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":inode")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, inode) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":user")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, user->id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_ROW) throw "Could not execute query";
+
+    // Get the result of the current row
+    const int _id = sqlite3_column_int(stmt, 0);
+    const int _user = sqlite3_column_int(stmt, 1);
+    const int _inode = sqlite3_column_int(stmt, 2);
+    const char *_key = (const char *) sqlite3_column_text(stmt, 3);
+
+    // Create the user
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+}
+
+void KeyStore::saveKey(Key *key) {
+    sqlite3_stmt *stmt;
+    const char *query;
+    int index;
+
+    // Setup the query
+    if(key->id == 0) {
+        query = "INSERT INTO KEYS (USER, INODE, KEY) VALUES (:user, :inode, :key)";
+    } else {
+        query = "UPDATE KEYS SET KEY = :key WHERE ID = :id";
+    }
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, query, -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":key")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, key->key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+
+    // New user?
+    if(key->id == 0) {
+        if ((index = sqlite3_bind_parameter_index(stmt, ":user")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_int(stmt, index, key->userId) != SQLITE_OK) throw "Could not bind parameter";
+        if ((index = sqlite3_bind_parameter_index(stmt, ":inode")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_int(stmt, index, key->inode) != SQLITE_OK) throw "Could not bind parameter";
+    } else {
+        if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_int(stmt, index, key->id) != SQLITE_OK) throw "Could not bind parameter";
+    }
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+}
+
+void KeyStore::deleteKey(const Key *key) {
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "DELETE FROM KEYS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, key->id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
 }
