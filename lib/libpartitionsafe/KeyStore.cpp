@@ -99,43 +99,6 @@ void KeyStore::execute(sqlite3 *db, const char *query) {
     if (rc != SQLITE_OK) throw "SQL error thrown, check debug output";
 }
 
-void KeyStore::prepare(sqlite3 *db, sqlite3_stmt *stmt, const char *sql) {
-    // Prepare the statement
-    int res = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-    if(res != SQLITE_OK) throw "Could not prepare a statement";
-}
-
-void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const char *value) {
-    // Retrieve the index
-    int index = sqlite3_bind_parameter_index(stmt, key);
-    if (index <= 0) throw "Could not retrieve parameter index in the statement";
-
-    // Bind param
-    int res = sqlite3_bind_text(stmt, index, value, -1, SQLITE_TRANSIENT);
-    if(res != SQLITE_OK) throw "Could not bind parameter";
-}
-
-void KeyStore::bindParam(sqlite3_stmt *stmt, const char *key, const int value) {
-    // Retrieve the index
-    int index = sqlite3_bind_parameter_index(stmt, key);
-    if (index <= 0) throw "Could not retrieve parameter index in the statement";
-
-    // Bind param
-    int res = sqlite3_bind_int(stmt, index, value);
-    if(res != SQLITE_OK) throw "Could not bind parameter";
-}
-
-void KeyStore::execute(sqlite3_stmt *stmt) {
-    // Execute query
-    int rc = sqlite3_step(stmt);
-    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
-}
-
-void KeyStore::close(sqlite3_stmt *stmt) {
-    // Close statement
-    sqlite3_finalize(stmt);
-}
-
 //
 // Metadata
 //

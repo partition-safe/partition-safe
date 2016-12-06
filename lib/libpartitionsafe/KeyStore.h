@@ -21,6 +21,33 @@ class KeyStore {
      */
     sqlite3 *sqliteHandle;
 
+    /**
+     * Create metadata table statement.
+     */
+    static const char *STMT_CREATE_TABLE_METADATA;
+
+    /**
+     * Create users table statement.
+     */
+    static const char *STMT_CREATE_TABLE_USERS;
+
+    /**
+     * Create keys table statement.
+     */
+    static const char *STMT_CREATE_TABLE_KEYS;
+
+    /**
+     * Create notifications table statement.
+     */
+    static const char *STMT_CREATE_TABLE_NOTIFICATIONS;
+
+    /**
+     * Execute a statement with error handling.
+     *
+     * @param stmt The statement
+     */
+    static void execute(sqlite3 *db, const char *query);
+
 public:
     /**
      * Constructor of a key store.
@@ -68,80 +95,6 @@ public:
      * @param value
      */
     void getMetadata(const char *key, char **value);
-
-private:
-    /**
-     * Create metadata table statement.
-     */
-    static const char *STMT_CREATE_TABLE_METADATA;
-
-    /**
-     * Create users table statement.
-     */
-    static const char *STMT_CREATE_TABLE_USERS;
-
-    /**
-     * Create keys table statement.
-     */
-    static const char *STMT_CREATE_TABLE_KEYS;
-
-    /**
-     * Create notifications table statement.
-     */
-    static const char *STMT_CREATE_TABLE_NOTIFICATIONS;
-
-    //
-    // Database handling
-    //
-
-    /**
-     * Execute an query with error handling.
-     *
-     * @param db The sqlite instance
-     * @param query The query to run
-     */
-    static void execute(sqlite3 *db, const char *query);
-
-    /**
-     * Prepare a SQL statement.
-     *
-     * @param db
-     * @param stmt
-     * @param sql
-     */
-    static void prepare(sqlite3 *db, sqlite3_stmt *stmt, const char *sql);
-
-    /**
-     * Bind a param for a prepared SQL statement.
-     *
-     * @param stmt
-     * @param key
-     * @param value
-     */
-    static void bindParam(sqlite3_stmt *stmt, const char *key, const char *value);
-
-    /**
-     * Bind a param for a prepared SQL statement.
-     *
-     * @param stmt
-     * @param key
-     * @param value
-     */
-    static void bindParam(sqlite3_stmt *stmt, const char *key, const int value);
-
-    /**
-     * Execute a statement with error handling.
-     *
-     * @param stmt The statement
-     */
-    static void execute(sqlite3_stmt *stmt);
-
-    /**
-     * Finalize the statement.
-     *
-     * @param stmt
-     */
-    static void close(sqlite3_stmt *stmt);
 
 };
 
