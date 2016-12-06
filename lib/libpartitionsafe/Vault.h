@@ -92,36 +92,6 @@ public:
     Vault* open();
 
     /**
-     * Write to a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     * @param size
-     *
-     * @return
-     */
-    Vault* writeFile(const TCHAR* fileName, const void* buff, const UINT size);
-
-    /**
-     * Get the size a the file on the partition.
-     *
-     * @param fileName
-     *
-     * @return
-     */
-    Vault* fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
-
-    /**
-     * Read the contents of a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     *
-     * @return
-     */
-    Vault* readFile(const TCHAR *fileName, void *buff, const UINT size);
-
-    /**
      * The vault header
      */
     Header* header;

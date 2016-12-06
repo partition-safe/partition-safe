@@ -50,8 +50,8 @@ int main() {
 
         // Write content
         std::cout << "-- File write" << std::endl;
-        ps->writeFile(filename1_1, line, sizeof(line));
-        ps->writeFile(filename1_2, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(filename1_1, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(filename1_2, line, sizeof(line));
 
         //
         // Open file
@@ -61,14 +61,14 @@ int main() {
         FILINFO fileInfo;
 
         // Get file info
-        ps->fileInfo(filename1_1, &fileInfo);
+        ps->getVault()->getPartition()->fileInfo(filename1_1, &fileInfo);
 
         // The file buffer
         char readLines[fileInfo.fsize];
 
         // Read content
         std::cout << "-- Read from file: " << std::endl;
-        ps->readFile(filename1_1, readLines, sizeof(readLines));
+        ps->getVault()->getPartition()->readFile(filename1_1, readLines, sizeof(readLines));
         std::cout << readLines << std::endl;
 
         //
@@ -82,8 +82,8 @@ int main() {
 
         // Create directory
         ps->getVault()->getPartition()->createDirectory(directoryName);
-        ps->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
-        ps->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
 
         //
         // Read directory structure

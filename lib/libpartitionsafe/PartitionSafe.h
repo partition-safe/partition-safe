@@ -60,36 +60,6 @@ public:
      */
     PartitionSafe* open();
 
-    /**
-     * Write to a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     * @param size
-     *
-     * @return
-     */
-    PartitionSafe* writeFile(const std::string fileName, const void* buff, const UINT size);
-
-    /**
-     * Get the size a the file on the partition.
-     *
-     * @param fileName
-     *
-     * @return
-     */
-    PartitionSafe* fileInfo(const std::string fileName, FILINFO *fileInfo);
-
-    /**
-     * Read the contents of a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     *
-     * @return
-     */
-    PartitionSafe* readFile(const std::string fileName, void *buff, const UINT size);
-
 };
 
 

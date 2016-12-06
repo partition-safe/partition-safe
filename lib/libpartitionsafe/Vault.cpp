@@ -79,30 +79,6 @@ Vault *Vault::open() {
     return this;
 }
 
-Vault *Vault::writeFile(const TCHAR *fileName, const void *buff, const UINT size) {
-    // Write the file
-    partition->writeFile(fileName, buff, size);
-
-    // Return myself
-    return this;
-}
-
-Vault *Vault::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
-    // Write the file
-    partition->fileInfo(fileName, fileInfo);
-
-    // Return myself
-    return this;
-}
-
-Vault *Vault::readFile(const TCHAR *fileName, void *buff, const UINT size) {
-    // Write the file
-    partition->readFile(fileName, buff, size);
-
-    // Return myself
-    return this;
-}
-
 Partition *Vault::getPartition() {
     return partition;
 }
