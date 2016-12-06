@@ -143,3 +143,29 @@ void Common::randomChars(unsigned size, char **output) {
     // Free temp
     free(temp);
 }
+
+void Common::randomChars(unsigned size, unsigned char **output) {
+    // The options
+    static const unsigned char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+
+    // Setup the output
+    unsigned char *temp = new unsigned char[size];
+
+    // Populate the string
+    for (int i = 0; i < size; ++i) {
+        temp[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    // End the output
+    temp[size - 1] = 0;
+
+    // Copy to output
+    *output = (unsigned char*) malloc(size + 1);
+    strcpy((char *)*output, (char *)temp);
+
+    // Free temp
+    free(temp);
+}

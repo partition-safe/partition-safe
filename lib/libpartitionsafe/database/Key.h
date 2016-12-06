@@ -56,7 +56,25 @@ public:
      *
      * @param key The generated key
      */
-    static void generateKey(char **key);
+    static void generateKey(unsigned char **key);
+
+    /**
+     * Encrypt the key.
+     *
+     * @param saltedPassword The salted password of the user
+     * @param unEncryptedKey The unencrypted key of the user to encrypt
+     * @param encryptedKey The encrypted key as output
+     */
+    static void encrypt(const char *saltedPassword, unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], char **encryptedKey);
+
+    /**
+     * Decrypt the key.
+     *
+     * @param saltedPassword The salted password of the user
+     * @param encryptedKey The encrypted key to decrypt
+     * @param decryptedKey The decrypted key as output
+     */
+    static void decrypt(const char *saltedPassword, unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], char **decryptedKey);
 
 };
 

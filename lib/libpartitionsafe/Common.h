@@ -51,6 +51,14 @@ public:
      */
     static void randomChars(unsigned size, char **output);
 
+    /**
+     * Generate a random string.
+     *
+     * @param size
+     * @param output
+     */
+    static void randomChars(unsigned size, unsigned char **output);
+
 };
 
 #endif //PARTITIONSAFE_COMMON_H
