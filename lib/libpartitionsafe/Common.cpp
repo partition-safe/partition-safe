@@ -60,7 +60,7 @@ std::string Common::tCharToStdString(const TCHAR *chars, const UINT size) {
     return ss.str();
 }
 
-void Common::createKeyPair(char *pubKey, char *privKey, const char *pers) {
+void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
     int ret;
     mbedtls_rsa_context rsa;
     mbedtls_entropy_context entropy;
@@ -86,31 +86,31 @@ void Common::createKeyPair(char *pubKey, char *privKey, const char *pers) {
 
     // Write pub key
     size_t length;
-    pubKey = (char *)malloc(512 + 6 + 1);
+    *pubKey = (char *)malloc(512 + 6 + 1);
     char *t = new char[1024];
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
-    strcpy(pubKey, t);
+    strcpy(*pubKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
-    strcat(pubKey, t);
+    strcat(*pubKey, t);
 
     // Write priv key
-    privKey = (char *)malloc(512 + 6 + 512 + (256 * 5) + 1);
+    *privKey = (char *)malloc(512 + 6 + 512 + (256 * 5) + 1);
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
-    strcpy(privKey, t);
+    strcpy(*privKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.D, 16, t, 1024, &length); // 512
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.P, 16, t, 1024, &length); // 256
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.Q, 16, t, 1024, &length); // 256
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.DP, 16, t, 1024, &length); // 256
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.DQ, 16, t, 1024, &length); // 256
-    strcat(privKey, t);
+    strcat(*privKey, t);
     mbedtls_mpi_write_string(&rsa.QP, 16, t, 1024, &length); // 256
-    strcat(privKey, t);
+    strcat(*privKey, t);
 
     // Freeup some space
     mbedtls_ctr_drbg_free(&ctr_drbg);

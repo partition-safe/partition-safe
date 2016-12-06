@@ -53,6 +53,22 @@ public:
      */
     static User *create(const char *username, const char *password);
 
+    /**
+     * Salt a password.
+     *
+     * @param password
+     * @param salt
+     * @param saltedPassword
+     */
+    static void saltedPassword(const char *password, const char *salt, char **saltedPassword);
+
+    /**
+     * Generate a new salt
+     *
+     * @param salt The generated salt
+     */
+    static void generateSalt(char **salt);
+
 };
 
 

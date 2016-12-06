@@ -4,7 +4,7 @@
 
 #include "PartitionSafe.h"
 
-void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size) {
+void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {
     // Try to create the vault
     Vault::create(label, size, vaultPath);
     Vault *vault = Vault::init(vaultPath);
@@ -17,11 +17,13 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     keyStore->setMetadata("uuid", vault->header->UUID);
     keyStore->setMetadata("label", vault->header->label);
 
-    // Create the user
-    User *user = User::create("test", "test");
+    // Create the user and save it
+    User *user = User::create(username, password);
+    keyStore->saveUser(user);
+    keyStore->getUser(username, &user);
 }
 
-PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePath) {
+PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
     // Get the vault instance
     vault = Vault::init(vaultPath);
 
@@ -32,6 +34,10 @@ PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePa
     char *uuid;
     keyStore->getMetadata("uuid", &uuid);
     if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
+
+    // Retrieve user
+    User *user;
+    keyStore->getUser(username, &user);
 
     // Return myself
     return this;

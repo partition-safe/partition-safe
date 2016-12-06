@@ -29,7 +29,7 @@ int main() {
 
         // Create the vault
         std::cout << "-- Partition create" << std::endl;
-        ps->create(vaultPath, keyStorePath, label, 1024);
+        ps->create(vaultPath, keyStorePath, label, 1024, "test", "test");
 
         //
         // Open vault
@@ -37,7 +37,7 @@ int main() {
 
         // Init the vault
         std::cout << "-- Partition open" << std::endl;
-        ps->init(vaultPath, keyStorePath)->open();
+        ps->init(vaultPath, keyStorePath, "test", "test")->open();
 
         //
         // Write file

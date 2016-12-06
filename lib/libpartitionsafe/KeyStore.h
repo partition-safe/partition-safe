@@ -80,6 +80,10 @@ public:
      */
     void close();
 
+    //
+    // Metadata
+    //
+
     /**
      * Set a metadata item.
      *
@@ -95,6 +99,42 @@ public:
      * @param value
      */
     void getMetadata(const char *key, char **value);
+
+    //
+    // User
+    //
+
+    /**
+     * Retrieve an user by it's ID.
+     *
+     * @param id
+     * @param user
+     */
+    void getUser(int id, User **user);
+
+    /**
+     * Retrieve an user by it's username.
+     *
+     * @param username
+     * @param user
+     */
+    void getUser(const char *username, User **user);
+
+    /**
+     * Save a (new) user.
+     *
+     * @param key
+     * @param value
+     */
+    void saveUser(User *user);
+
+    /**
+     * Delete an user.
+     *
+     * @param key
+     * @param value
+     */
+    void deleteUser(const User *user);
 
 };
 

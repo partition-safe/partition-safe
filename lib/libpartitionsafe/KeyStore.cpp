@@ -144,3 +144,114 @@ void KeyStore::getMetadata(const char *key, char **value) {
     // Write the result
     strncpy(*value, tempVal, sizeof(tempVal));
 }
+
+//
+// User
+//
+
+void KeyStore::saveUser(User *user) {
+    sqlite3_stmt *stmt;
+    const char *query;
+    int index;
+
+    // Setup the query
+    if(user->id == 0) {
+        query = "INSERT INTO USERS (USERNAME, SALT, PUBLIC_KEY, PRIVATE_KEY) VALUES (:username, :salt, :public, :private)";
+    } else {
+        query = "UPDATE USERS SET USERNAME = :username WHERE ID = :id";
+    }
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, query, -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":username")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, user->username, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+
+    // New user?
+    if(user->id == 0) {
+        if ((index = sqlite3_bind_parameter_index(stmt, ":salt")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_text(stmt, index, user->salt, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+        if ((index = sqlite3_bind_parameter_index(stmt, ":public")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_text(stmt, index, user->publicKey, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+        if ((index = sqlite3_bind_parameter_index(stmt, ":private")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_text(stmt, index, user->privateKey, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+    } else {
+        if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_int(stmt, index, user->id) != SQLITE_OK) throw "Could not bind parameter";
+    }
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+}
+
+void KeyStore::deleteUser(const User *user) {
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "DELETE FROM USERS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, user->id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+}
+
+void KeyStore::getUser(int id, User **user) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USERNAME, SALT, PUBLIC_KEY, PRIVATE_KEY FROM USERS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_ROW) throw "Could not execute query";
+
+    // Get the result of the current row
+    const int _id = sqlite3_column_int(stmt, 0);
+    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
+    const char *_salt = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_public = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_private = (const char *) sqlite3_column_text(stmt, 0);
+
+    // Create the user
+    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+}
+
+void KeyStore::getUser(const char *username, User **user) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USERNAME, SALT, PUBLIC_KEY, PRIVATE_KEY FROM USERS WHERE USERNAME = :username", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":username")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_text(stmt, index, username, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_ROW) throw "Could not execute query";
+
+    // Get the result of the current row
+    const int _id = sqlite3_column_int(stmt, 0);
+    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
+    const char *_salt = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_public = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_private = (const char *) sqlite3_column_text(stmt, 0);
+
+    // Create the user
+    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+}

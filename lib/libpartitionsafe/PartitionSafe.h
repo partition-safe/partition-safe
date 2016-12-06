@@ -41,7 +41,7 @@ public:
      * @param label The label of the partition
      * @param size The size of the partition in bytes
      */
-    void create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size);
+    void create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password);
 
     /**
      * Initialize a vault instance.
@@ -51,7 +51,7 @@ public:
      *
      * @return
      */
-    PartitionSafe* init(const char* vaultPath, const char* keyStorePath);
+    PartitionSafe* init(const char* vaultPath, const char* keyStorePath, const char *username, const char *password);
 
     /**
      * Open the partition safe instance.
