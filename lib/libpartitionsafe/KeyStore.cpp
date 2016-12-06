@@ -248,9 +248,9 @@ void KeyStore::getUser(const char *username, User **user) {
     // Get the result of the current row
     const int _id = sqlite3_column_int(stmt, 0);
     const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 0);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 0);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 0);
+    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
+    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
+    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
 
     // Create the user
     *user = new User((const unsigned) _id, _username, _salt, _public, _private);
