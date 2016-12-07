@@ -18,14 +18,8 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     keyStore->setMetadata("label", vault->header->label);
 
     // Create the user and save it
-    User *user = User::create(username, password);
-    keyStore->saveUser(user);
-    keyStore->getUser(username, &user);
-
-    // Create the first encryption key
-    Key *key = Key::create(user, password, 0);
-    keyStore->saveKey(key);
-    keyStore->getKey(0, user, &key);
+    User *user; Key *key;
+    createUser(username, password, &user, &key, keyStore);
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
@@ -41,8 +35,10 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
 
     // Retrieve user
-    User *user;
     keyStore->getUser(username, &user);
+
+    // Retrieve root key
+    keyStore->getKey(0, user, &key);
 
     // Return myself
     return this;
@@ -62,4 +58,39 @@ Vault *PartitionSafe::getVault() {
 
 KeyStore *PartitionSafe::getKeyStore() {
     return keyStore;
+}
+
+User *PartitionSafe::getUser() {
+    return user;
+}
+
+Key *PartitionSafe::getKey() {
+    return key;
+}
+
+void PartitionSafe::createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore) {
+    // Keystore a nullptr?
+    if(keyStore == nullptr) keyStore = this->keyStore;
+
+    // Create the new user
+    *user = User::create(username, password);
+    keyStore->saveUser(*user);
+    keyStore->getUser(username, user);
+
+    // Create the salted password
+    char *saltedPassword;
+    (*user)->saltedPassword(password, (*user)->salt, &saltedPassword);
+
+    // First decrypt the current encryption key and then create the key
+    if(this->key) {
+        unsigned char *encryptionKey;
+        this->key->decrypt(saltedPassword, this->key->key, &encryptionKey);
+        *key = Key::create(*user, password, encryptionKey, 0);
+    } else {
+        *key = Key::create(*user, password);
+    }
+
+    // Create the new root key based on the current encryption key
+    keyStore->saveKey(*key);
+    keyStore->getKey(0, *user, key);
 }

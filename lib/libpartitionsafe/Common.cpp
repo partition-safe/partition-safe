@@ -9,7 +9,6 @@
 #include "../libmbedtls/include/mbedtls/entropy.h"
 #include "../libmbedtls/include/mbedtls/ctr_drbg.h"
 #include "../libmbedtls/include/mbedtls/rsa.h"
-
 #endif
 
 std::string Common::newUUID()
@@ -164,7 +163,7 @@ void Common::randomChars(unsigned size, unsigned char **output) {
 
     // Copy to output
     *output = (unsigned char*) malloc(size + 1);
-    strcpy((char *)*output, (char *)temp);
+    memcpy(*output, temp, size + 1);
 
     // Free temp
     free(temp);

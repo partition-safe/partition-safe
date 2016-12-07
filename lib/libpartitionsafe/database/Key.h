@@ -6,6 +6,8 @@
 #define PARTITIONSAFE_KEY_H
 
 #define ENCRYPTION_KEY_LENGTH 256
+#define ENCRYPTION_KEY_SIZE 64
+#define ENCRYPTION_KEY_BITS 256
 
 #include "User.h"
 
@@ -29,7 +31,7 @@ public:
     /**
      * The public key of the user.
      */
-    const char *key;
+    const unsigned char *key;
 
     /**
      * User constructor.
@@ -39,7 +41,7 @@ public:
      * @param inode
      * @param key
      */
-    Key(const unsigned id, const unsigned userId, const unsigned inode, const char *key);
+    Key(const unsigned id, const unsigned userId, const unsigned inode, const unsigned char *key);
 
     /**
      * Create a new key for an user.
@@ -50,6 +52,16 @@ public:
      * @return
      */
     static Key *create(const User *user, const char *password, const unsigned inode = 0);
+
+    /**
+     * Create a new key for an user based on an existing key.
+     *
+     * @param user
+     * @param password
+     * @param inode
+     * @return
+     */
+    static Key *create(const User *user, const char *password, const unsigned char *encryptionKey, const unsigned inode = 0);
 
     /**
      * Generate a new encryption key.
@@ -65,7 +77,7 @@ public:
      * @param unEncryptedKey The unencrypted key of the user to encrypt
      * @param encryptedKey The encrypted key as output
      */
-    static void encrypt(const char *saltedPassword, unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], char **encryptedKey);
+    static void encrypt(const char *saltedPassword, const unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **encryptedKey);
 
     /**
      * Decrypt the key.
@@ -74,7 +86,7 @@ public:
      * @param encryptedKey The encrypted key to decrypt
      * @param decryptedKey The decrypted key as output
      */
-    static void decrypt(const char *saltedPassword, unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], char **decryptedKey);
+    static void decrypt(const char *saltedPassword, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 
 };
 

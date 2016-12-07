@@ -13,25 +13,47 @@ class PartitionSafe {
     /**
      * The current vault instance.
      */
-    Vault* vault;
+    Vault *vault;
 
     /**
-     * Our key storage
+     * Our key storage.
      */
-    KeyStore* keyStore;
+    KeyStore *keyStore;
+
+    /**
+     * The current user.
+     */
+    User *user;
+
+    /**
+     * The current root key.
+     */
+    Key *key;
 
 public:
     /**
      * Get the vault instance.
      * @return
      */
-    Vault* getVault();
+    Vault *getVault();
 
     /**
      * Get the key store instance.
      * @return
      */
-    KeyStore* getKeyStore();
+    KeyStore *getKeyStore();
+
+    /**
+     * Get the current user.
+     * @return
+     */
+    User *getUser();
+
+    /**
+     * Get the current root key.
+     * @return
+     */
+    Key *getKey();
 
     /**
      * Create a new vault with key store.
@@ -59,6 +81,17 @@ public:
      * @return
      */
     PartitionSafe* open();
+
+    /**
+     * Create a new user and it's root key.
+     *
+     * The user will be saved to the current key store.
+     *
+     * @param username
+     * @param password
+     * @param user
+     */
+    void createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore = nullptr);
 
 };
 

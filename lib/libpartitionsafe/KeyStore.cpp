@@ -280,7 +280,7 @@ void KeyStore::getKey(const int id, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const char *_key = (const char *) sqlite3_column_text(stmt, 3);
+    const unsigned char *_key = sqlite3_column_text(stmt, 3);
 
     // Create the user
     *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
@@ -308,7 +308,7 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const char *_key = (const char *) sqlite3_column_text(stmt, 3);
+    const unsigned char *_key = sqlite3_column_text(stmt, 3);
 
     // Create the user
     *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
@@ -331,7 +331,7 @@ void KeyStore::saveKey(Key *key) {
 
     // Bind parameters
     if ((index = sqlite3_bind_parameter_index(stmt, ":key")) <= 0) throw "Could not retrieve parameter index in the statement";
-    if(sqlite3_bind_text(stmt, index, key->key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+    if(sqlite3_bind_text(stmt, index, (const char *)key->key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
 
     // New user?
     if(key->id == 0) {
