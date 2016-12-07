@@ -21,7 +21,6 @@ public:
 
 private slots:
     void on_treeViewExplorer_doubleClicked(const QModelIndex &index);
-    void on_treeViewFiles_clicked(const QModelIndex &index);
     void on_buttonBack_clicked();
     void on_buttonForward_clicked();
     void on_buttonExport_clicked();

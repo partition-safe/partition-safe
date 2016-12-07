@@ -5,6 +5,7 @@
 #include "Partition.h"
 #include "../libfatfs/src/diskio.h"
 #include "Common.h"
+#include <QDebug>
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
@@ -21,7 +22,7 @@ const TCHAR* Partition::LETTER = (const TCHAR *) "";
 const unsigned int Partition::VERSION = 1;
 
 Partition::Partition(const char* path, FILE* fh):
-        path(path), fd(fh) {
+    path(path), fd(fh) {
     // Set the global fd
     currentFileDescriptor = fd;
 }

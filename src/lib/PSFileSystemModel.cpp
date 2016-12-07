@@ -5,6 +5,8 @@
 #include "PSFileSystemModel.h"
 
 #include <mainwindow/mainwindow.h>
+#include <Common.h>
+#include <QDebug>
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
@@ -75,10 +77,47 @@ void PSFileSystemModel::importFile(char* source, char* destination){
 }
 
 void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList){
+    const char* path;
+
     beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     foreach (QModelIndex index, selectedRowsList)
     {
-    psInstance->deleteFileDirectory(this->getFile(index)->getFullPath().c_str());
+        path = this->getFile(index)->getFullPath().c_str();
+        deleteFileDirectory(path);
+    }
+    endRemoveRows();
+
+    setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::deleteFileDirectory(const char* path){
+    FRESULT exists;
+    FILINFO fno;
+    std::vector<Entry*>* subDirectoryListing;
+
+    Entry* entry;
+
+
+    beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    exists = f_stat(Common::stdStringToTChar(path), &fno);
+    if(exists == FR_OK){
+        switch(fno.fattrib){
+        case AM_DIR:
+            qDebug()<< "directory";
+            subDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path);
+            while(subDirectoryListing->size()>=1){
+                entry = subDirectoryListing->back();
+                subDirectoryListing->pop_back();
+
+                if(entry->isDirectory()) deleteFileDirectory(entry->getFullPath().c_str());
+                else psInstance->deleteFileDirectory(entry->getFullPath().c_str());
+            }
+            if(subDirectoryListing->size()<=0) psInstance->deleteFileDirectory(path);
+            break;
+        default:
+            psInstance->deleteFileDirectory(path);
+            break;
+        }
     }
     endRemoveRows();
 

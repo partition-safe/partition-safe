@@ -70,11 +70,6 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
     this->setPath();
 }
 
-void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
-{
-    //    this->on_treeViewExplorer_doubleClicked(index);
-}
-
 void MainWindow::on_buttonBack_clicked()
 {
     // More than only the home item

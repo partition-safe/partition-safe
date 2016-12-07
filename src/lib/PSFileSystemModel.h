@@ -93,6 +93,7 @@ public:
 
     void importFile(char* source, char* destination);
     void deleteFileDirectory(QModelIndexList &selectedRowsList);
+    void deleteFileDirectory(const char* path);
 
 };
 
