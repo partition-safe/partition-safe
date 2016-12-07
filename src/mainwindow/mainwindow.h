@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStack>
 #include <QString>
+#include <QFileSystemWatcher>
 
 #include <lib/PSFileSystemModel.h>
 
@@ -32,12 +33,16 @@ private slots:
     void on_actionFolder_triggered();
     void on_buttonImport_clicked();
 
+    void fileChanged(const QString &);
+
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
     PSFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
     PartitionSafe* psInstance;
+    QFileSystemWatcher* watcher;
 
     void setPath();
     void importFiles();
