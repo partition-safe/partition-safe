@@ -11,30 +11,33 @@ User::User(const unsigned id, const char *username, const char *salt, const char
 
 User *User::create(const char *username, const char *password) {
     // Create a new salt
-    char *salt;
+    char *salt = new char[16]();
     generateSalt(&salt);
 
     // Create salted password
-    char* salted_password;
+//    char* salted_password = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
+//    if (salted_password == NULL) throw "Could not allocate something";
+    char *salted_password = new char[strlen(password) + strlen(salt) + 1]();
     saltedPassword(password, salt, &salted_password);
 
     // Create public and private keys
-    char *pubKey = new char[1024];
-    char *privKey = new char[3072];
+    char *pubKey = new char[1024]();
+    char *privKey = new char[3072]();
     Common::createKeyPair(salted_password, &pubKey, &privKey);
 
     // Create the user
     User *user = new User(0, username, salt, pubKey, privKey);
 
-    delete[] salted_password;
+//    delete[] salted_password;
 
     // Return the user
     return user;
 }
 
 void User::saltedPassword(const char *password, const char *salt, char **saltedPassword) {
-    *saltedPassword = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
-    if (*saltedPassword == NULL) throw "Could not allocate something";
+//    *saltedPassword = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
+//    if (*saltedPassword == NULL) throw "Could not allocate something";
+    *saltedPassword = new char[strlen(password) + strlen(salt)]();
     strcpy(*saltedPassword, password);
     strcat(*saltedPassword, salt);
 }

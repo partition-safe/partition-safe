@@ -85,17 +85,19 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
 
     // Write pub key
     size_t length;
-    *pubKey = (char *)calloc(512 + 6 + 1, sizeof(char));
-    if (*pubKey == NULL) throw "Could not allocate something";
-    char *t = new char[1024];
+//    *pubKey = (char *)calloc(512 + 6 + 1, sizeof(char));
+//    if (*pubKey == NULL) throw "Could not allocate something";
+    *pubKey = new char[512 + 6 + 1]();
+    char *t = new char[1024]();
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*pubKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
     strcat(*pubKey, t);
 
     // Write priv key
-    *privKey = (char *)calloc(512 + 6 + 512 + (256 * 5) + 1, sizeof(char));
-    if (*privKey == NULL) throw "Could not allocate something";
+//    *privKey = (char *)calloc(512 + 6 + 512 + (256 * 5) + 1, sizeof(char));
+//    if (*privKey == NULL) throw "Could not allocate something";
+    *privKey = new char[512 + 6 + 512 + (256 * 5) + 1]();
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*privKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
@@ -127,7 +129,8 @@ void Common::randomChars(unsigned size, char **output) {
             "abcdefghijklmnopqrstuvwxyz";
 
     // Setup the output
-    char *temp = new char[size];
+    char *temp = new char[size + 1]();
+//    temp = (char*) calloc(size + 1, sizeof(char));
 
     // Populate the string
     for (int i = 0; i < size; ++i) {
@@ -138,12 +141,13 @@ void Common::randomChars(unsigned size, char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-    *output = (char*) calloc(size + 1, sizeof(char));
-    if (*output == NULL) throw "Could not allocate something";
+//    *output = (char*) calloc(size + 1, sizeof(char));
+//    if (*output == NULL) throw "Could not allocate something";
+    *output = new char[size + 1]();
     strcpy(*output, temp);
 
     // Free temp
-    free(temp);
+//    delete[] temp;
 }
 
 void Common::randomChars(unsigned size, unsigned char **output) {
@@ -154,7 +158,8 @@ void Common::randomChars(unsigned size, unsigned char **output) {
             "abcdefghijklmnopqrstuvwxyz";
 
     // Setup the output
-    unsigned char *temp = new unsigned char[size];
+    unsigned char *temp = new unsigned char[size + 1]();
+//    temp = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
 
     // Populate the string
     for (int i = 0; i < size; ++i) {
@@ -165,10 +170,11 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-    *output = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
-    if (*output == NULL) throw "Could not allocate something";
+//    *output = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
+//    if (*output == NULL) throw "Could not allocate something";
+    *output = new unsigned char[size + 1]();
     memcpy(*output, temp, size + 1);
 
     // Free temp
-    free(temp);
+//    delete[] temp;
 }
