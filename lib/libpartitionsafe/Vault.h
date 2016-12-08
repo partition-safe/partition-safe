@@ -56,7 +56,7 @@ public:
         /**
          * The encrypted identifier.
          */
-        unsigned char identifier_encrypted[13];
+        unsigned char identifier_encrypted[24];
     };
 
     /**
