@@ -210,6 +210,7 @@ void MainWindow::exportFiles()
 void MainWindow::deleteFileDirectory()
 {
     model->deleteFileDirectory(selectedRowsList);
+    on_treeViewExplorer_selectionChanged();
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
