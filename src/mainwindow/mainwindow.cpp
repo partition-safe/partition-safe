@@ -120,7 +120,7 @@ void MainWindow::on_actionOpen_triggered()
     // Accepted dialog?
     if(dialogResult == QDialog::Accepted) {
         // Open the vault
-        initializeVault(open->locationVault, open->locationKeyStore);
+        initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
     }
 }
 
@@ -198,15 +198,11 @@ void MainWindow::exportFiles()
     }
 }
 
-void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
+void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
 {
     try {
-        // Convert names
-        const char *cVaultPath = vaultPath.c_str();
-        const char *cKeyStorePath = keyStorePath.c_str();
-
         // Setup vault
-        psInstance->init(cVaultPath, cKeyStorePath, "", "");
+        psInstance->init(vaultPath.c_str(), keyStorePath.c_str(), username.c_str(), password.c_str());
         psInstance->open();
 
         // Create file system models and other instances

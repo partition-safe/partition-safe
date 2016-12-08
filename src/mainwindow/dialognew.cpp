@@ -95,16 +95,20 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
 
         // Convert name and path to partition file to *char
         QByteArray baName = ui->textPartitionName->text().toLatin1();
-        char *label = baName.data();
+        const char *label = baName.data();
         QByteArray baPartLoc = ui->textPartitionLoc->text().toLatin1();
         const char *filePath = baPartLoc.data();
         QByteArray baKeyLoc = ui->textKeyLoc->text().toLatin1();
         const char *keyPath = baKeyLoc.data();
+        QByteArray baUsername = ui->textUsername->text().toLatin1();
+        const char *username = baUsername.data();
+        QByteArray baPassword = ui->textPassword->text().toLatin1();
+        const char *password = baPassword.data();
 
         // Creat a partition
         int partitionSize = ui->textPartitionSize->text().toInt();
         PartitionSafe* ps = new PartitionSafe;
-        ps->create(filePath, keyPath, label, partitionSize, "", "");
+        ps->create(filePath, keyPath, label, partitionSize, username, password);
 
         // Send accept request to end dialog.
         this->accept();

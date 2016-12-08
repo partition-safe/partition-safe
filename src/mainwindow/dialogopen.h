@@ -18,6 +18,8 @@ public:
     ~DialogOpen();
     std::string locationVault;
     std::string locationKeyStore;
+    std::string username;
+    std::string password;
 
 private slots:
     void on_buttonSelectPartition_clicked();
