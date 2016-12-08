@@ -109,7 +109,7 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
         *key = Key::create(*user, password, encryptionKey, 0);
 
         // Free memory
-//        delete[] saltedPassword;
+        delete[] saltedPassword;
 //        delete[] encryptionKey;
     } else {
         // Create a new key

@@ -170,5 +170,5 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     memcpy(*output, temp, size + 1);
 
     // Free temp
-//    delete[] temp;
+    delete[] temp;
 }
