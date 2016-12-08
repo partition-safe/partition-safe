@@ -15,23 +15,14 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
 
     // Create the salted password
     char *saltedPassword;
-//    char* saltedPassword = (char*)calloc(strlen(password) + strlen(user->salt) + 1, sizeof(char));
-//    if (saltedPassword == NULL) throw "Could not allocate something";
-//    char *saltedPassword = new char[strlen(password) + strlen(user->salt)]();
     user->saltedPassword(password, user->salt, &saltedPassword);
 
     // Decrypt key
-//    unsigned char *encryptionKey;
-//    unsigned char *encryptionKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (*encryptionKey == NULL) throw "Could not allocate something";
-    unsigned char *encryptionKey = new unsigned char[ENCRYPTION_KEY_LENGTH]();
+    unsigned char *encryptionKey;
     key->decrypt(saltedPassword, key->key, &encryptionKey);
 
     // Encrypt the test string
-//    unsigned char *encrypted;
-//    unsigned char *encrypted = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (*encrypted == NULL) throw "Could not allocate something";
-    unsigned char *encrypted = new unsigned char[ENCRYPTION_KEY_LENGTH]();
+    unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
 
     // Try to create the vault
@@ -110,16 +101,10 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
     if(this->key) {
         // Create the salted password
         char *saltedPassword;
-//        char* saltedPassword = (char*)calloc(strlen(password) + strlen((*user)->salt) + 1, sizeof(char));
-//        if (saltedPassword == NULL) throw "Could not allocate something";
-//        char* saltedPassword = new char[strlen(password) + strlen((*user)->salt) + 1]();
         (*user)->saltedPassword(password, (*user)->salt, &saltedPassword);
 
         // Encrypt key
-//        unsigned char *encryptionKey;
-//        unsigned char *encryptionKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//        if (encryptionKey == NULL) throw "Could not allocate something";
-        unsigned char* encryptionKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+        unsigned char *encryptionKey;
         this->key->decrypt(saltedPassword, this->key->key, &encryptionKey);
         *key = Key::create(*user, password, encryptionKey, 0);
 

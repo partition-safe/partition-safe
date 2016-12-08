@@ -15,8 +15,6 @@ User *User::create(const char *username, const char *password) {
     generateSalt(&salt);
 
     // Create salted password
-//    char* salted_password = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
-//    if (salted_password == NULL) throw "Could not allocate something";
     char *salted_password = new char[strlen(password) + strlen(salt) + 1]();
     saltedPassword(password, salt, &salted_password);
 
@@ -35,8 +33,6 @@ User *User::create(const char *username, const char *password) {
 }
 
 void User::saltedPassword(const char *password, const char *salt, char **saltedPassword) {
-//    *saltedPassword = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
-//    if (*saltedPassword == NULL) throw "Could not allocate something";
     *saltedPassword = new char[strlen(password) + strlen(salt)]();
     strcpy(*saltedPassword, password);
     strcat(*saltedPassword, salt);

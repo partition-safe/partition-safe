@@ -130,7 +130,6 @@ void Common::randomChars(unsigned size, char **output) {
 
     // Setup the output
     char *temp = new char[size + 1]();
-//    temp = (char*) calloc(size + 1, sizeof(char));
 
     // Populate the string
     for (int i = 0; i < size; ++i) {
@@ -141,8 +140,6 @@ void Common::randomChars(unsigned size, char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-//    *output = (char*) calloc(size + 1, sizeof(char));
-//    if (*output == NULL) throw "Could not allocate something";
     *output = new char[size + 1]();
     strcpy(*output, temp);
 
@@ -159,7 +156,6 @@ void Common::randomChars(unsigned size, unsigned char **output) {
 
     // Setup the output
     unsigned char *temp = new unsigned char[size + 1]();
-//    temp = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
 
     // Populate the string
     for (int i = 0; i < size; ++i) {
@@ -170,8 +166,6 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-//    *output = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
-//    if (*output == NULL) throw "Could not allocate something";
     *output = new unsigned char[size + 1]();
     memcpy(*output, temp, size + 1);
 

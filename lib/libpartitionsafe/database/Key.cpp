@@ -14,9 +14,6 @@ Key::Key(const unsigned id, const unsigned userId, const unsigned inode, const u
 Key *Key::create(const User *user, const char *password, const unsigned inode) {
     // Create the salted password
     char *saltedPassword;
-//    char* saltedPassword = (char*)calloc(strlen(password) + strlen(user->salt) + 1, sizeof(char));
-//    if (saltedPassword == NULL) throw "Could not allocate something";
-//    char *saltedPassword = new char[strlen(password) + strlen(user->salt) + 1]();
     user->saltedPassword(password, user->salt, &saltedPassword);
 
     // The new encryption key
@@ -25,14 +22,10 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
 
     // Encrypt the key
     unsigned char *encrypted;
-//    unsigned char *encrypted = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (encrypted == NULL) throw "Could not allocate something || key :: 26";
     encrypt(saltedPassword, encryptionKey, &encrypted);
 
 //    delete[] saltedPassword;
 //    delete[] encryptionKey;
-//    free(saltedPassword);
-//    free(encryptionKey);
 
     // The new key
     return new Key(0, user->id, inode, encrypted);
@@ -41,15 +34,9 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
 Key *Key::create(const User *user, const char *password, const unsigned char *encryptionKey, const unsigned inode) {
     // Create the salted password
     char *saltedPassword;
-//    char* saltedPassword = (char*)calloc(strlen(password) + strlen(user->salt) + 1, sizeof(char));
-//    if (saltedPassword == NULL) throw "Could not allocate something";
-//    char *saltedPassword = new char[strlen(password) + strlen(user->salt) + 1]();
     user->saltedPassword(password, user->salt, &saltedPassword);
 
     // Encrypt the key
-//    unsigned char *encrypted;
-//    unsigned char *encrypted = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (encrypted == NULL) throw "Could not allocate something || key :: 44";
     unsigned char *encrypted = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
     encrypt(saltedPassword, encryptionKey, &encrypted);
 
@@ -67,8 +54,6 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     // Key generation
     //
 
-//    unsigned char *key = (unsigned char *)calloc(ENCRYPTION_KEY_SIZE + 1, sizeof(unsigned char));
-//    if (key == NULL) throw "Could not allocate something || key :: 62";
     unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE + 1]();
 
     // Fill iv
@@ -81,10 +66,6 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     //
 
     mbedtls_aes_context aes;
-//    unsigned char *iv = (unsigned char *)calloc(16 + 1, sizeof(unsigned char));
-//    if (iv == NULL) throw "Could not allocate something || key :: 75";
-//    unsigned char *temp = (unsigned char *)calloc(strlen((const char*)encryptedKey) + 1, sizeof(unsigned char));
-//    if (temp == NULL) throw "Could not allocate something || key :: 77";
     unsigned char *iv = new unsigned char[16 + 1]();
     unsigned char *temp = new unsigned char[strlen((const char *) encryptedKey) + 1]();
 
@@ -104,8 +85,6 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     mbedtls_aes_free(&aes);
 
     // Copy to output
-//    *encryptedKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (*encryptedKey == NULL) throw "Could not allocate something";
     *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
     strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH);
 
@@ -118,9 +97,6 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
 void Key::decrypt(const User *user, const char *password, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
     // Create the salted password
     char *saltedPassword;
-//    char* saltedPassword = (char*)calloc(strlen(password) + strlen(user->salt) + 1, sizeof(char));
-//    if (saltedPassword == NULL) throw "Could not allocate something";
-//    char *saltedPassword = new char[strlen(password) + strlen(user->salt) + 1]();
     user->saltedPassword(password, user->salt, &saltedPassword);
 
     // Get the decrypted key
@@ -133,8 +109,6 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     // Key generation
     //
 
-//    unsigned char *key = (unsigned char *)calloc(ENCRYPTION_KEY_SIZE + 1, sizeof(unsigned char));
-//    if (key == NULL) throw "Could not allocate something || key :: 121";
     unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE + 1]();
 
     // Fill iv
@@ -146,10 +120,6 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     //
 
     mbedtls_aes_context aes;
-//    unsigned char *iv = (unsigned char *)calloc(16 + 1, sizeof(unsigned char));
-//    if (iv == NULL) throw "Could not allocate something || key :: 133";
-//    unsigned char *temp = (unsigned char *)calloc(strlen((const char*)encryptedKey) + 1, sizeof(unsigned char));
-//    if (temp == NULL) throw "Could not allocate something || key :: 135";
     unsigned char *iv = new unsigned char[16 + 1]();
     unsigned char *temp = new unsigned char[strlen((const char *) encryptedKey) + 1]();
 
@@ -169,8 +139,6 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     mbedtls_aes_free(&aes);
 
     // Copy to output
-//    *decryptedKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
-//    if (*decryptedKey == NULL) throw "Could not allocate something";
     *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
     strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH);
 
