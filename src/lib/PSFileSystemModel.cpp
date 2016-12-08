@@ -68,7 +68,8 @@ void PSFileSystemModel::setCurrentDirectory(QString path)
     emit dataChanged(index(0), index(rowCount(QModelIndex())));
 }
 
-void PSFileSystemModel::importFile(char* source, char* destination){
+void PSFileSystemModel::importFile(char* source, char* destination)
+{
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     psInstance->importFile(source, destination);
     endInsertRows();
@@ -76,35 +77,30 @@ void PSFileSystemModel::importFile(char* source, char* destination){
     setCurrentDirectory(getCurrentDirectory());
 }
 
-void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList){
-    const char* path;
-
-    beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
+{
     foreach (QModelIndex index, selectedRowsList)
     {
-        path = this->getFile(index)->getFullPath().c_str();
-        deleteFileDirectory(path);
+        deleteFileDirectory(this->getFile(index)->getFullPath().data());
     }
-    endRemoveRows();
-
     setCurrentDirectory(getCurrentDirectory());
 }
 
-void PSFileSystemModel::deleteFileDirectory(const char* path){
+void PSFileSystemModel::deleteFileDirectory(QString path)
+{
     FRESULT exists;
     FILINFO fno;
     std::vector<Entry*>* subDirectoryListing;
 
     Entry* entry;
 
-
     beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
-    exists = f_stat(Common::stdStringToTChar(path), &fno);
+    exists = f_stat(Common::stdStringToTChar(path.toStdString()), &fno);
     if(exists == FR_OK){
         switch(fno.fattrib){
         case AM_DIR:
             qDebug()<< "directory";
-            subDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path);
+            subDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
             while(subDirectoryListing->size()>=1){
                 entry = subDirectoryListing->back();
                 subDirectoryListing->pop_back();
@@ -112,16 +108,14 @@ void PSFileSystemModel::deleteFileDirectory(const char* path){
                 if(entry->isDirectory()) deleteFileDirectory(entry->getFullPath().c_str());
                 else psInstance->deleteFileDirectory(entry->getFullPath().c_str());
             }
-            if(subDirectoryListing->size()<=0) psInstance->deleteFileDirectory(path);
+            if(subDirectoryListing->size()<=0) psInstance->deleteFileDirectory(path.toStdString().c_str());
             break;
         default:
-            psInstance->deleteFileDirectory(path);
+            psInstance->deleteFileDirectory(path.toStdString().c_str());
             break;
         }
     }
     endRemoveRows();
-
-    setCurrentDirectory(getCurrentDirectory());
 }
 
 QString PSFileSystemModel::getCurrentDirectory()
@@ -132,4 +126,42 @@ QString PSFileSystemModel::getCurrentDirectory()
 Entry *PSFileSystemModel::getFile(const QModelIndex &index) const
 {
     return currentDirectoryListing->at(index.row());
+}
+
+void PSFileSystemModel::navigation_buttons(QStack<QString> &stackToCheck,QStack<QString> &stackToAdd )
+{
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+
+    // More than only the home item
+    if(stackToCheck.size() > 0)
+    {
+        // Get the first item of the stack
+        QString dir = stackToCheck.pop();
+
+        // Add to folderForwardHistory
+        stackToAdd.append(getCurrentDirectory());
+
+        // Set directory
+        setCurrentDirectory(dir);
+    }
+    endInsertRows();
+}
+
+void PSFileSystemModel::enterDirectory(QString dirToEnter, QStack<QString> &folderHistory, QStack<QString> &folderForwardHistory)
+{
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+
+    // Add history to stack
+    folderHistory.append(this->getCurrentDirectory());
+
+    // Set directory
+    this->setCurrentDirectory(dirToEnter);
+
+    // clear forward if it doesn't contain dir
+    // else pop from ForwardHistory
+    if (!folderForwardHistory.contains(dirToEnter)) folderForwardHistory.clear();
+    else folderForwardHistory.pop();
+
+    endInsertRows();
+
 }

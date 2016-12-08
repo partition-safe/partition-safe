@@ -93,8 +93,9 @@ public:
 
     void importFile(char* source, char* destination);
     void deleteFileDirectory(QModelIndexList &selectedRowsList);
-    void deleteFileDirectory(const char* path);
-
+    void deleteFileDirectory(QString path);
+    void navigation_buttons(QStack<QString> &stackToCheck, QStack<QString> &stackToAdd);
+    void enterDirectory(QString path, QStack<QString> &folderHistory, QStack<QString> &folderForwardHistory);
 };
 
 

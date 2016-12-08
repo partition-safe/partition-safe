@@ -32,7 +32,7 @@ private slots:
     void on_buttonImport_clicked();
 
     void on_buttonDelete_clicked();
-    void slot_enableButtonsSelect();
+    void on_treeViewExplorer_selectionChanged();
 
 private:
     Ui::MainWindow *ui;
@@ -40,6 +40,7 @@ private:
     PSFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
     PartitionSafe* psInstance;
+    QModelIndexList selectedRowsList;
 
     void setPath();
     void importFiles();
