@@ -2,6 +2,7 @@
 // Created by marc on 15-11-16.
 //
 
+#include <cstring>
 #include "PartitionSafe.h"
 
 void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {

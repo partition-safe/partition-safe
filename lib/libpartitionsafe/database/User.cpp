@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <cstring>
 #include "User.h"
 #include "../Common.h"
 

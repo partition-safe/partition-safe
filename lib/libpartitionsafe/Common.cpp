@@ -1,6 +1,7 @@
 #include "Common.h"
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #if defined(_WIN32)
 #include <windows.h>

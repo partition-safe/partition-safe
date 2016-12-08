@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <cstring>
 #include "Key.h"
 #include "../Common.h"
 #include "../../libmbedtls/include/mbedtls/aes.h"
