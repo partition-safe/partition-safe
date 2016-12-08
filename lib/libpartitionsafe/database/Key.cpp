@@ -51,7 +51,7 @@ Key *Key::create(const User *user, const char *password, const unsigned char *en
 }
 
 void Key::generateKey(unsigned char **key) {
-    Common::randomChars(ENCRYPTION_KEY_LENGTH, key);
+    Common::randomChars(ENCRYPTION_KEY_LENGTH_BYTES, key);
 }
 
 void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKey, unsigned char **encryptedKey) {
@@ -71,11 +71,11 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16]();
-    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    unsigned char *iv = new unsigned char[ENCRYPTION_IV_LENGTH]();
+    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES]();
 
     // Fill iv
-    strncpy((char *)iv, saltedPassword, 16);
+    strncpy((char *)iv, saltedPassword, ENCRYPTION_IV_LENGTH);
 
     // Initialize AES context
     mbedtls_aes_init(&aes);
@@ -84,11 +84,11 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     mbedtls_aes_setkey_enc(&aes, key, ENCRYPTION_KEY_BITS);
 
     // Encrypt with CBC
-    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, ENCRYPTION_KEY_LENGTH, iv, unEncryptedKey, temp);
+    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, unEncryptedKey, temp);
 
     // Copy to output
     *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
-    strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH);
+    strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
 
     // Free up the AES context
     mbedtls_aes_free(&aes);
@@ -128,11 +128,11 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16]();
-    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    unsigned char *iv = new unsigned char[ENCRYPTION_IV_LENGTH]();
+    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES]();
 
     // Fill iv
-    strncpy((char *)iv, saltedPassword, 16);
+    strncpy((char *)iv, saltedPassword, ENCRYPTION_IV_LENGTH);
 
     // Initialize AES context
     mbedtls_aes_init(&aes);
@@ -141,11 +141,11 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     mbedtls_aes_setkey_dec(&aes, key, ENCRYPTION_KEY_BITS);
 
     // Encrypt with CBC
-    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, ENCRYPTION_KEY_LENGTH, iv, encryptedKey, temp);
+    mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, encryptedKey, temp);
 
     // Copy to output
     *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
-    strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH);
+    strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
 
     // Free up the AES context
     mbedtls_aes_free(&aes);

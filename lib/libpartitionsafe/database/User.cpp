@@ -6,6 +6,7 @@
 #include <cstring>
 #include "User.h"
 #include "../Common.h"
+#include "Key.h"
 
 User::User(const unsigned id, const char *username, const char *salt, const char *publicKey, const char *privateKey):
     id(id), username(username), salt(salt), publicKey(publicKey), privateKey(privateKey) {}
@@ -40,5 +41,5 @@ void User::saltedPassword(const char *password, const char *salt, char **saltedP
 }
 
 void User::generateSalt(char **salt) {
-    Common::randomChars(16, salt);
+    Common::randomChars(ENCRYPTION_IV_LENGTH, salt);
 }

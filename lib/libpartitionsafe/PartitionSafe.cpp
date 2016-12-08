@@ -25,6 +25,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     // Encrypt the test string
     unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
+    size_t st = strlen((const char *)encrypted);
 
     // Try to create the vault
     Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
@@ -63,15 +64,20 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Retrieve root key
     keyStore->getKey(0, user, &key);
 
+    // Decrypt key
+    unsigned char *decryptionKey;
+    key->decrypt(user, password, key->key, &decryptionKey);
+
     // Get the decrypted key
-    unsigned char *decryptedKey;
-    key->decrypt(user, password, vault->header->identifier_encrypted, &decryptedKey);
+    unsigned char *decryptedIdentifier;
+    key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
     // Check the decrypted key
-    std::cout << "Decrypted identifier: " << decryptedKey << std::endl;
+    std::cout << "Decrypted identifier: " << decryptedIdentifier << std::endl;
 
     // Cleanup
-    delete decryptedKey;
+    delete decryptedIdentifier;
+    delete decryptionKey;
 
     // Return myself
     return this;

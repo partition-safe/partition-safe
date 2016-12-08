@@ -140,12 +140,6 @@ void KeyStore::getMetadata(const char *key, char **value) {
 
     // Get the result of the current row
     *value = (char *) sqlite3_column_text(stmt, 0);
-//
-//    // Write the result
-//    *value = new char[strlen(tempVal)]();
-//    strncpy(*value, tempVal, strlen(tempVal));
-//
-//    delete[] tempVal;
 }
 
 //
