@@ -5,7 +5,6 @@
 #include "Partition.h"
 #include "../libfatfs/src/diskio.h"
 #include "Common.h"
-#include <QDebug>
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
