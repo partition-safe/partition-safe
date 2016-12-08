@@ -46,9 +46,15 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                     ba = ui->textKey->text().toLatin1();
                     locationKeyStore = ba.toStdString();
 
+                    // Retrieve username and password
+                    ba = ui->textUsername->text().toLatin1();
+                    username = ba.toStdString();
+                    ba = ui->textPassword->text().toLatin1();
+                    password = ba.toStdString();
+
                     // Open the partition
                     PartitionSafe* ps = new PartitionSafe;
-                    ps->init(locationVault.c_str(), locationKeyStore.c_str())->open();
+                    ps->init(locationVault.c_str(), locationKeyStore.c_str(), username.c_str(), password.c_str())->open();
 
                     // Send accept request to end dialog.
                     this->accept();
@@ -56,6 +62,8 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                     // Reset data
                     locationVault = "";
                     locationKeyStore = "";
+                    username = "";
+                    password = "";
 
                     show_warning("Could not open the selected vault and/or keystore.");
                 }
