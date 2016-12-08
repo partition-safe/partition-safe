@@ -86,6 +86,15 @@ public:
      * @param encryptedKey The encrypted key to decrypt
      * @param decryptedKey The decrypted key as output
      */
+    static void decrypt(const User *user, const char *password, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
+
+    /**
+     * Decrypt the key.
+     *
+     * @param saltedPassword The salted password of the user
+     * @param encryptedKey The encrypted key to decrypt
+     * @param decryptedKey The decrypted key as output
+     */
     static void decrypt(const char *saltedPassword, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 
 };

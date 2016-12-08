@@ -5,21 +5,34 @@
 #include "PartitionSafe.h"
 
 void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {
-    // Try to create the vault
-    Vault::create(label, size, vaultPath);
-    Vault *vault = Vault::init(vaultPath);
-
     // Try to create the key store
     KeyStore::create(keyStorePath);
     KeyStore *keyStore = KeyStore::init(keyStorePath);
 
-    // Save some metadata
-    keyStore->setMetadata("uuid", vault->header->UUID);
-    keyStore->setMetadata("label", vault->header->label);
-
     // Create the user and save it
     User *user; Key *key;
     createUser(username, password, &user, &key, keyStore);
+
+    // Create the salted password
+    char *saltedPassword;
+    user->saltedPassword(password, user->salt, &saltedPassword);
+
+    // Decrypt key
+    unsigned char *encryptionKey;
+    key->decrypt(saltedPassword, key->key, &encryptionKey);
+
+    // Encrypt the test string
+    unsigned char *encrypted;
+    key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
+
+    // Try to create the vault
+    Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
+    Vault *vault = Vault::init(vaultPath);
+
+    // Save some metadata
+    keyStore->setMetadata("uuid", vault->header->UUID);
+    keyStore->setMetadata("label", vault->header->label);
+    keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
@@ -39,6 +52,13 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
 
     // Retrieve root key
     keyStore->getKey(0, user, &key);
+
+    // Get the decrypted key
+    unsigned char *decryptedKey;
+    key->decrypt(user, password, vault->header->identifier_encrypted, &decryptedKey);
+
+    // Check the decrypted key
+    std::cout << "Decrypted identifier: " << decryptedKey << std::endl;
 
     // Return myself
     return this;
@@ -77,16 +97,22 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
     keyStore->saveUser(*user);
     keyStore->getUser(username, user);
 
-    // Create the salted password
-    char *saltedPassword;
-    (*user)->saltedPassword(password, (*user)->salt, &saltedPassword);
-
     // First decrypt the current encryption key and then create the key
     if(this->key) {
+        // Create the salted password
+        char *saltedPassword;
+        (*user)->saltedPassword(password, (*user)->salt, &saltedPassword);
+
+        // Encrypt key
         unsigned char *encryptionKey;
         this->key->decrypt(saltedPassword, this->key->key, &encryptionKey);
         *key = Key::create(*user, password, encryptionKey, 0);
+
+        // Free memory
+        free(saltedPassword);
+        free(encryptionKey);
     } else {
+        // Create a new key
         *key = Key::create(*user, password);
     }
 

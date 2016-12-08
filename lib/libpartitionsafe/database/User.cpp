@@ -26,12 +26,15 @@ User *User::create(const char *username, const char *password) {
     // Create the user
     User *user = new User(0, username, salt, pubKey, privKey);
 
+    delete[] salted_password;
+
     // Return the user
     return user;
 }
 
 void User::saltedPassword(const char *password, const char *salt, char **saltedPassword) {
-    *saltedPassword = (char*)malloc(strlen(password) + strlen(salt) + 1);
+    *saltedPassword = (char*)calloc(strlen(password) + strlen(salt) + 1, sizeof(char));
+    if (*saltedPassword == NULL) throw "Could not allocate something";
     strcpy(*saltedPassword, password);
     strcat(*saltedPassword, salt);
 }

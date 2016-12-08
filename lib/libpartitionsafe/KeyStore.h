@@ -65,7 +65,7 @@ public:
      *
      * @return
      */
-    static KeyStore *create(const char* path);
+    static void create(const char* path);
 
     /**
      * Open a key store instance.

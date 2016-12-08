@@ -8,7 +8,7 @@
 Vault::Vault(Partition *partition):
     partition(partition) {}
 
-void Vault::create(const char *label, const unsigned size, const char *path) {
+void Vault::create(const char *label, const unsigned size, const char *path, const unsigned char *encryptedIdentifier) {
     // Open the file path
     FILE* fd = fopen(path, "w");
 
@@ -19,11 +19,12 @@ void Vault::create(const char *label, const unsigned size, const char *path) {
 
     // Create the vault header
     struct Header* header = new Header;
-    strncpy(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
+    memcpy((void *)header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
     strncpy(header->label, label, sizeof(header->label));
     strncpy(header->UUID, "23456", sizeof(header->UUID)); // @TODO Use real UUID
     header->size = size;
     header->version = Partition::VERSION;
+    memcpy((void *)header->identifier_encrypted, encryptedIdentifier, sizeof(header->identifier_encrypted));
 
     // Write our partition header to the file
     fwrite(&*header, 1, sizeof(*header), fd);
@@ -56,7 +57,7 @@ Vault *Vault::init(const char* vaultPath) {
     fread(&*header, sizeof(*header), 1, vaultFileDescriptor);
 
     // Check the identifier of the drive
-    if(strcmp(header->identifier, Partition::IDENTIFIER) != 0) {
+    if(memcmp(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier)) != 0) {
         throw "Header identifier does not match partition identifier";
     }
 

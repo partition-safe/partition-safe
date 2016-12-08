@@ -73,19 +73,20 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
     if( ( ret = mbedtls_ctr_drbg_seed( &ctr_drbg, mbedtls_entropy_func, &entropy,
                                        (const unsigned char *) pers, strlen( pers ) ) ) != 0 )
     {
-        throw "Could not create seed: " + ret;
+        throw "Could not create seed: " + std::to_string(ret);
     }
 
     // Create RSA key
     mbedtls_rsa_init( &rsa, MBEDTLS_RSA_PKCS_V15, 0 );
     if( ( ret = mbedtls_rsa_gen_key( &rsa, mbedtls_ctr_drbg_random, &ctr_drbg, KEY_SIZE, EXPONENT ) ) != 0 )
     {
-        throw "Could not create key: " + ret;
+        throw "Could not create key: " + std::to_string(ret);
     }
 
     // Write pub key
     size_t length;
-    *pubKey = (char *)malloc(512 + 6 + 1);
+    *pubKey = (char *)calloc(512 + 6 + 1, sizeof(char));
+    if (*pubKey == NULL) throw "Could not allocate something";
     char *t = new char[1024];
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*pubKey, t);
@@ -93,7 +94,8 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
     strcat(*pubKey, t);
 
     // Write priv key
-    *privKey = (char *)malloc(512 + 6 + 512 + (256 * 5) + 1);
+    *privKey = (char *)calloc(512 + 6 + 512 + (256 * 5) + 1, sizeof(char));
+    if (*privKey == NULL) throw "Could not allocate something";
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*privKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
@@ -136,7 +138,8 @@ void Common::randomChars(unsigned size, char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-    *output = (char*) malloc(size + 1);
+    *output = (char*) calloc(size + 1, sizeof(char));
+    if (*output == NULL) throw "Could not allocate something";
     strcpy(*output, temp);
 
     // Free temp
@@ -162,7 +165,8 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     temp[size - 1] = 0;
 
     // Copy to output
-    *output = (unsigned char*) malloc(size + 1);
+    *output = (unsigned char*) calloc(size + 1, sizeof(unsigned char));
+    if (*output == NULL) throw "Could not allocate something";
     memcpy(*output, temp, size + 1);
 
     // Free temp

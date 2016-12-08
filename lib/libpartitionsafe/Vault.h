@@ -31,7 +31,7 @@ public:
         /**
          * Identifier of the vault
          */
-        char identifier[13];
+        unsigned char identifier[13];
 
         /**
          * The current version of the partition.
@@ -52,6 +52,11 @@ public:
          * The personal UUID of the vault.
          */
         char UUID[36];
+
+        /**
+         * The encrypted identifier.
+         */
+        unsigned char identifier_encrypted[13];
     };
 
     /**
@@ -80,7 +85,7 @@ public:
      *
      * @return
      */
-    static void create(const char label[40], const unsigned size, const char* path);
+    static void create(const char label[40], const unsigned size, const char* path, const unsigned char *encryptedIdentifier);
 
     /**
      * Open the file and all internal properties.

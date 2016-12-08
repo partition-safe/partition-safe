@@ -10,13 +10,13 @@
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
  * WHO CHANGES THIS VALUE, WILL BE ASSASSINATED.
  */
-const char* Partition::IDENTIFIER = "PartitionSafe";
+const unsigned char *Partition::IDENTIFIER = (const unsigned char *) "PartitionSafe";
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
  * WHO CHANGES THIS VALUE, WILL BE ASSASSINATED.
  */
-const TCHAR* Partition::LETTER = (const TCHAR *) "";
+const TCHAR *Partition::LETTER = (const TCHAR *) "";
 
 const unsigned int Partition::VERSION = 1;
 

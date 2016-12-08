@@ -24,6 +24,9 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
     unsigned char *encryptedKey;
     encrypt(saltedPassword, encryptionKey, &encryptedKey);
 
+    delete saltedPassword;
+    delete encryptionKey;
+
     // The new key
     return new Key(0, user->id, inode, encryptedKey);
 }
@@ -51,19 +54,23 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     // Key generation
     //
 
-    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE];
+    unsigned char *key = (unsigned char *)calloc(ENCRYPTION_KEY_SIZE + 1, sizeof(unsigned char));
+    if (key == NULL) throw "Could not allocate something";
 
     // Fill iv
     size_t saltedLenght = strlen(saltedPassword);
     strncpy((char *)key, saltedPassword,  saltedLenght > ENCRYPTION_KEY_SIZE ? ENCRYPTION_KEY_SIZE : saltedLenght);
+    size_t lt = sizeof(key);
 
     //
     // AES encryption
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16];
-    unsigned char *temp = new unsigned char[strlen((const char*)unEncryptedKey) + 1];
+    unsigned char *iv = (unsigned char *)calloc(16 + 1, sizeof(unsigned char));
+    if (iv == NULL) throw "Could not allocate something";
+    unsigned char *temp = (unsigned char *)calloc(strlen((const char*)encryptedKey) + 1, sizeof(unsigned char));
+    if (temp == NULL) throw "Could not allocate something";
 
     // Fill iv
     strncpy((char *)iv, saltedPassword, 16);
@@ -81,13 +88,23 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     mbedtls_aes_free(&aes);
 
     // Copy to output
-    *encryptedKey = (unsigned char *) malloc(ENCRYPTION_KEY_LENGTH);
-    memcpy(*encryptedKey, temp, ENCRYPTION_KEY_LENGTH);
+    *encryptedKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
+    if (*encryptedKey == NULL) throw "Could not allocate something";
+    strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH + 1);
 
     // Free memory
-    free(key);
-    free(iv);
-    free(temp);
+    delete[] key;
+    delete[] iv;
+    delete[] temp;
+}
+
+void Key::decrypt(const User *user, const char *password, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
+    // Create the salted password
+    char *saltedPassword;
+    user->saltedPassword(password, user->salt, &saltedPassword);
+
+    // Get the decrypted key
+    decrypt(saltedPassword, encryptedKey, decryptedKey);
 }
 
 void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
@@ -96,7 +113,8 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     // Key generation
     //
 
-    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE];
+    unsigned char *key = (unsigned char *)calloc(ENCRYPTION_KEY_SIZE + 1, sizeof(unsigned char));
+    if (key == NULL) throw "Could not allocate something";
 
     // Fill iv
     size_t saltedLenght = strlen(saltedPassword);
@@ -107,8 +125,10 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16];
-    unsigned char *temp = new unsigned char[strlen((const char*)encryptedKey) + 1];
+    unsigned char *iv = (unsigned char *)calloc(16 + 1, sizeof(unsigned char));
+    if (iv == NULL) throw "Could not allocate something";
+    unsigned char *temp = (unsigned char *)calloc(strlen((const char*)encryptedKey) + 1, sizeof(unsigned char));
+    if (temp == NULL) throw "Could not allocate something";
 
     // Fill iv
     strncpy((char *)iv, saltedPassword, 16);
@@ -126,11 +146,12 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     mbedtls_aes_free(&aes);
 
     // Copy to output
-    *decryptedKey = (unsigned char *) malloc(ENCRYPTION_KEY_LENGTH);
-    memcpy(*decryptedKey, temp, ENCRYPTION_KEY_LENGTH);
+    *decryptedKey = (unsigned char *) calloc(ENCRYPTION_KEY_LENGTH + 1, sizeof(unsigned char));
+    if (*decryptedKey == NULL) throw "Could not allocate something";
+    strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH + 1);
 
     // Free memory
-    free(key);
-    free(iv);
-    free(temp);
+    delete[] key;
+    delete[] iv;
+    delete[] temp;
 }

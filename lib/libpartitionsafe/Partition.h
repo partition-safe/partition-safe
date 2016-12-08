@@ -39,7 +39,7 @@ public:
      *
      * Used for testing decryption.
      */
-    static const char* IDENTIFIER;
+    static const unsigned char *IDENTIFIER;
 
     /**
      * The save version for compatibility checks.

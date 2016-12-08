@@ -18,6 +18,7 @@
 /----------------------------------------------------------------------------*/
 
 
+#include <string.h>
 #include "ff.h"			/* Declarations of FatFs API */
 #include "diskio.h"		/* Declarations of device I/O functions */
 
@@ -3207,7 +3208,7 @@ FRESULT f_mount (
 
 
 	/* Get logical drive number */
-    if((char *)path == "") {
+    if(strncmp((char *)path, "", sizeof(path)) == 0) {
         vol = 0;
     } else {
         vol = get_ldnumber(&rp);
@@ -5238,7 +5239,7 @@ FRESULT f_mkfs (
 
 
 	/* Check mounted drive and clear work area */
-	if((char *)path == "") {
+	if(strncmp((char *)path, "", sizeof(path)) == 0) {
 		vol = 0;
 	} else {
 		vol = get_ldnumber(&path);
