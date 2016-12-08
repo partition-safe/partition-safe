@@ -104,7 +104,7 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
         // Creat a partition
         int partitionSize = ui->textPartitionSize->text().toInt();
         PartitionSafe* ps = new PartitionSafe;
-        ps->create(filePath, keyPath, label, partitionSize);
+        ps->create(filePath, keyPath, label, partitionSize, "", "");
 
         // Send accept request to end dialog.
         this->accept();

@@ -17,8 +17,10 @@ set(SOURCE_FILES_LIB_PARTITIONSAFE lib/libpartitionsafe/Partition.h lib/libparti
 
 set(SOURCE_FILES ${SOURCE_FILES_LIB_SCRYPT} ${SOURCE_FILES_LIB_SQLITE} ${SOURCE_FILES_LIB_FAT} ${SOURCE_FILES_LIB_PARTITIONSAFE})
 add_executable(PartitionSafe ${SOURCE_FILES})
+add_library(PartitionSafe-Lib ${SOURCE_FILES})
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 target_link_libraries(PartitionSafe ${CMAKE_DL_LIBS} Threads::Threads mbedtls)
+target_link_libraries(PartitionSafe-Lib ${CMAKE_DL_LIBS} Threads::Threads mbedtls)

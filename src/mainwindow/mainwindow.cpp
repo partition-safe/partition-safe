@@ -206,7 +206,7 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         const char *cKeyStorePath = keyStorePath.c_str();
 
         // Setup vault
-        psInstance->init(cVaultPath, cKeyStorePath);
+        psInstance->init(cVaultPath, cKeyStorePath, "", "");
         psInstance->open();
 
         // Create file system models and other instances
