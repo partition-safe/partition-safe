@@ -24,6 +24,7 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
     unsigned char *encrypted;
     encrypt(saltedPassword, encryptionKey, &encrypted);
 
+    // Cleanup
     delete[] saltedPassword;
     delete[] encryptionKey;
 
@@ -41,6 +42,9 @@ Key *Key::create(const User *user, const char *password, const unsigned char *en
     unsigned char *encrypted;
     encrypt(saltedPassword, encryptionKey, &encrypted);
 
+    // Remove salted password
+    delete saltedPassword;
+
     // The new key
     return new Key(0, user->id, inode, encrypted);
 }
@@ -55,20 +59,19 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     // Key generation
     //
 
-    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE + 1]();
+    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE]();
 
     // Fill iv
-    size_t saltedLenght = strlen(saltedPassword);
-    strncpy((char *)key, saltedPassword,  saltedLenght > ENCRYPTION_KEY_SIZE ? ENCRYPTION_KEY_SIZE : saltedLenght);
-    size_t lt = sizeof(key);
+    size_t saltedLength = strlen(saltedPassword);
+    strncpy((char *)key, saltedPassword,  saltedLength > ENCRYPTION_KEY_SIZE ? ENCRYPTION_KEY_SIZE : saltedLength);
 
     //
     // AES encryption
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16 + 1]();
-    unsigned char *temp = new unsigned char[strlen((const char *) unEncryptedKey) + 1]();
+    unsigned char *iv = new unsigned char[16]();
+    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
 
     // Fill iv
     strncpy((char *)iv, saltedPassword, 16);
@@ -102,6 +105,9 @@ void Key::decrypt(const User *user, const char *password, const unsigned char *e
 
     // Get the decrypted key
     decrypt(saltedPassword, encryptedKey, decryptedKey);
+
+    // Remove salted password
+    delete saltedPassword;
 }
 
 void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
@@ -110,19 +116,19 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     // Key generation
     //
 
-    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE + 1]();
+    unsigned char *key = new unsigned char[ENCRYPTION_KEY_SIZE]();
 
     // Fill iv
-    size_t saltedLenght = strlen(saltedPassword);
-    strncpy((char *)key, saltedPassword,  saltedLenght > ENCRYPTION_KEY_SIZE ? ENCRYPTION_KEY_SIZE : saltedLenght);
+    size_t saltedLength = strlen(saltedPassword);
+    strncpy((char *)key, saltedPassword,  saltedLength > ENCRYPTION_KEY_SIZE ? ENCRYPTION_KEY_SIZE : saltedLength);
 
     //
     // AES encryption
     //
 
     mbedtls_aes_context aes;
-    unsigned char *iv = new unsigned char[16 + 1]();
-    unsigned char *temp = new unsigned char[strlen((const char *) encryptedKey) + 1]();
+    unsigned char *iv = new unsigned char[16]();
+    unsigned char *temp = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
 
     // Fill iv
     strncpy((char *)iv, saltedPassword, 16);

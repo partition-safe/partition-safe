@@ -33,6 +33,15 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     keyStore->setMetadata("uuid", vault->header->UUID);
     keyStore->setMetadata("label", vault->header->label);
     keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
+
+    // Cleanup
+    delete saltedPassword;
+    delete encryptionKey;
+    delete encrypted;
+    delete user;
+    delete key;
+    delete vault;
+    delete keyStore;
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
@@ -59,6 +68,9 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
 
     // Check the decrypted key
     std::cout << "Decrypted identifier: " << decryptedKey << std::endl;
+
+    // Cleanup
+    delete decryptedKey;
 
     // Return myself
     return this;
@@ -110,7 +122,6 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
 
         // Free memory
         delete[] saltedPassword;
-//        delete[] encryptionKey;
     } else {
         // Create a new key
         *key = Key::create(*user, password);

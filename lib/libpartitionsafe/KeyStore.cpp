@@ -139,12 +139,13 @@ void KeyStore::getMetadata(const char *key, char **value) {
     if (res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    const char *tempVal = (const char *) sqlite3_column_text(stmt, 0);
-
-    // Write the result
-    strncpy(*value, tempVal, strlen(tempVal));
-
-    delete tempVal;
+    *value = (char *) sqlite3_column_text(stmt, 0);
+//
+//    // Write the result
+//    *value = new char[strlen(tempVal)]();
+//    strncpy(*value, tempVal, strlen(tempVal));
+//
+//    delete[] tempVal;
 }
 
 //
