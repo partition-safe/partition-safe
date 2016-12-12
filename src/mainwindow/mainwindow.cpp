@@ -28,8 +28,23 @@ MainWindow::MainWindow(QWidget *parent) :
     modelDirs = new PSFileSystemModel(this, psInstance);
 
 #ifdef QT_DEBUG
+#ifndef __WIN32
+        const char *vaultPath = "/tmp/marc.vault";
+        const char *keyStorePath = "/tmp/marc.keystore";
+#else
+        wchar_t _vaultPath[1024];
+        wchar_t _keyStorePath[1024];
+        ExpandEnvironmentStrings(L"%Temp%\\marc.vault", _vaultPath, 1024);
+        ExpandEnvironmentStrings(L"%Temp%\\marc.keystore", _keyStorePath, 1024);
+        char vaultPath[1024];
+        char keyStorePath[1024];
+        wcstombs(vaultPath, _vaultPath, 1024);
+        wcstombs(keyStorePath, _keyStorePath, 1024);
+#endif
+
     // Debug mode only, load a default vault
-    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore", "test", "test");
+    initializeVault((const char *)vaultPath, (const char *)keyStorePath, "test", "test");
+
     // Show path in status bar
     this->setPath();
 #endif
