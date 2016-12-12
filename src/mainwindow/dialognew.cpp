@@ -104,11 +104,17 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
         const char *username = baUsername.data();
         QByteArray baPassword = ui->textPassword->text().toLatin1();
         const char *password = baPassword.data();
-
-        // Creat a partition
         int partitionSize = ui->textPartitionSize->text().toInt();
-        PartitionSafe* ps = new PartitionSafe;
-        ps->create(filePath, keyPath, label, partitionSize, username, password);
+
+        try {
+            // Creat a partition
+            PartitionSafe* ps = new PartitionSafe();
+            ps->create(filePath, keyPath, label, partitionSize, username, password);
+            delete ps;
+        } catch(...) {
+            show_warning("Could not create partition.");
+            return;
+        }
 
         // Send accept request to end dialog.
         this->accept();

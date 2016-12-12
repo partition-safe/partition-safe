@@ -117,17 +117,12 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
 
     // First decrypt the current encryption key and then create the key
     if(this->key) {
-        // Create the salted password
-        char *saltedPassword;
-        (*user)->saltedPassword(password, (*user)->salt, &saltedPassword);
-
-        // Encrypt key
+        // Decrypt encryption key
         unsigned char *encryptionKey;
-        this->key->decrypt(saltedPassword, this->key->key, &encryptionKey);
-        *key = Key::create(*user, password, encryptionKey, 0);
+        this->key->decrypt(*user, password, this->key->key, &encryptionKey);
 
-        // Free memory
-        delete[] saltedPassword;
+        // Create the new key
+        *key = Key::create(*user, password, encryptionKey, 0);
     } else {
         // Create a new key
         *key = Key::create(*user, password);
