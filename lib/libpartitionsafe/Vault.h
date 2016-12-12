@@ -31,7 +31,7 @@ public:
         /**
          * Identifier of the vault
          */
-        char identifier[13];
+        unsigned char identifier[13];
 
         /**
          * The current version of the partition.
@@ -52,6 +52,11 @@ public:
          * The personal UUID of the vault.
          */
         char UUID[36];
+
+        /**
+         * The encrypted identifier.
+         */
+        unsigned char identifier_encrypted[24];
     };
 
     /**
@@ -61,6 +66,11 @@ public:
      * @param keyStore
      */
     Vault(Partition* partition);
+
+    /**
+     * Vault destructor to close some stuff.
+     */
+    ~Vault();
 
     /**
      * Open a vault instance.
@@ -80,7 +90,7 @@ public:
      *
      * @return
      */
-    static void create(const char label[40], const unsigned size, const char* path);
+    static void create(const char label[40], const unsigned size, const char* path, const unsigned char *encryptedIdentifier);
 
     /**
      * Open the file and all internal properties.
@@ -91,41 +101,6 @@ public:
      */
     Vault* open();
 
-    /**
-     * Write to a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     * @param size
-     *
-     * @return
-     */
-    Vault* writeFile(const TCHAR* fileName, const void* buff, const UINT size);
-
-    /**
-     * Get the size a the file on the partition.
-     *
-     * @param fileName
-     *
-     * @return
-     */
-    Vault* fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
-
-    /**
-     * Read the contents of a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     *
-     * @return
-     */
-    Vault* readFile(const TCHAR *fileName, void *buff, const UINT size);
-
-    int importFile(const char* source, const char* destination);
-
-    int exportFile(const char* source, const char* destination);
-
-private:
     /**
      * The vault header
      */

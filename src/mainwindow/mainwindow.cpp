@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
-    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore", "test", "test");
     // Show path in status bar
     this->setPath();
 #endif
@@ -49,6 +49,7 @@ MainWindow::~MainWindow()
     delete folderForwardHistory;
     delete model;
     delete modelDirs;
+    delete psInstance;
 }
 
 void MainWindow::fileChanged(const QString & file){
@@ -70,16 +71,8 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
         // Get the path
         QString path = QString(item->getFullPath().c_str());
 
-        // Add history to stack
-        folderHistory->append(model->getCurrentDirectory());
-
-        // Set directory
-        model->setCurrentDirectory(path);
-
-        // clear forward if it doesn't contain dir
-        // else pop from ForwardHistory
-        if (!folderForwardHistory->contains(path)) folderForwardHistory->clear();
-        else folderForwardHistory->pop();
+    // Enter given directory and add to history
+    model->enterDirectory(path, *folderHistory, *folderForwardHistory);
 
         // Show path in status bar
         this->setPath();
@@ -102,25 +95,9 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
 }
 
-void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
-{
-//    this->on_treeViewExplorer_doubleClicked(index);
-}
-
 void MainWindow::on_buttonBack_clicked()
 {
-    // More than only the home item
-    if(folderHistory->size() > 0)
-    {
-        // Get the first item of the stack
-        QString dir = folderHistory->pop();
-
-        // Add to folderForwardHistory
-        folderForwardHistory->append(model->getCurrentDirectory());
-
-        // Set directory
-        model->setCurrentDirectory(dir);
-    }
+    model->navigation_buttons(*folderHistory, *folderForwardHistory);
 
     // Show path in status bar
     this->setPath();
@@ -128,18 +105,7 @@ void MainWindow::on_buttonBack_clicked()
 
 void MainWindow::on_buttonForward_clicked()
 {
-    // If there is a Forward
-    if(folderForwardHistory->size() > 0)
-    {
-        // Get first item of the forward stack
-        QString dir = folderForwardHistory->pop();
-
-        // Append dir to folderHistory
-        folderHistory->append(model->getCurrentDirectory());
-
-        // Set directory
-        model->setCurrentDirectory(dir);
-    }
+    model->navigation_buttons(*folderForwardHistory, *folderHistory);
 
     // Show path in status bar
     this->setPath();
@@ -154,7 +120,7 @@ void MainWindow::on_actionOpen_triggered()
     // Accepted dialog?
     if(dialogResult == QDialog::Accepted) {
         // Open the vault
-        initializeVault(open->locationVault, open->locationKeyStore);
+        initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
     }
 }
 
@@ -173,6 +139,11 @@ void MainWindow::on_buttonExport_clicked()
 void MainWindow::on_buttonImport_clicked()
 {
     importFiles();
+}
+
+void MainWindow::on_buttonDelete_clicked()
+{
+    deleteFileDirectory();
 }
 
 void MainWindow::on_actionFolder_triggered()
@@ -217,30 +188,30 @@ void MainWindow::importFiles()
 
         QString destinationPath  = model->getCurrentDirectory().append("/").append(fileInfo.fileName());
         qDebug() << destinationPath;
-        psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
-
+        model->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
+        //psInstance->importFile(filePath.toLatin1().data(),destinationPath.toLatin1().data());
         dialog.setValue(++current);
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
-    model->setCurrentDirectory(model->getCurrentDirectory());
-    model->layoutChanged();
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
-void MainWindow::importFolder(){
-        qDebug() << "importFolder() called";
+void MainWindow::importFolder()
+{
+    qDebug() << "importFolder() called";
 
-        QFileDialog qFile;
-        // Allow selecting of multiple files
-        qFile.setFileMode(QFileDialog::Directory);
-        // Open File dialog
-        qFile.exec();
+    QFileDialog qFile;
+    // Allow selecting of multiple files
+    qFile.setFileMode(QFileDialog::Directory);
+    // Open File dialog
+    qFile.exec();
 
-        foreach (QString folderPath, qFile.selectedFiles()) {
-            qDebug() << folderPath;
+    foreach (QString folderPath, qFile.selectedFiles()) {
+        qDebug() << folderPath;
 
-            // TODO: import folder from filePath
-        }
+        // TODO: import folder from filePath
+    }
 }
 
 void MainWindow::exportFiles()
@@ -266,19 +237,21 @@ void MainWindow::exportFiles()
         qDebug() << destinationPath;
 
         // export the current file
-        psInstance->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
+        psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
     }
 }
 
-void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
+void MainWindow::deleteFileDirectory()
+{
+    model->deleteFileDirectory(selectedRowsList);
+    on_treeViewExplorer_selectionChanged();
+}
+
+void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
 {
     try {
-        // Convert names
-        const char *cVaultPath = vaultPath.c_str();
-        const char *cKeyStorePath = keyStorePath.c_str();
-
         // Setup vault
-        psInstance->init(cVaultPath, cKeyStorePath);
+        psInstance->init(vaultPath.c_str(), keyStorePath.c_str(), username.c_str(), password.c_str());
         psInstance->open();
 
         // Create file system models and other instances
@@ -293,9 +266,13 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->treeViewExplorer->setModel(model);
         ui->treeViewFiles->setModel(modelDirs);
 
-        // Enable import/export
+        // TreeViewExplorer: Add signal slot for detecting selection.
+        connect(ui->treeViewExplorer->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(on_treeViewExplorer_selectionChanged()));
+
+        // Enable import/export/Delete
         ui->buttonImport->setEnabled(true);
-        ui->buttonExport->setEnabled(true);
+        ui->actionImports->setEnabled(true);
+        ui->actionFile->setEnabled(true);
 
         // Set paths
         this->setPath();
@@ -314,4 +291,16 @@ void MainWindow::setPath()
 
     // At last forward item? Disable forward button.
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
+}
+
+void MainWindow::on_treeViewExplorer_selectionChanged()
+{
+    //checks if someting is selected
+    selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    bool hasSelection = selectedRowsList.size()>=1;
+
+    // Enable export/delete
+    ui->buttonDelete->setEnabled(hasSelection);
+    ui->buttonExport->setEnabled(hasSelection);
+    ui->actionExport->setEnabled(hasSelection);
 }
