@@ -13,7 +13,7 @@ TARGET = src
 TEMPLATE = app
 INCLUDEPATH += ../lib/libpartitionsafe
 
-LIBS += ./src/lib/libPartitionSafe-Lib.a
+LIBS += ../cmake-build-debug/libPartitionSafe-Lib.a
 
 SOURCES += main.cpp\
         mainwindow/mainwindow.cpp \
