@@ -10,18 +10,18 @@
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
  * WHO CHANGES THIS VALUE, WILL BE ASSASSINATED.
  */
-const char* Partition::IDENTIFIER = "PartitionSafe";
+const unsigned char *Partition::IDENTIFIER = (const unsigned char *) "PartitionSafe";
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
  * WHO CHANGES THIS VALUE, WILL BE ASSASSINATED.
  */
-const TCHAR* Partition::LETTER = (const TCHAR *) "";
+const TCHAR *Partition::LETTER = (const TCHAR *) "";
 
 const unsigned int Partition::VERSION = 1;
 
 Partition::Partition(const char* path, FILE* fh):
-        path(path), fd(fh) {
+    path(path), fd(fh) {
     // Set the global fd
     currentFileDescriptor = fd;
 }
@@ -77,9 +77,11 @@ Partition *Partition::writeFile(const std::string fileName, const void *buff, co
     return writeFile(Common::stdStringToTChar(fileName), buff, size);
 }
 
+#ifndef __WIN32
 Partition *Partition::writeFile(const char *fileName, const void *buff, const UINT size) {
     return writeFile(std::string(fileName), buff, size);
 }
+#endif
 
 Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     // Instances
@@ -97,9 +99,11 @@ Partition *Partition::fileInfo(const std::string fileName, FILINFO *fileInfo) {
     return this->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
 }
 
+#ifndef __WIN32
 Partition *Partition::fileInfo(const char *fileName, FILINFO *fileInfo) {
     return this->fileInfo(std::string(fileName), fileInfo);
 }
+#endif
 
 Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
     // The instances
@@ -127,9 +131,11 @@ Partition *Partition::readFile(const std::string fileName, void *buff, const UIN
     return readFile(Common::stdStringToTChar(fileName), buff, size);
 }
 
+#ifndef __WIN32
 Partition *Partition::readFile(const char *fileName, void *buff, const UINT size) {
     return readFile(std::string(fileName), buff, size);
 }
+#endif
 
 std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     // The instances
@@ -171,9 +177,11 @@ std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) 
     return listDirectory(Common::stdStringToTChar(directoryName));
 }
 
+#ifndef __WIN32
 std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
     return listDirectory(std::string(directoryName));
 }
+#endif
 
 Partition *Partition::createDirectory(const TCHAR *directoryName) {
     // Instances
@@ -191,9 +199,11 @@ Partition *Partition::createDirectory(const std::string directoryName) {
     return createDirectory(Common::stdStringToTChar(directoryName));
 }
 
+#ifndef __WIN32
 Partition *Partition::createDirectory(const char *directoryName) {
     return createDirectory(std::string(directoryName));
 }
+#endif
 
 Partition *Partition::deleteFileDirectory(const TCHAR *path) {
     // Instances
@@ -211,6 +221,71 @@ Partition *Partition::deleteFileDirectory(const std::string path) {
     return deleteFileDirectory(Common::stdStringToTChar(path));
 }
 
+#ifndef __WIN32
 Partition *Partition::deleteFileDirectory(const char *path) {
     return deleteFileDirectory(std::string(path));
 }
+#endif
+
+int Partition::importFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fDestination;
+    UINT *writtenBytes = new UINT;
+    FRESULT res;
+
+    FILE* fSource = fopen(source, "r");
+
+    if(fSource == NULL){
+        throw "Could not open source file";
+    }
+
+    res = f_open(&fDestination, Common::stdStringToTChar(std::string(destination)), FA_CREATE_ALWAYS | FA_WRITE);
+    if (res != FR_OK) throw "Could not open destination file";
+
+    char buffer[SIZE];
+    size_t bytes;
+
+    while (0 < (bytes = fread(buffer, 1, sizeof(buffer), fSource))){
+        res = f_write(&fDestination, buffer, bytes, writtenBytes);
+        if (res != FR_OK) throw "Could not write import file";
+    }
+
+    fclose(fSource);
+    f_close(&fDestination);
+}
+
+int Partition::exportFile(const char *source, const char *destination) {
+    int SIZE = 1024;
+
+    // The instances
+    FIL fSource;
+    UINT *bytesRead = new UINT;
+    FRESULT res;
+
+    res = f_open(&fSource, Common::stdStringToTChar(std::string(source)), FA_OPEN_ALWAYS | FA_READ);
+    if (res != FR_OK) throw "Could not open source file";
+
+    FILE* fDestination = fopen(destination, "w");
+    if(fDestination == NULL){
+        throw "Could not open destination file";
+    }
+
+    char buffer[SIZE];
+
+    for(;;){
+        f_read(&fSource, buffer, sizeof buffer, bytesRead);
+
+        // Done reading so we can break out now
+        if(*bytesRead == 0){
+            break;
+        }
+
+        fwrite(buffer, 1, *bytesRead, fDestination);
+    }
+
+    fclose(fDestination);
+    f_close(&fSource);
+}
+

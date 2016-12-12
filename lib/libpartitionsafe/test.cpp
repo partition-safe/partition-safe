@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include "PartitionSafe.h"
 #include "Common.h"
 
@@ -16,16 +17,27 @@ int main() {
         //
 
         // Vault metadata
+#ifndef __WIN32
         const char *vaultPath = "/tmp/marc.vault";
         const char *keyStorePath = "/tmp/marc.keystore";
+#else
+        char vaultPath[1024];
+        char keyStorePath[1024];
+        ExpandEnvironmentStrings("%Temp%\\marc.vault", vaultPath, 1024);
+        ExpandEnvironmentStrings("%Temp%\\marc.keystore", keyStorePath, 1024);
+#endif
         char label[40] = "Marc";
+
+        // Delete old files
+        std::remove(vaultPath);
+        std::remove(keyStorePath);
 
         // Create the partition safe instance
         PartitionSafe *ps = new PartitionSafe();
 
         // Create the vault
         std::cout << "-- Partition create" << std::endl;
-        ps->create(vaultPath, keyStorePath, label, 1024);
+        ps->create(vaultPath, keyStorePath, label, 1024, "test", "test");
 
         //
         // Open vault
@@ -33,7 +45,7 @@ int main() {
 
         // Init the vault
         std::cout << "-- Partition open" << std::endl;
-        ps->init(vaultPath, keyStorePath)->open();
+        ps->init(vaultPath, keyStorePath, "test", "test")->open();
 
         //
         // Write file
@@ -46,8 +58,8 @@ int main() {
 
         // Write content
         std::cout << "-- File write" << std::endl;
-        ps->writeFile(filename1_1, line, sizeof(line));
-        ps->writeFile(filename1_2, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(filename1_1, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(filename1_2, line, sizeof(line));
 
         //
         // Open file
@@ -57,14 +69,14 @@ int main() {
         FILINFO fileInfo;
 
         // Get file info
-        ps->fileInfo(filename1_1, &fileInfo);
+        ps->getVault()->getPartition()->fileInfo(filename1_1, &fileInfo);
 
         // The file buffer
         char readLines[fileInfo.fsize];
 
         // Read content
         std::cout << "-- Read from file: " << std::endl;
-        ps->readFile(filename1_1, readLines, sizeof(readLines));
+        ps->getVault()->getPartition()->readFile(filename1_1, readLines, sizeof(readLines));
         std::cout << readLines << std::endl;
 
         //
@@ -78,8 +90,20 @@ int main() {
 
         // Create directory
         ps->getVault()->getPartition()->createDirectory(directoryName);
-        ps->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
-        ps->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
+        ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
+
+        // Import a file
+#ifndef __WIN32
+        const char *importTest = "/tmp/test.txt";
+#else
+        char importTest[1024];
+        ExpandEnvironmentStrings("%Temp%\\test.txt", importTest, 1024);
+#endif
+        std::ofstream outfile (importTest);
+        outfile << "my text here!" << std::endl;
+        outfile.close();
+        ps->getVault()->getPartition()->importFile(importTest, "/marc.txt");
 
         //
         // Read directory structure
@@ -93,6 +117,13 @@ int main() {
         for(Entry* const& value : *entries) {
             std::cout << value->getFullPath() << std::endl;
         }
+
+        // Cleanup
+        std::cout << "-- Cleanup" << std::endl;
+        delete ps;
+
+        // Finish
+        std::cout << "-- Finished test script! --" << std::endl;
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;

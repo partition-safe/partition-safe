@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStack>
 #include <QString>
+#include <QFileSystemWatcher>
 
 #include <lib/PSFileSystemModel.h>
 
@@ -21,7 +22,6 @@ public:
 
 private slots:
     void on_treeViewExplorer_doubleClicked(const QModelIndex &index);
-    void on_treeViewFiles_clicked(const QModelIndex &index);
     void on_buttonBack_clicked();
     void on_buttonForward_clicked();
     void on_buttonExport_clicked();
@@ -32,18 +32,27 @@ private slots:
     void on_actionFolder_triggered();
     void on_buttonImport_clicked();
 
+    void on_buttonDelete_clicked();
+    void on_treeViewExplorer_selectionChanged();
+
+    void fileChanged(const QString &);
+
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
     PSFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
     PartitionSafe* psInstance;
+    QModelIndexList selectedRowsList;
+    QFileSystemWatcher* watcher;
 
     void setPath();
     void importFiles();
     void importFolder();
     void exportFiles();
-    void initializeVault(const std::string vaultPath, const std::string keyStorePath);
+    void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
+    void deleteFileDirectory();
 };
 
 #endif // MAINWINDOW_H
