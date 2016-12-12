@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStack>
 #include <QString>
+#include <QFileSystemWatcher>
 
 #include <lib/PSFileSystemModel.h>
 
@@ -34,6 +35,9 @@ private slots:
     void on_buttonDelete_clicked();
     void on_treeViewExplorer_selectionChanged();
 
+    void fileChanged(const QString &);
+
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
@@ -41,6 +45,7 @@ private:
     QStack<QString> *folderHistory, *folderForwardHistory;
     PartitionSafe* psInstance;
     QModelIndexList selectedRowsList;
+    QFileSystemWatcher* watcher;
 
     void setPath();
     void importFiles();

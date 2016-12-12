@@ -6,6 +6,9 @@
 #include <QDirModel>
 #include <QFileDialog>
 #include <QProgressDialog>
+#include <QDir>
+#include <QDesktopServices>
+#include <QFileSystemWatcher>
 
 #include <QDebug>
 
@@ -26,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Setup models
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
+
+    // Setup a file watcher, it detect changes of files that are currently been edited
+    watcher = new QFileSystemWatcher(this);
+    connect(watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(fileChanged(const QString &)));
 
 #ifdef QT_DEBUG
 #ifndef __WIN32
@@ -60,22 +67,47 @@ MainWindow::~MainWindow()
     delete psInstance;
 }
 
+void MainWindow::fileChanged(const QString & file){
+
+    std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
+    QFileInfo fileInfo(file);
+    psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), fileInfo.fileName().toLatin1().data());
+
+}
+
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 {
     // We should get the selected item
     Entry* item = model->getFile(index);
 
-    // Only continue if it's a directory
-    if(!item->isDirectory()) return;
+    // The item is a directory
+    if(item->isDirectory()){
 
-    // Get the path
-    QString path = QString(item->getFullPath().c_str());
+        // Get the path
+        QString path = QString(item->getFullPath().c_str());
 
-    // Enter given directory and add to history
-    model->enterDirectory(path, *folderHistory, *folderForwardHistory);
+        // Enter given directory and add to history
+        model->enterDirectory(path, *folderHistory, *folderForwardHistory);
 
-    // Show path in status bar
-    this->setPath();
+        // Show path in status bar
+        this->setPath();
+
+    }
+
+    // The double clicked item seems to be a file
+    else{
+        // Export the file to a temporary location
+        QString tmpFile = QDir::tempPath().append("/").append(item->name.data());
+
+        psInstance->getVault()->getPartition()->exportFile(item->getFullPath().data(), tmpFile.toLatin1().data());
+
+        // Watch this temp file for changes
+        watcher->addPath(tmpFile);
+
+        // Try to open it with the default application
+        QDesktopServices::openUrl(QUrl(tmpFile.prepend("file://"), QUrl::TolerantMode));
+    }
+
 }
 
 void MainWindow::on_buttonBack_clicked()
@@ -206,6 +238,7 @@ void MainWindow::exportFiles()
     // Get the destination directory from the user
     QString destinationDir = qFile.getExistingDirectory();
 
+    QModelIndexList selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
     foreach (QModelIndex index, selectedRowsList)
     {
         QFileInfo fileInfo(model->getFile(index)->getFullPath().data());
