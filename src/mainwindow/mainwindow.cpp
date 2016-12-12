@@ -56,7 +56,7 @@ void MainWindow::fileChanged(const QString & file){
 
     std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
     QFileInfo fileInfo(file);
-    psInstance->importFile(file.toLatin1().data(), fileInfo.fileName().toLatin1().data());
+    psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), fileInfo.fileName().toLatin1().data());
 
 }
 
@@ -71,8 +71,8 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
         // Get the path
         QString path = QString(item->getFullPath().c_str());
 
-    // Enter given directory and add to history
-    model->enterDirectory(path, *folderHistory, *folderForwardHistory);
+        // Enter given directory and add to history
+        model->enterDirectory(path, *folderHistory, *folderForwardHistory);
 
         // Show path in status bar
         this->setPath();
@@ -84,7 +84,7 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
         // Export the file to a temporary location
         QString tmpFile = QDir::tempPath().append("/").append(item->name.data());
 
-        psInstance->exportFile(item->getFullPath().data(), tmpFile.toLatin1().data());
+        psInstance->getVault()->getPartition()->exportFile(item->getFullPath().data(), tmpFile.toLatin1().data());
 
         // Watch this temp file for changes
         watcher->addPath(tmpFile);
