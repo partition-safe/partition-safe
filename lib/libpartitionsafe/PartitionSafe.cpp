@@ -5,6 +5,13 @@
 #include <cstring>
 #include "PartitionSafe.h"
 
+PartitionSafe::~PartitionSafe() {
+    delete vault;
+    delete keyStore;
+    delete user;
+    delete key;
+}
+
 void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {
     // Try to create the key store
     KeyStore::create(keyStorePath);

@@ -97,6 +97,13 @@ int main() {
         for(Entry* const& value : *entries) {
             std::cout << value->getFullPath() << std::endl;
         }
+
+        // Cleanup
+        std::cout << "-- Cleanup" << std::endl;
+        delete ps;
+
+        // Finish
+        std::cout << "-- Finished test script! --" << std::endl;
     } catch(const char* exception) {
         // Hey, exception
         std::cout << "Thrown exception: " << exception << std::endl;

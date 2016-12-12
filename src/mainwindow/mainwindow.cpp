@@ -25,12 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Setup models
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
-
-    // Temporary
-//    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
-
-    // Show path in status bar
-//    this->setPath();
 }
 
 MainWindow::~MainWindow()
@@ -40,6 +34,7 @@ MainWindow::~MainWindow()
     delete folderForwardHistory;
     delete model;
     delete modelDirs;
+    delete psInstance;
 }
 
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)

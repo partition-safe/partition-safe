@@ -45,6 +45,11 @@ KeyStore::KeyStore(const char *path):
     if(result) throw "Could not open the database";
 }
 
+KeyStore::~KeyStore() {
+    close();
+    delete sqliteHandle;
+}
+
 void KeyStore::create(const char *path) {
     // Setup the handle for creation
     sqlite3 *db;

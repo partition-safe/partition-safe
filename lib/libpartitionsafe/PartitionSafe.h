@@ -32,6 +32,11 @@ class PartitionSafe {
 
 public:
     /**
+     * Destructor of the partition safe instance.
+     */
+    ~PartitionSafe();
+
+    /**
      * Get the vault instance.
      * @return
      */

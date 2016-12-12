@@ -59,6 +59,11 @@ public:
     KeyStore(const char* path);
 
     /**
+     * Keystore destructor.
+     */
+    ~KeyStore();
+
+    /**
      * Create a new key store.
      *
      * @param path The path to place the new key store

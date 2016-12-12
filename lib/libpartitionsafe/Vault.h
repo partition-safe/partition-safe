@@ -68,6 +68,11 @@ public:
     Vault(Partition* partition);
 
     /**
+     * Vault destructor to close some stuff.
+     */
+    ~Vault();
+
+    /**
      * Open a vault instance.
      *
      * @param vaultPath The path to the vault file

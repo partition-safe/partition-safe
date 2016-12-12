@@ -8,6 +8,11 @@
 Vault::Vault(Partition *partition):
     partition(partition) {}
 
+Vault::~Vault() {
+    delete header;
+    delete partition;
+}
+
 void Vault::create(const char *label, const unsigned size, const char *path, const unsigned char *encryptedIdentifier) {
     // Open the file path
     FILE* fd = fopen(path, "w");

@@ -53,8 +53,9 @@ void DialogOpen::on_buttonBoxDialogOpen_clicked(QAbstractButton *button)
                     password = ba.toStdString();
 
                     // Open the partition
-                    PartitionSafe* ps = new PartitionSafe;
+                    PartitionSafe* ps = new PartitionSafe();
                     ps->init(locationVault.c_str(), locationKeyStore.c_str(), username.c_str(), password.c_str())->open();
+                    delete ps;
 
                     // Send accept request to end dialog.
                     this->accept();
