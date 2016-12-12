@@ -13,7 +13,9 @@ TARGET = src
 TEMPLATE = app
 INCLUDEPATH += ../lib/libpartitionsafe
 
-LIBS += ../cmake-build-debug/libPartitionSafe-Lib.a
+LIBS += \
+    ../cmake-build-debug/lib/libmbedtls/library/libmbedcrypto.a \
+    ../cmake-build-debug/libpslib.a
 
 SOURCES += main.cpp\
         mainwindow/mainwindow.cpp \
