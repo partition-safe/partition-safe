@@ -108,7 +108,7 @@ void Key::decrypt(const User *user, const char *password, const unsigned char *e
     decrypt(saltedPassword, encryptedKey, decryptedKey);
 
     // Remove salted password
-    delete saltedPassword;
+    delete[] saltedPassword;
 }
 
 void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
