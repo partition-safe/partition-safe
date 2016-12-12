@@ -236,14 +236,15 @@
     </layout>
    </item>
   </layout>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>verticalLayoutWidget_2</zorder>
  </widget>
  <tabstops>
   <tabstop>textPartitionLoc</tabstop>
   <tabstop>buttonPartitionLoc</tabstop>
+  <tabstop>textKeyLoc</tabstop>
+  <tabstop>buttonKeyLoc</tabstop>
   <tabstop>textPartitionName</tabstop>
   <tabstop>textPartitionSize</tabstop>
+  <tabstop>textUsername</tabstop>
   <tabstop>textPassword</tabstop>
  </tabstops>
  <resources/>
