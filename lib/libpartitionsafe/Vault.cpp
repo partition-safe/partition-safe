@@ -88,15 +88,3 @@ Vault *Vault::open() {
 Partition *Vault::getPartition() {
     return partition;
 }
-
-int Vault::importFile(const char *source, const char *destination) {
-    return partition->importFile(source, destination);
-}
-
-Partition *Vault::deleteFileDirectory(const char *source) {
-    return partition->deleteFileDirectory(source);
-}
-
-int Vault::exportFile(const char *source, const char *destination) {
-    return partition->exportFile(source, destination);
-}

@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
-    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore", "test", "test");
     // Show path in status bar
     this->setPath();
 #endif
@@ -204,7 +204,7 @@ void MainWindow::exportFiles()
         qDebug() << destinationPath;
 
         // export the current file
-        psInstance->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
+        psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
     }
 }
 
