@@ -17,8 +17,15 @@ int main() {
         //
 
         // Vault metadata
+#ifndef __WIN32
         const char *vaultPath = "/tmp/marc.vault";
         const char *keyStorePath = "/tmp/marc.keystore";
+#else
+        char vaultPath[1024];
+        char keyStorePath[1024];
+        ExpandEnvironmentStrings("%Temp%\\marc.vault", vaultPath, 1024);
+        ExpandEnvironmentStrings("%Temp%\\marc.keystore", keyStorePath, 1024);
+#endif
         char label[40] = "Marc";
 
         // Delete old files
@@ -87,10 +94,16 @@ int main() {
         ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
 
         // Import a file
-        std::ofstream outfile ("/tmp/test.txt");
+#ifndef __WIN32
+        const char *importTest = "/tmp/test.txt";
+#else
+        char importTest[1024];
+        ExpandEnvironmentStrings("%Temp%\\test.txt", importTest, 1024);
+#endif
+        std::ofstream outfile (importTest);
         outfile << "my text here!" << std::endl;
         outfile.close();
-        ps->getVault()->getPartition()->importFile("/tmp/test.txt", "/marc.txt");
+        ps->getVault()->getPartition()->importFile(importTest, "/marc.txt");
 
         //
         // Read directory structure

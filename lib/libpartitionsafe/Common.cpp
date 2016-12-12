@@ -6,11 +6,11 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <sstream>
-#else
+#endif
+
 #include "../libmbedtls/include/mbedtls/entropy.h"
 #include "../libmbedtls/include/mbedtls/ctr_drbg.h"
 #include "../libmbedtls/include/mbedtls/rsa.h"
-#endif
 
 std::string Common::newUUID()
 {

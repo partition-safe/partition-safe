@@ -47,7 +47,6 @@ KeyStore::KeyStore(const char *path):
 
 KeyStore::~KeyStore() {
     close();
-    delete sqliteHandle;
 }
 
 void KeyStore::create(const char *path) {
