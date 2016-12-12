@@ -98,6 +98,33 @@ public:
      */
     void createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore = nullptr);
 
+    /**
+     * Import the given source file to its destination in the partition
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    int importFile(const char* source, const char* destination);
+
+    /**
+     * Delete the given source file from the partition
+     *
+     * @param source
+     * @return
+     */
+    Partition* deleteFileDirectory(const char* source);
+
+    /**
+     * Export the given source file from the partition to its destination outside the partition
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    int exportFile(const char* source, const char* destination);
+
+
 };
 
 

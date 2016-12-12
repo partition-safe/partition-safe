@@ -73,6 +73,9 @@
          <property name="selectionMode">
           <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
@@ -122,6 +125,19 @@
        </widget>
       </item>
       <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="buttonImport">
         <property name="enabled">
          <bool>false</bool>
@@ -142,17 +158,14 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QPushButton" name="buttonDelete">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="text">
+         <string>Delete</string>
         </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>
@@ -164,7 +177,7 @@
      <x>0</x>
      <y>0</y>
      <width>789</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPartitionSafe">
@@ -177,7 +190,10 @@
     <property name="toolTipsVisible">
      <bool>true</bool>
     </property>
-    <widget class="QMenu" name="menuImport_file">
+    <widget class="QMenu" name="actionImports">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Import</string>
      </property>
@@ -187,7 +203,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="menuImport_file"/>
+    <addaction name="actionImports"/>
     <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -229,6 +245,9 @@
    </property>
   </action>
   <action name="actionExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Export files...</string>
    </property>
@@ -237,6 +256,9 @@
    </property>
   </action>
   <action name="actionFile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>File...</string>
    </property>
@@ -245,6 +267,9 @@
    </property>
   </action>
   <action name="actionFolder">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Folder...</string>
    </property>
