@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.6)
 project(PartitionSafe)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DENABLE_TESTING=OFF")
 
 ## MBEDTLS
+option(ENABLE_TESTING OFF)
+option(ENABLE_PROGRAMS OFF)
 add_subdirectory(lib/libmbedtls)
-set(USE_STATIC_MBEDTLS_LIBRARY ON)
 ## /MBEDTLS
 
 # Set sources

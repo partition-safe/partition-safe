@@ -93,6 +93,7 @@ public:
      */
     Partition* writeFile(const std::string fileName, const void* buff, const UINT size);
 
+#ifndef __WIN32
     /**
      * Write to a file on the partition.
      *
@@ -103,6 +104,7 @@ public:
      * @return
      */
     Partition* writeFile(const char *fileName, const void* buff, const UINT size);
+#endif
 
     /**
      * Get the size a the file on the partition.
@@ -122,6 +124,7 @@ public:
      */
     Partition* fileInfo(const std::string fileName, FILINFO *fileInfo);
 
+#ifndef __WIN32
     /**
      * Get the size a the file on the partition.
      *
@@ -130,6 +133,7 @@ public:
      * @return
      */
     Partition* fileInfo(const char *fileName, FILINFO *fileInfo);
+#endif
 
     /**
      * Read the contents of a file on the partition.
@@ -151,6 +155,7 @@ public:
      */
     Partition* readFile(const std::string fileName, void *buff, const UINT size);
 
+#ifndef __WIN32
     /**
      * Read the contents of a file on the partition.
      *
@@ -160,6 +165,7 @@ public:
      * @return
      */
     Partition* readFile(const char *fileName, void *buff, const UINT size);
+#endif
 
     /**
      * Read the contents of a file on the partition.
@@ -179,6 +185,7 @@ public:
      */
     Partition* createDirectory(const std::string directoryName);
 
+#ifndef __WIN32
     /**
      * Read the contents of a file on the partition.
      *
@@ -187,6 +194,7 @@ public:
      * @return
      */
     Partition* createDirectory(const char *directoryName);
+#endif
 
     /**
      * Read the contents of a file on the partition.
@@ -206,6 +214,7 @@ public:
      */
     std::vector<Entry*> *listDirectory(const std::string directoryName);
 
+#ifndef __WIN32
     /**
      * Read the contents of a file on the partition.
      *
@@ -214,6 +223,7 @@ public:
      * @return The list of found entries
      */
     std::vector<Entry*> *listDirectory(const char *directoryName);
+#endif
 
     /**
      * Delete the given file or directory.
@@ -229,12 +239,14 @@ public:
      */
     Partition *deleteFileDirectory(const std::string path);
 
+#ifndef __WIN32
     /**
      * Delete the given file or directory.
      *
      * @param path
      */
     Partition *deleteFileDirectory(const char *path);
+#endif
 
     int importFile(const char* source, const char* destination);
 

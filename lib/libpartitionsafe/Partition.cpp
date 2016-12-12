@@ -77,9 +77,11 @@ Partition *Partition::writeFile(const std::string fileName, const void *buff, co
     return writeFile(Common::stdStringToTChar(fileName), buff, size);
 }
 
+#ifndef __WIN32
 Partition *Partition::writeFile(const char *fileName, const void *buff, const UINT size) {
     return writeFile(std::string(fileName), buff, size);
 }
+#endif
 
 Partition *Partition::fileInfo(const TCHAR *fileName, FILINFO *fileInfo) {
     // Instances
@@ -97,9 +99,11 @@ Partition *Partition::fileInfo(const std::string fileName, FILINFO *fileInfo) {
     return this->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
 }
 
+#ifndef __WIN32
 Partition *Partition::fileInfo(const char *fileName, FILINFO *fileInfo) {
     return this->fileInfo(std::string(fileName), fileInfo);
 }
+#endif
 
 Partition *Partition::readFile(const TCHAR *fileName, void *buff, const UINT size) {
     // The instances
@@ -127,9 +131,11 @@ Partition *Partition::readFile(const std::string fileName, void *buff, const UIN
     return readFile(Common::stdStringToTChar(fileName), buff, size);
 }
 
+#ifndef __WIN32
 Partition *Partition::readFile(const char *fileName, void *buff, const UINT size) {
     return readFile(std::string(fileName), buff, size);
 }
+#endif
 
 std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     // The instances
@@ -171,9 +177,11 @@ std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) 
     return listDirectory(Common::stdStringToTChar(directoryName));
 }
 
+#ifndef __WIN32
 std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
     return listDirectory(std::string(directoryName));
 }
+#endif
 
 Partition *Partition::createDirectory(const TCHAR *directoryName) {
     // Instances
@@ -191,9 +199,11 @@ Partition *Partition::createDirectory(const std::string directoryName) {
     return createDirectory(Common::stdStringToTChar(directoryName));
 }
 
+#ifndef __WIN32
 Partition *Partition::createDirectory(const char *directoryName) {
     return createDirectory(std::string(directoryName));
 }
+#endif
 
 Partition *Partition::deleteFileDirectory(const TCHAR *path) {
     // Instances
@@ -211,9 +221,11 @@ Partition *Partition::deleteFileDirectory(const std::string path) {
     return deleteFileDirectory(Common::stdStringToTChar(path));
 }
 
+#ifndef __WIN32
 Partition *Partition::deleteFileDirectory(const char *path) {
     return deleteFileDirectory(std::string(path));
 }
+#endif
 
 int Partition::importFile(const char *source, const char *destination) {
     int SIZE = 1024;
