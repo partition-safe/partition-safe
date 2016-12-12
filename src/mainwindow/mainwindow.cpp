@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef QT_DEBUG
     // Debug mode only, load a default vault
-    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore");
+    initializeVault("/tmp/marc.vault", "/tmp/marc.keystore", "test", "test");
     // Show path in status bar
     this->setPath();
 #endif
@@ -42,6 +42,7 @@ MainWindow::~MainWindow()
     delete folderForwardHistory;
     delete model;
     delete modelDirs;
+    delete psInstance;
 }
 
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
@@ -87,7 +88,7 @@ void MainWindow::on_actionOpen_triggered()
     // Accepted dialog?
     if(dialogResult == QDialog::Accepted) {
         // Open the vault
-        initializeVault(open->locationVault, open->locationKeyStore);
+        initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
     }
 }
 
@@ -203,7 +204,7 @@ void MainWindow::exportFiles()
         qDebug() << destinationPath;
 
         // export the current file
-        psInstance->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
+        psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
     }
 }
 
@@ -213,15 +214,11 @@ void MainWindow::deleteFileDirectory()
     on_treeViewExplorer_selectionChanged();
 }
 
-void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath)
+void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
 {
     try {
-        // Convert names
-        const char *cVaultPath = vaultPath.c_str();
-        const char *cKeyStorePath = keyStorePath.c_str();
-
         // Setup vault
-        psInstance->init(cVaultPath, cKeyStorePath);
+        psInstance->init(vaultPath.c_str(), keyStorePath.c_str(), username.c_str(), password.c_str());
         psInstance->open();
 
         // Create file system models and other instances

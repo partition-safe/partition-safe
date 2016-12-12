@@ -46,8 +46,8 @@ private:
     void importFiles();
     void importFolder();
     void exportFiles();
+    void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
     void deleteFileDirectory();
-    void initializeVault(const std::string vaultPath, const std::string keyStorePath);
 };
 
 #endif // MAINWINDOW_H

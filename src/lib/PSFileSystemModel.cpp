@@ -71,7 +71,7 @@ void PSFileSystemModel::setCurrentDirectory(QString path)
 void PSFileSystemModel::importFile(char* source, char* destination)
 {
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
-    psInstance->importFile(source, destination);
+    psInstance->getVault()->getPartition()->importFile(source, destination);
     endInsertRows();
 
     setCurrentDirectory(getCurrentDirectory());
@@ -106,12 +106,12 @@ void PSFileSystemModel::deleteFileDirectory(QString path)
                 subDirectoryListing->pop_back();
 
                 if(entry->isDirectory()) deleteFileDirectory(entry->getFullPath().c_str());
-                else psInstance->deleteFileDirectory(entry->getFullPath().c_str());
+                else psInstance->getVault()->getPartition()->deleteFileDirectory(entry->getFullPath().c_str());
             }
-            if(subDirectoryListing->size()<=0) psInstance->deleteFileDirectory(path.toStdString().c_str());
+            if(subDirectoryListing->size()<=0) psInstance->getVault()->getPartition()->deleteFileDirectory(path.toStdString().c_str());
             break;
         default:
-            psInstance->deleteFileDirectory(path.toStdString().c_str());
+            psInstance->getVault()->getPartition()->deleteFileDirectory(path.toStdString().c_str());
             break;
         }
     }

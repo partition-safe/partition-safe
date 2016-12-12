@@ -310,8 +310,11 @@
  <tabstops>
   <tabstop>textPartitionLoc</tabstop>
   <tabstop>buttonPartitionLoc</tabstop>
+  <tabstop>textKeyLoc</tabstop>
+  <tabstop>buttonKeyLoc</tabstop>
   <tabstop>textPartitionName</tabstop>
   <tabstop>textPartitionSize</tabstop>
+  <tabstop>textUsername</tabstop>
   <tabstop>textPassword</tabstop>
  </tabstops>
  <resources/>

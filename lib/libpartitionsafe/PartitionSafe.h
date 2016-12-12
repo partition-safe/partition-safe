@@ -13,25 +13,52 @@ class PartitionSafe {
     /**
      * The current vault instance.
      */
-    Vault* vault;
+    Vault *vault;
 
     /**
-     * Our key storage
+     * Our key storage.
      */
-    KeyStore* keyStore;
+    KeyStore *keyStore;
+
+    /**
+     * The current user.
+     */
+    User *user;
+
+    /**
+     * The current root key.
+     */
+    Key *key;
 
 public:
+    /**
+     * Destructor of the partition safe instance.
+     */
+    ~PartitionSafe();
+
     /**
      * Get the vault instance.
      * @return
      */
-    Vault* getVault();
+    Vault *getVault();
 
     /**
      * Get the key store instance.
      * @return
      */
-    KeyStore* getKeyStore();
+    KeyStore *getKeyStore();
+
+    /**
+     * Get the current user.
+     * @return
+     */
+    User *getUser();
+
+    /**
+     * Get the current root key.
+     * @return
+     */
+    Key *getKey();
 
     /**
      * Create a new vault with key store.
@@ -41,7 +68,7 @@ public:
      * @param label The label of the partition
      * @param size The size of the partition in bytes
      */
-    void create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size);
+    void create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password);
 
     /**
      * Initialize a vault instance.
@@ -51,7 +78,7 @@ public:
      *
      * @return
      */
-    PartitionSafe* init(const char* vaultPath, const char* keyStorePath);
+    PartitionSafe* init(const char* vaultPath, const char* keyStorePath, const char *username, const char *password);
 
     /**
      * Open the partition safe instance.
@@ -61,61 +88,15 @@ public:
     PartitionSafe* open();
 
     /**
-     * Write to a file on the partition.
+     * Create a new user and it's root key.
      *
-     * @param fileName
-     * @param buff
-     * @param size
+     * The user will be saved to the current key store.
      *
-     * @return
+     * @param username
+     * @param password
+     * @param user
      */
-    PartitionSafe* writeFile(const std::string fileName, const void* buff, const UINT size);
-
-    /**
-     * Get the size a the file on the partition.
-     *
-     * @param fileName
-     *
-     * @return
-     */
-    PartitionSafe* fileInfo(const std::string fileName, FILINFO *fileInfo);
-
-    /**
-     * Read the contents of a file on the partition.
-     *
-     * @param fileName
-     * @param buff
-     *
-     * @return
-     */
-    PartitionSafe* readFile(const std::string fileName, void *buff, const UINT size);
-
-    /**
-     * Import the given source file to its destination in the partition
-     *
-     * @param source
-     * @param destination
-     * @return
-     */
-    int importFile(const char* source, const char* destination);
-
-    /**
-     * Delete the given source file from the partition
-     *
-     * @param source
-     * @return
-     */
-    Partition* deleteFileDirectory(const char* source);
-
-    /**
-     * Export the given source file from the partition to its destination outside the partition
-     *
-     * @param source
-     * @param destination
-     * @return
-     */
-    int exportFile(const char* source, const char* destination);
-
+    void createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore = nullptr);
 
 };
 

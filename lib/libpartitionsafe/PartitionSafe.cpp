@@ -2,23 +2,88 @@
 // Created by marc on 15-11-16.
 //
 
+#include <cstring>
 #include "PartitionSafe.h"
-#include "Common.h"
 
-void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size) {
-    // Try to create the vault
-    Vault::create(label, size, vaultPath);
-
-    // Try to create the key store
-    KeyStore::create(keyStorePath);
+PartitionSafe::~PartitionSafe() {
+    delete vault;
+    delete keyStore;
+    delete user;
+    delete key;
 }
 
-PartitionSafe *PartitionSafe::init(const char* vaultPath, const char* keyStorePath) {
+void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {
+    // Try to create the key store
+    KeyStore::create(keyStorePath);
+    KeyStore *keyStore = KeyStore::init(keyStorePath);
+
+    // Create the user and save it
+    User *user; Key *key;
+    createUser(username, password, &user, &key, keyStore);
+
+    // Create the salted password
+    char *saltedPassword;
+    user->saltedPassword(password, user->salt, &saltedPassword);
+
+    // Decrypt key
+    unsigned char *encryptionKey;
+    key->decrypt(saltedPassword, key->key, &encryptionKey);
+
+    // Encrypt the test string
+    unsigned char *encrypted;
+    key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
+
+    // Try to create the vault
+    Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
+    Vault *vault = Vault::init(vaultPath);
+
+    // Save some metadata
+    keyStore->setMetadata("uuid", vault->header->UUID);
+    keyStore->setMetadata("label", vault->header->label);
+    keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
+
+    // Cleanup
+    delete[] saltedPassword;
+    delete[] encryptionKey;
+    delete[] encrypted;
+    delete user;
+    delete key;
+    delete vault;
+    delete keyStore;
+}
+
+PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
     // Get the vault instance
     vault = Vault::init(vaultPath);
 
     // Get the key store instance
     keyStore = KeyStore::init(keyStorePath);
+
+    // Check header stuff
+    char *uuid;
+    keyStore->getMetadata("uuid", &uuid);
+    if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
+
+    // Retrieve user
+    keyStore->getUser(username, &user);
+
+    // Retrieve root key
+    keyStore->getKey(0, user, &key);
+
+    // Decrypt key
+    unsigned char *decryptionKey;
+    key->decrypt(user, password, key->key, &decryptionKey);
+
+    // Get the decrypted key
+    unsigned char *decryptedIdentifier;
+    key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
+
+    // Check identifier
+    if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
+
+    // Cleanup
+    delete[] decryptedIdentifier;
+    delete[] decryptionKey;
 
     // Return myself
     return this;
@@ -32,30 +97,6 @@ PartitionSafe *PartitionSafe::open() {
     return this;
 }
 
-PartitionSafe *PartitionSafe::writeFile(const std::string fileName, const void *buff, const UINT size) {
-    // Write the file
-    vault->writeFile(Common::stdStringToTChar(fileName), buff, size);
-
-    // Return myself
-    return this;
-}
-
-PartitionSafe *PartitionSafe::fileInfo(const std::string fileName, FILINFO *fileInfo) {
-    // Get file info
-    vault->fileInfo(Common::stdStringToTChar(fileName), fileInfo);
-
-    // Return myself
-    return this;
-}
-
-PartitionSafe *PartitionSafe::readFile(const std::string fileName, void *buff, const UINT size) {
-    // Read the file
-    vault->readFile(Common::stdStringToTChar(fileName), buff, size);
-
-    // Return myself
-    return this;
-}
-
 Vault *PartitionSafe::getVault() {
     return vault;
 }
@@ -64,14 +105,37 @@ KeyStore *PartitionSafe::getKeyStore() {
     return keyStore;
 }
 
-int PartitionSafe::importFile(const char *source, const char *destination) {
-    return vault->importFile(source, destination);
+User *PartitionSafe::getUser() {
+    return user;
 }
 
-Partition *PartitionSafe::deleteFileDirectory(const char *source) {
-    return vault->deleteFileDirectory(source);
+Key *PartitionSafe::getKey() {
+    return key;
 }
 
-int PartitionSafe::exportFile(const char *source, const char *destination) {
-    return vault->exportFile(source, destination);
+void PartitionSafe::createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore) {
+    // Keystore a nullptr?
+    if(keyStore == nullptr) keyStore = this->keyStore;
+
+    // Create the new user
+    *user = User::create(username, password);
+    keyStore->saveUser(*user);
+    keyStore->getUser(username, user);
+
+    // First decrypt the current encryption key and then create the key
+    if(this->key) {
+        // Decrypt encryption key
+        unsigned char *encryptionKey;
+        this->key->decrypt(*user, password, this->key->key, &encryptionKey);
+
+        // Create the new key
+        *key = Key::create(*user, password, encryptionKey, 0);
+    } else {
+        // Create a new key
+        *key = Key::create(*user, password);
+    }
+
+    // Create the new root key based on the current encryption key
+    keyStore->saveKey(*key);
+    keyStore->getKey(0, *user, key);
 }
