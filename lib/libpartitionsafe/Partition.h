@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 #include "../libfatfs/src/ff.h"
-#include "Entry.h"
+#include "filesystem/TreeEntry.h"
 
 class Partition {
     /**
@@ -203,7 +203,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const TCHAR *directoryName);
+    std::vector<TreeEntry*> *listDirectory(const TCHAR *directoryName);
 
     /**
      * Read the contents of a file on the partition.
@@ -212,7 +212,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const std::string directoryName);
+    std::vector<TreeEntry*> *listDirectory(const std::string directoryName);
 
 #ifndef __WIN32
     /**
@@ -222,7 +222,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const char *directoryName);
+    std::vector<TreeEntry*> *listDirectory(const char *directoryName);
 #endif
 
     /**

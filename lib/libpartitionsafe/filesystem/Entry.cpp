@@ -3,7 +3,7 @@
 //
 
 #include "Entry.h"
-#include "Common.h"
+#include "../Common.h"
 
 Entry::Entry(const FILINFO filinfo, const std::string directory):
     name(Common::tCharToStdString(filinfo.fname, sizeof(filinfo.fname))),

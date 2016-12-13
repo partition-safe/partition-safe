@@ -137,7 +137,7 @@ Partition *Partition::readFile(const char *fileName, void *buff, const UINT size
 }
 #endif
 
-std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
+std::vector<TreeEntry*> *Partition::listDirectory(const TCHAR *directoryName) {
     // The instances
     FRESULT res;
     DIR dir;
@@ -151,7 +151,7 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     std::string sDirectoryName = Common::tCharToStdString(directoryName);
 
     // The result list
-    std::vector<Entry*>* entries = new std::vector<Entry*>();
+    std::vector<TreeEntry*>* entries = new std::vector<TreeEntry*>();
 
     // Find all directories
     for (;;) {
@@ -162,7 +162,7 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
         if (res != FR_OK || fno.fname[0] == 0) break;
 
         // Create the entry and add it to the list
-        entries->push_back(new Entry(fno, sDirectoryName));
+        entries->push_back(new TreeEntry(fno, sDirectoryName));
     }
 
     // Close the directory
@@ -173,12 +173,12 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     return entries;
 }
 
-std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) {
+std::vector<TreeEntry *> *Partition::listDirectory(const std::string directoryName) {
     return listDirectory(Common::stdStringToTChar(directoryName));
 }
 
 #ifndef __WIN32
-std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
+std::vector<TreeEntry *> *Partition::listDirectory(const char *directoryName) {
     return listDirectory(std::string(directoryName));
 }
 #endif
