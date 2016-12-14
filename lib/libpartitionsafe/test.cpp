@@ -45,15 +45,6 @@ int main() {
         std::cout << "-- Partition open" << std::endl;
         ps->init(vaultPath, keyStorePath, "test", "test")->open();
 
-        // Read directories/files for root
-        std::cout << "-- List directories" << std::endl;
-        std::vector<Entry*>* entriess = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
-
-        // Print entries
-        for(Entry* const& value : *entriess) {
-            std::cout << value->getFullPath() << std::endl;
-        }
-
         //
         // Write file
         //

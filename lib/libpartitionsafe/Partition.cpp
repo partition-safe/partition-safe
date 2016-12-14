@@ -27,7 +27,7 @@ Partition::Partition(const char* path, FILE* fh):
 }
 
 Partition::~Partition() {
-    // Mount the file system
+    // Unmount the file system
     FRESULT res = f_mount(nullptr, Partition::LETTER, 0);
     if(res != FR_OK) throw "Could not mount partition";
 }
