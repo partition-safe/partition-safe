@@ -38,6 +38,8 @@ private slots:
     void fileChanged(const QString &);
 
 
+    void on_buttonNewDirectory_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;

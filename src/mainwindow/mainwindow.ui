@@ -158,6 +158,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="buttonNewDirectory">
+        <property name="text">
+         <string>New Directory</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="buttonDelete">
         <property name="enabled">
          <bool>false</bool>

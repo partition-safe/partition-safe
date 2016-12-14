@@ -86,6 +86,13 @@ void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
     setCurrentDirectory(getCurrentDirectory());
 }
 
+void PSFileSystemModel::createDirectory( QString directoryName){
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
+}
+
 void PSFileSystemModel::deleteFileDirectory(QString path)
 {
     FRESULT exists;

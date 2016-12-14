@@ -2,9 +2,11 @@
 #include "ui_mainwindow.h"
 #include "dialogopen.h"
 #include "dialognew.h"
+#include "dialognewdirectory.h"
 
 #include <QDirModel>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QProgressDialog>
 #include <QDir>
 #include <QDesktopServices>
@@ -36,17 +38,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef QT_DEBUG
 #ifndef __WIN32
-        const char *vaultPath = "/tmp/marc.vault";
-        const char *keyStorePath = "/tmp/marc.keystore";
+    const char *vaultPath = "/tmp/marc.vault";
+    const char *keyStorePath = "/tmp/marc.keystore";
 #else
-        wchar_t _vaultPath[1024];
-        wchar_t _keyStorePath[1024];
-        ExpandEnvironmentStrings(L"%Temp%\\marc.vault", _vaultPath, 1024);
-        ExpandEnvironmentStrings(L"%Temp%\\marc.keystore", _keyStorePath, 1024);
-        char vaultPath[1024];
-        char keyStorePath[1024];
-        wcstombs(vaultPath, _vaultPath, 1024);
-        wcstombs(keyStorePath, _keyStorePath, 1024);
+    wchar_t _vaultPath[1024];
+    wchar_t _keyStorePath[1024];
+    ExpandEnvironmentStrings(L"%Temp%\\marc.vault", _vaultPath, 1024);
+    ExpandEnvironmentStrings(L"%Temp%\\marc.keystore", _keyStorePath, 1024);
+    char vaultPath[1024];
+    char keyStorePath[1024];
+    wcstombs(vaultPath, _vaultPath, 1024);
+    wcstombs(keyStorePath, _keyStorePath, 1024);
 #endif
 
     // Debug mode only, load a default vault
@@ -318,4 +320,11 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
     ui->buttonDelete->setEnabled(hasSelection);
     ui->buttonExport->setEnabled(hasSelection);
     ui->actionExport->setEnabled(hasSelection);
+}
+
+void MainWindow::on_buttonNewDirectory_clicked()
+{
+    DialogNewDirectory *newDialogDirectory = new DialogNewDirectory(this);
+
+    newDialogDirectory->exec();
 }

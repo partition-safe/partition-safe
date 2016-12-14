@@ -25,13 +25,16 @@ SOURCES += main.cpp\
     mainwindow/dialogopen.cpp \
     mainwindow/dialognew.cpp \
     lib/PSFileSystemModel.cpp \
+    mainwindow/dialognewdirectory.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
     mainwindow/dialognew.h \
     lib/PSFileSystemModel.h \
+    mainwindow/dialognewdirectory.h
 
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
     mainwindow/dialognew.ui \
+    mainwindow/dialognewdirectory.ui
