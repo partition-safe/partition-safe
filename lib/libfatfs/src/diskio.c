@@ -97,8 +97,6 @@ DRESULT disk_read (
             if(res != RES_OK)
                 return RES_ERROR;
 
-            printf(buff);
-
             result = RES_OK;
             break;
 
@@ -172,7 +170,7 @@ DRESULT disk_write (
 }
 
 
-DRESULT _disk_write_encrypt(int size, BYTE *unEncruptedBuf, BYTE *encryptedBuf) {
+DRESULT _disk_write_encrypt(int size, BYTE const *unEncruptedBuf, BYTE *encryptedBuf) {
     // Setup encryption variables
     unsigned char key[32] = "lol";
     unsigned char iv[16] = "lol";
