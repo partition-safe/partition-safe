@@ -61,10 +61,22 @@ public:
     const std::string getFullPath();
 
     /**
+     * Get the full path of this entry.
+     * @return
+     */
+    const std::string getFullPath() const;
+
+    /**
      * Is the entry a directory.
      * @return
      */
-    bool isDirectory();
+    const bool isDirectory();
+
+    /**
+     * Is the entry a directory.
+     * @return
+     */
+    const bool isDirectory() const;
 
 };
 

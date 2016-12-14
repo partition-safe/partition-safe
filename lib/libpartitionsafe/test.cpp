@@ -111,7 +111,8 @@ int main() {
 
         // Read directories/files for root
         std::cout << "-- List directories" << std::endl;
-        std::vector<Entry*>* entries = (std::vector<Entry*>*) ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
+        TreeEntry *root;
+        std::vector<Entry*>* entries = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"), &root);
 
         // Print entries
         for(Entry* const& value : *entries) {

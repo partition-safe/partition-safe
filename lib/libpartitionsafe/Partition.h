@@ -203,7 +203,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<TreeEntry*> *listDirectory(const TCHAR *directoryName);
+    std::vector<Entry*> *listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry = nullptr);
 
     /**
      * Read the contents of a file on the partition.
@@ -212,7 +212,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<TreeEntry*> *listDirectory(const std::string directoryName);
+    std::vector<Entry*> *listDirectory(const std::string directoryName, TreeEntry **parentEntry = nullptr);
 
 #ifndef __WIN32
     /**
@@ -222,7 +222,7 @@ public:
      *
      * @return The list of found entries
      */
-    std::vector<TreeEntry*> *listDirectory(const char *directoryName);
+    std::vector<Entry*> *listDirectory(const char *directoryName, TreeEntry **parentEntry = nullptr);
 #endif
 
     /**
