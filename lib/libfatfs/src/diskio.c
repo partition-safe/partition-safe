@@ -8,8 +8,10 @@
 /*-----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "diskio.h"		/* FatFs lower layer API */
 #include "ffconf.h"
+#include "../../libmbedtls/include/mbedtls/aes.h"
 
 /* Definitions of physical drive number for each drive */
 #define DEV_PSV		0	/* Partition Safe Vault */
@@ -81,20 +83,40 @@ DRESULT disk_read (
 )
 {
     DRESULT result;
+    BYTE outBuf[_MAX_SS * count];
 
-	switch (pdrv) {
+    switch (pdrv) {
         case DEV_PSV:
-			fseek(currentFileDescriptor, _MAX_SS * sector + RESERVED_SECTORS_BYTES, SEEK_SET);
-			fread(buff, _MAX_SS * count, 1, currentFileDescriptor);
-			result = RES_OK;
+            // Read data
+            fseek(currentFileDescriptor, _MAX_SS * sector + RESERVED_SECTORS_BYTES, SEEK_SET);
+            fread(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
+
+            // Setup decrypt variables
+            unsigned char key[32] = "lol";
+            unsigned char iv[16] = "lol";
+            mbedtls_aes_context dtx;
+
+            // Initialize AES
+            mbedtls_aes_init(&dtx);
+
+            // Set decryption key
+            mbedtls_aes_setkey_dec(&dtx, key, 256);
+            if(mbedtls_aes_crypt_cbc(&dtx, MBEDTLS_AES_DECRYPT, _MAX_SS * count, iv, outBuf, buff) == 0) {
+                result = RES_OK;
+            } else {
+                result = RES_ERROR;
+            }
+
+            // Cleanup
+            mbedtls_aes_free(&dtx);
             break;
 
-		default:
-			result = RES_ERROR;
-			break;
-	}
+        default:
+            result = RES_ERROR;
+            break;
+    }
 
-	return result;
+    return result;
 }
 
 
@@ -110,22 +132,47 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-	DRESULT result;
-	DWORD startPosition = _MAX_SS * sector + RESERVED_SECTORS_BYTES;
+    DRESULT result = RES_OK;
+    DWORD startPosition = _MAX_SS * sector + RESERVED_SECTORS_BYTES;
+    BYTE outBuf[_MAX_SS * count];
 
-	switch (pdrv) {
+    // Setup encryption variables
+    unsigned char key[32] = "lol";
+    unsigned char iv[16] = "lol";
+    mbedtls_aes_context ctx;
+
+    switch (pdrv) {
         case DEV_PSV:
-			fseek(currentFileDescriptor, startPosition, SEEK_SET);
-			fwrite(buff, _MAX_SS * count, 1, currentFileDescriptor);
-			result = RES_OK;
+            // Initialize AES
+            mbedtls_aes_init(&ctx);
+
+            // Set encryption key
+            mbedtls_aes_setkey_enc(&ctx, key, 256);
+
+            // Encrypt buffer
+            if(mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, _MAX_SS * count, iv, buff, outBuf) != 0) {
+                result = RES_ERROR;
+            }
+
+            // Cleanup
+            mbedtls_aes_free(&ctx);
+
+            // Result already error?
+            if(result == RES_ERROR) {
+                break;
+            }
+
+            // Write the result
+            fseek(currentFileDescriptor, startPosition, SEEK_SET);
+            fwrite(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
+            result = RES_OK;
             break;
 
-		default:
-			result = RES_ERROR;
-			break;
-	}
-
-	return result;
+        default:
+            result = RES_ERROR;
+            break;
+    }
+    return result;
 }
 
 
