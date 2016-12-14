@@ -48,6 +48,7 @@ private:
     PartitionSafe* psInstance;
     QModelIndexList selectedRowsList;
     QFileSystemWatcher* watcher;
+    QHash<QString, Entry*> modifiedFileList;
 
     void setPath();
     void importFiles();
