@@ -137,7 +137,7 @@ Partition *Partition::readFile(const char *fileName, void *buff, const UINT size
 }
 #endif
 
-std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry) {
+std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
     // The instances
     FRESULT res;
     DIR dir;
@@ -176,9 +176,15 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName, TreeEn
         // Create the tree entry
         Entry *entry = new Entry(fno, sDirectoryName);
 
-        // Create the entry and add it to the list
-        entries->push_back(entry);
-        if(_parentEntry != nullptr) _parentEntry->addChild(new TreeEntry(entry, _parentEntry));
+        // Directories only?
+        if((directoriesOnly && entry->isDirectory()) || !directoriesOnly) {
+            // Create the entry and add it to the list
+            entries->push_back(entry);
+            if(_parentEntry != nullptr) _parentEntry->addChild(new TreeEntry(entry, _parentEntry));
+        } else {
+            // Cleanup
+            delete entry;
+        }
     }
 
     // Parent entry setup?
@@ -195,13 +201,13 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName, TreeEn
     return entries;
 }
 
-std::vector<Entry*> *Partition::listDirectory(const std::string directoryName, TreeEntry **parentEntry) {
-    return listDirectory(Common::stdStringToTChar(directoryName), parentEntry);
+std::vector<Entry*> *Partition::listDirectory(const std::string directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
+    return listDirectory(Common::stdStringToTChar(directoryName), parentEntry, directoriesOnly);
 }
 
 #ifndef __WIN32
-std::vector<Entry*> *Partition::listDirectory(const char *directoryName, TreeEntry **parentEntry) {
-    return listDirectory(std::string(directoryName), parentEntry);
+std::vector<Entry*> *Partition::listDirectory(const char *directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
+    return listDirectory(std::string(directoryName), parentEntry, directoriesOnly);
 }
 #endif
 

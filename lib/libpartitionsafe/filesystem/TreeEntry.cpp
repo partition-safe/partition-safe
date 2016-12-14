@@ -10,6 +10,12 @@ TreeEntry::TreeEntry():
 TreeEntry::TreeEntry(const Entry *data, const TreeEntry *parent, std::vector<TreeEntry*> children):
         data(data), parent(parent), children(children) {}
 
+TreeEntry::~TreeEntry() {
+    children.clear();
+    delete data;
+    delete parent;
+}
+
 void TreeEntry::addChild(TreeEntry *child) {
     children.push_back(child);
 }

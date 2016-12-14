@@ -44,6 +44,11 @@ public:
     TreeEntry(const Entry *data, const TreeEntry *parent, std::vector<TreeEntry*> children = *(new std::vector<TreeEntry*>()));
 
     /**
+     * Destructor
+     */
+    ~TreeEntry();
+
+    /**
      * Add a new child to the children.
      *
      * @param child

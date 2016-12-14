@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Setup models
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSTreeFileSystemModel(this, psInstance);
+    modelDirs->setDirectoriesOnly(true);
 
     // Setup a file watcher, it detect changes of files that are currently been edited
     watcher = new QFileSystemWatcher(this);

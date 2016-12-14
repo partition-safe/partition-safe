@@ -18,6 +18,11 @@ class PSTreeFileSystemModel : public QAbstractItemModel
     TreeEntry *currentDirectory;
 
     /**
+     * @brief directoriesOnly Only show directories
+     */
+    bool directoriesOnly = false;
+
+    /**
      * @brief setupData Setup the directory data
      */
     void setupData(TreeEntry **node, const char *path);
@@ -50,6 +55,11 @@ public:
      * @param path
      */
     void setCurrentDirectory(QString path);
+
+    /**
+     * @brief setDirectoriesOnly Set to show only directories
+     */
+    void setDirectoriesOnly(const bool state);
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
 

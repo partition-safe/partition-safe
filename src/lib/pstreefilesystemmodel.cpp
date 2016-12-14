@@ -12,7 +12,7 @@ PSTreeFileSystemModel::~PSTreeFileSystemModel()
 void PSTreeFileSystemModel::setupData(TreeEntry **node, const char *path)
 {
     // Load data for this path
-    psInstance->getVault()->getPartition()->listDirectory(path, node);
+    psInstance->getVault()->getPartition()->listDirectory(path, node, directoriesOnly);
 
     // Iterate over all children of this node
     for(unsigned i = 0; i < (*node)->getChildren().size(); ++i) {
@@ -28,7 +28,6 @@ void PSTreeFileSystemModel::setupData(TreeEntry **node, const char *path)
 
 void PSTreeFileSystemModel::init()
 {
-    if(currentDirectory) delete currentDirectory;
     currentDirectory = new TreeEntry();
     setupData(&currentDirectory, "/");
 }
@@ -77,9 +76,6 @@ QModelIndex PSTreeFileSystemModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     return createIndex(parentItem->row(), 0, (void *)parentItem);
-
-//    TreeEntry *entry = (TreeEntry *)child.data().data();
-//    return createIndex(child.row(), child.column(), (void *)entry->getParent());
 }
 
 int PSTreeFileSystemModel::rowCount(const QModelIndex &parent) const
@@ -117,4 +113,9 @@ QVariant PSTreeFileSystemModel::data(const QModelIndex &index, int role) const
 void PSTreeFileSystemModel::setCurrentDirectory(QString path)
 {
 
+}
+
+void PSTreeFileSystemModel::setDirectoriesOnly(const bool state)
+{
+    directoriesOnly = state;
 }
