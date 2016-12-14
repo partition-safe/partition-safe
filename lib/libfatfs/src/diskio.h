@@ -33,7 +33,9 @@ typedef enum {
 DSTATUS disk_initialize (BYTE pdrv);
 DSTATUS disk_status (BYTE pdrv);
 DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
+DRESULT _disk_read_decrypt(int size, BYTE *encryptedBuf, BYTE *decryptedBuf);
 DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
+DRESULT _disk_write_encrypt(int size, BYTE *unEncruptedBuf, BYTE *encryptedBuf);
 DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 
 

@@ -28,15 +28,13 @@ int main() {
 #endif
         char label[40] = "Marc";
 
-        // Delete old files
-        std::remove(vaultPath);
-        std::remove(keyStorePath);
-
         // Create the partition safe instance
         PartitionSafe *ps = new PartitionSafe();
 
         // Create the vault
         std::cout << "-- Partition create" << std::endl;
+        std::remove(vaultPath);
+        std::remove(keyStorePath);
         ps->create(vaultPath, keyStorePath, label, 1024, "test", "test");
 
         //
@@ -46,6 +44,15 @@ int main() {
         // Init the vault
         std::cout << "-- Partition open" << std::endl;
         ps->init(vaultPath, keyStorePath, "test", "test")->open();
+
+        // Read directories/files for root
+        std::cout << "-- List directories" << std::endl;
+        std::vector<Entry*>* entriess = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
+
+        // Print entries
+        for(Entry* const& value : *entriess) {
+            std::cout << value->getFullPath() << std::endl;
+        }
 
         //
         // Write file

@@ -56,6 +56,11 @@ public:
     Partition(const char* path, FILE* fh = nullptr);
 
     /**
+     * Partition destructor.
+     */
+    ~Partition();
+
+    /**
      * Open the partition.
      *
      * @param path The path to the partition file
