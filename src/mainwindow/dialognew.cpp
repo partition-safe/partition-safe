@@ -104,7 +104,24 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
         const char *username = baUsername.data();
         QByteArray baPassword = ui->textPassword->text().toLatin1();
         const char *password = baPassword.data();
+
         int partitionSize = ui->textPartitionSize->text().toInt();
+
+        // multiply the partition size
+        switch(ui->comboSizeType->currentIndex()){
+            case 3: // KB
+                partitionSize *= 1024;
+            break;
+            case 2: // MB
+                partitionSize *= 1048576;
+            break;
+            case 1: // GB
+                partitionSize *= 1073741824;
+            break;
+            case 0: // TB
+                partitionSize *= 1099511627776;
+            break;
+        }
 
         try {
             // Creat a partition
