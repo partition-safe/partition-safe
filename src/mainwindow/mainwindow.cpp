@@ -301,6 +301,7 @@ void MainWindow::setPath()
 {
     // Show message
     if(model != nullptr) ui->statusBar->showMessage(model->getCurrentDirectory());
+    if(modelDirs != nullptr) modelDirs->init();
 
     // At last item? Disable back button.
     ui->buttonBack->setEnabled(folderHistory->size() > 0);
