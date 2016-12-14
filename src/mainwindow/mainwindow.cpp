@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QFileSystemWatcher>
+#include <QUuid>
 
 #include <QDebug>
 
@@ -25,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Create the partition safe instance
     psInstance = new PartitionSafe();
-
     // Setup models
     model = new PSFileSystemModel(this, psInstance);
     modelDirs = new PSFileSystemModel(this, psInstance);
@@ -70,8 +70,12 @@ MainWindow::~MainWindow()
 void MainWindow::fileChanged(const QString & file){
 
     std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
-    QFileInfo fileInfo(file);
-    psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), fileInfo.fileName().toLatin1().data());
+    Entry* item = modifiedFileList.value(file);
+
+    if(item != NULL){
+        QFileInfo fileInfo(file);
+        psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), item->getFullPath().c_str());
+    }
 
 }
 
@@ -96,16 +100,20 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
     // The double clicked item seems to be a file
     else{
+
+        QUuid uuid = QUuid::createUuid();
+
         // Export the file to a temporary location
-        QString tmpFile = QDir::tempPath().append("/").append(item->name.data());
+        QString tmpFile = QDir::tempPath().append("/").append(uuid.toString()).append("_").append(item->name.data());
 
         psInstance->getVault()->getPartition()->exportFile(item->getFullPath().data(), tmpFile.toLatin1().data());
 
         // Watch this temp file for changes
         watcher->addPath(tmpFile);
+        modifiedFileList.insert(tmpFile, item);
 
         // Try to open it with the default application
-        QDesktopServices::openUrl(QUrl(tmpFile.prepend("file://"), QUrl::TolerantMode));
+        QDesktopServices::openUrl(QUrl(tmpFile.prepend("file:///"), QUrl::TolerantMode));
     }
 
 }
