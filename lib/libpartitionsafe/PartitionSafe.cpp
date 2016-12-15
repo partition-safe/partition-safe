@@ -49,6 +49,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     keyStore->setMetadata("label", vault->header->label);
     keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
 
+#ifndef __WIN32
     // Cleanup
     delete[] saltedPassword;
     delete[] encryptionKey;
@@ -57,6 +58,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     delete key;
     delete vault;
     delete keyStore;
+#endif
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
