@@ -195,6 +195,8 @@
     <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -202,7 +204,14 @@
     </property>
     <addaction name="actionContact"/>
    </widget>
+   <widget class="QMenu" name="menuVaultj">
+    <property name="title">
+     <string>Vault</string>
+    </property>
+    <addaction name="actionUser"/>
+   </widget>
    <addaction name="menuPartitionSafe"/>
+   <addaction name="menuVaultj"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -263,6 +272,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionUser">
+   <property name="text">
+    <string>New User...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new user in this vault</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
    </property>
   </action>
  </widget>

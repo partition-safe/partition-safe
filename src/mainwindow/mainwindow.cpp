@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dialogopen.h"
 #include "dialognew.h"
+#include "dialognewuser.h"
 
 #include <QDirModel>
 #include <QFileDialog>
@@ -334,4 +335,10 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
 void MainWindow::on_treeViewExplorer_viewportEntered()
 {
     qDebug() << "haha";
+}
+
+void MainWindow::on_actionUser_triggered()
+{
+    DialogNewUser* dialog = new DialogNewUser(this, psInstance);
+    dialog->show();
 }

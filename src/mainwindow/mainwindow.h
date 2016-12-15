@@ -40,6 +40,8 @@ private slots:
 
     void on_treeViewExplorer_viewportEntered();
 
+    void on_actionUser_triggered();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;

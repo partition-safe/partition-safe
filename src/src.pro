@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     mainwindow/dialogopen.cpp \
     mainwindow/dialognew.cpp \
     lib/PSFileSystemModel.cpp \
-    lib/pstreefilesystemmodel.cpp
+    lib/pstreefilesystemmodel.cpp \
+    mainwindow/dialognewuser.cpp \
     maintreeviewfiles.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
@@ -33,8 +34,10 @@ HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialognew.h \
     lib/PSFileSystemModel.h \
     lib/pstreefilesystemmodel.h \
-    maintreeviewfiles.h
+    maintreeviewfiles.h \
+    mainwindow/dialognewuser.h
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
     mainwindow/dialognew.ui \
+    mainwindow/dialognewuser.ui
