@@ -28,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     psInstance = new PartitionSafe();
     // Setup models
     model = new PSFileSystemModel(this, psInstance);
-    modelDirs = new PSFileSystemModel(this, psInstance);
+    modelDirs = new PSTreeFileSystemModel(this, psInstance);
+    modelDirs->setDirectoriesOnly(true);
 
     // Setup a file watcher, it detect changes of files that are currently been edited
     watcher = new QFileSystemWatcher(this);
@@ -308,6 +309,7 @@ void MainWindow::setPath()
 {
     // Show message
     if(model != nullptr) ui->statusBar->showMessage(model->getCurrentDirectory());
+    if(modelDirs != nullptr) modelDirs->init();
 
     // At last item? Disable back button.
     ui->buttonBack->setEnabled(folderHistory->size() > 0);

@@ -7,7 +7,7 @@
 
 
 #include <string>
-#include "../libfatfs/src/ff.h"
+#include "../../libfatfs/src/ff.h"
 
 class Entry {
 public:
@@ -50,6 +50,7 @@ public:
      * The entry constructor.
      *
      * @param filinfo The raw file info
+     * @param directory The directory of the entry
      */
     Entry(const FILINFO filinfo, const std::string directory);
 
@@ -60,10 +61,22 @@ public:
     const std::string getFullPath();
 
     /**
+     * Get the full path of this entry.
+     * @return
+     */
+    const std::string getFullPath() const;
+
+    /**
      * Is the entry a directory.
      * @return
      */
-    bool isDirectory();
+    const bool isDirectory();
+
+    /**
+     * Is the entry a directory.
+     * @return
+     */
+    const bool isDirectory() const;
 
 };
 
