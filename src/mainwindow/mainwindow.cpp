@@ -12,6 +12,7 @@
 #include <QDesktopServices>
 #include <QFileSystemWatcher>
 #include <QUuid>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -334,5 +335,15 @@ void MainWindow::on_buttonNewDirectory_clicked()
 {
     DialogNewDirectory *newDialogDirectory = new DialogNewDirectory(this);
 
-    newDialogDirectory->exec();
+    int dialogResult = newDialogDirectory->exec();
+
+    if(dialogResult == QDialog::Accepted)
+    {
+        // Get new directory name
+        QString dirName = newDialogDirectory->dirName;
+        QString fullPath = model->getCurrentDirectory()+"/"+dirName;
+        // if not existing, create new directory
+        if(!model->directoryExists(fullPath)) model->createDirectory(fullPath);
+        else QMessageBox::warning(0,"Can't Create Directory", "Directory already exists");
+    }
 }

@@ -97,6 +97,7 @@ public:
     void createDirectory( QString directoryName);
     void navigation_buttons(QStack<QString> &stackToCheck, QStack<QString> &stackToAdd);
     void enterDirectory(QString path, QStack<QString> &folderHistory, QStack<QString> &folderForwardHistory);
+    bool directoryExists(QString path);
 };
 
 

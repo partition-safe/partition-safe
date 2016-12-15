@@ -22,7 +22,7 @@ DialogNewDirectory::~DialogNewDirectory()
 
 bool DialogNewDirectory::validDirectory(QString directoryName){
     //Todo: add regexp to check directory name
-    QRegExp re("^[^<>\\\\/:|\"\*\?]+$");
+    QRegExp re("^[^<>\\\\/:|\"\*\?\.]+$");
     return re.exactMatch(directoryName);
 }
 
@@ -30,6 +30,7 @@ void  DialogNewDirectory::enableOkButton(bool enable){
     // Check if valid dirictory and set OK enable/disable OK burron
     QPushButton *button = ui->buttonBoxNewDir->button(QDialogButtonBox::Ok);
     button->setEnabled(enable);
+    if(enable) dirName = ui->txtDirectoryName->text();
 }
 
 void DialogNewDirectory::on_txtDirectoryName_textChanged(const QString &dirName)

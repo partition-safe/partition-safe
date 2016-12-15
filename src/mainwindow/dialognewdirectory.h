@@ -14,6 +14,7 @@ class DialogNewDirectory : public QDialog
 public:
     explicit DialogNewDirectory(QWidget *parent = 0);
     ~DialogNewDirectory();
+    QString dirName;
 
 private slots:
     void on_txtDirectoryName_textChanged(const QString &arg1);
@@ -21,6 +22,7 @@ private slots:
 private:
     Ui::DialogNewDirectory *ui;
     bool validDirectory(QString directoryName);
+    bool directoryExists(const QString directoryName);
     void enableOkButton(bool enable);
 };
 

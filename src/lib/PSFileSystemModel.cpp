@@ -124,6 +124,15 @@ void PSFileSystemModel::deleteFileDirectory(QString path)
     }
     endRemoveRows();
 }
+bool PSFileSystemModel::directoryExists(QString path){
+    FRESULT exists;
+    FILINFO fno;
+
+    exists = f_stat(Common::stdStringToTChar(path.toStdString()), &fno);
+
+    if(exists==FR_OK && fno.fattrib == AM_DIR) return true;
+    else return false;
+}
 
 QString PSFileSystemModel::getCurrentDirectory()
 {
