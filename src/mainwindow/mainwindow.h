@@ -7,6 +7,7 @@
 #include <QFileSystemWatcher>
 
 #include <lib/PSFileSystemModel.h>
+#include <lib/pstreefilesystemmodel.h>
 
 namespace Ui {
 class MainWindow;
@@ -42,7 +43,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
-    PSFileSystemModel *modelDirs;
+    PSTreeFileSystemModel *modelDirs;
     QStack<QString> *folderHistory, *folderForwardHistory;
     PartitionSafe* psInstance;
     QModelIndexList selectedRowsList;
