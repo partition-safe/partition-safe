@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include "PartitionSafe.h"
+#include "../libfatfs/src/diskio.h"
 
 PartitionSafe::~PartitionSafe() {
     delete vault;
@@ -81,9 +82,15 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Check identifier
     if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
 
+    // Setup the encryption config
+    size_t usernameLength = strlen(username);
+    std::fill_n(_disk_encryption_conf.key, 32, 0x00);
+    std::fill_n(_disk_encryption_conf.iv, 16, 0x00);
+    memcpy(_disk_encryption_conf.key, decryptionKey, 32);
+    memcpy(_disk_encryption_conf.iv, username, usernameLength > 16 ? 16 : usernameLength);
+
     // Cleanup
     delete[] decryptedIdentifier;
-    delete[] decryptionKey;
 
     // Return myself
     return this;

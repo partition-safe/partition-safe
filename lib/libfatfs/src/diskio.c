@@ -8,7 +8,6 @@
 /*-----------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <memory.h>
 #include "diskio.h"		/* FatFs lower layer API */
 #include "ffconf.h"
@@ -19,6 +18,9 @@
 
 #define RESERVED_SECTORS 10
 #define RESERVED_SECTORS_BYTES RESERVED_SECTORS * _MAX_SS
+
+struct DISK_ENCRYPTION_CONFIG _disk_encryption_conf = {};
+FILE *currentFileDescriptor;
 
 DWORD get_fattime(){
 	return 0;
@@ -93,11 +95,7 @@ DRESULT disk_read (
             fread(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
 
             // Decrypt the data
-            DRESULT res = _disk_read_decrypt(_MAX_SS * count, outBuf, buff);
-            if(res != RES_OK)
-                return RES_ERROR;
-
-            result = RES_OK;
+            result = _disk_read_decrypt(_MAX_SS * count, outBuf, buff);
             break;
 
         default:
@@ -111,8 +109,10 @@ DRESULT disk_read (
 DRESULT _disk_read_decrypt(int size, BYTE *encryptedBuf, BYTE *decryptedBuf) {
     // Setup decrypt variables
     DRESULT result;
-    unsigned char key[32] = "lol";
-    unsigned char iv[16] = "lol";
+    unsigned char key[32];
+    unsigned char iv[16];
+    memcpy(key, _disk_encryption_conf.key, 32);
+    memcpy(iv, _disk_encryption_conf.iv, 16);
     mbedtls_aes_context dtx;
 
     // Initialize AES
@@ -120,11 +120,8 @@ DRESULT _disk_read_decrypt(int size, BYTE *encryptedBuf, BYTE *decryptedBuf) {
 
     // Set decryption key
     mbedtls_aes_setkey_dec(&dtx, key, 256);
-    if(mbedtls_aes_crypt_cbc(&dtx, MBEDTLS_AES_DECRYPT, size, iv, encryptedBuf, decryptedBuf) == 0) {
-        result = RES_OK;
-    } else {
-        result = RES_ERROR;
-    }
+    int res = mbedtls_aes_crypt_cbc(&dtx, MBEDTLS_AES_DECRYPT, size, iv, encryptedBuf, decryptedBuf);
+    result = (res == 0 ? RES_OK : RES_DECERR);
 
     // Cleanup
     mbedtls_aes_free(&dtx);
@@ -142,24 +139,20 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-    DRESULT result = RES_OK;
+    DRESULT result;
     DWORD startPosition = _MAX_SS * sector + RESERVED_SECTORS_BYTES;
     BYTE outBuf[_MAX_SS * count];
-    DRESULT res = RES_OK;
+    DRESULT res;
 
     switch (pdrv) {
         case DEV_PSV:
             // Encrypt data
-            res = _disk_write_encrypt(_MAX_SS * count, buff, outBuf);
-            if(res != RES_OK)
-                return RES_ERROR;
-
-            // Write new buffer
-            fseek(currentFileDescriptor, startPosition, SEEK_SET);
-            fwrite(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
-
-            // OK
-            result = RES_OK;
+            result = _disk_write_encrypt(_MAX_SS * count, buff, outBuf);
+            if(result == RES_OK) {
+                // Write new buffer
+                fseek(currentFileDescriptor, startPosition, SEEK_SET);
+                fwrite(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
+            }
             break;
 
         default:
@@ -172,8 +165,11 @@ DRESULT disk_write (
 
 DRESULT _disk_write_encrypt(int size, BYTE const *unEncruptedBuf, BYTE *encryptedBuf) {
     // Setup encryption variables
-    unsigned char key[32] = "lol";
-    unsigned char iv[16] = "lol";
+    DRESULT result;
+    unsigned char key[32];
+    unsigned char iv[16];
+    memcpy(key, _disk_encryption_conf.key, 32);
+    memcpy(iv, _disk_encryption_conf.iv, 16);
     mbedtls_aes_context ctx;
 
     // Initialize AES
@@ -183,13 +179,14 @@ DRESULT _disk_write_encrypt(int size, BYTE const *unEncruptedBuf, BYTE *encrypte
     mbedtls_aes_setkey_enc(&ctx, key, 256);
 
     // Encrypt buffer
-    int result = mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, size, iv, unEncruptedBuf, encryptedBuf);
+    int res = mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, size, iv, unEncruptedBuf, encryptedBuf);
+    result = (res == 0 ? RES_OK : RES_ENCERR);
 
     // Cleanup
     mbedtls_aes_free(&ctx);
 
     // Result already error?
-    return result == 0 ? RES_OK : RES_ERROR;
+    return result;
 }
 
 

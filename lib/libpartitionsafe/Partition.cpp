@@ -3,8 +3,8 @@
 //
 
 #include "Partition.h"
-#include "../libfatfs/src/diskio.h"
 #include "Common.h"
+#include "../libfatfs/src/diskio.h"
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
