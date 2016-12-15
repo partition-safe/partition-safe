@@ -22,7 +22,7 @@ DialogNewDirectory::~DialogNewDirectory()
 
 bool DialogNewDirectory::validDirectory(QString directoryName){
     //Todo: add regexp to check directory name
-    QRegExp re("^(?!\\s)[^<>\\\\/:|\"\*\?\.]*\\S(?!\\s)$");
+    QRegExp re("^(?!\\s)+^[^<>\\\\/:|\"\*\?\.]+$");
     return re.exactMatch(directoryName);
 }
 
