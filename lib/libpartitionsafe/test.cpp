@@ -93,6 +93,13 @@ int main() {
         ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
         ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
 
+        ps->getVault()->getPartition()->createDirectory("beast");
+        ps->getVault()->getPartition()->createDirectory("beast/1");
+        ps->getVault()->getPartition()->createDirectory("beast/2");
+        ps->getVault()->getPartition()->createDirectory("beast/2/1");
+        ps->getVault()->getPartition()->createDirectory("beast/2/2");
+        ps->getVault()->getPartition()->createDirectory("beast/2/2/3");
+
         // Import a file
 #ifndef __WIN32
         const char *importTest = "/tmp/test.txt";
@@ -111,7 +118,7 @@ int main() {
 
         // Read directories/files for root
         std::cout << "-- List directories" << std::endl;
-        TreeEntry *root;
+        TreeEntry *root = new TreeEntry();
         std::vector<Entry*>* entries = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"), &root);
 
         // Print entries

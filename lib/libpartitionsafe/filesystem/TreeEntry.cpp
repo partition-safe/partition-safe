@@ -1,7 +1,7 @@
 //
 // Created by Youri Lefers on 13-12-16.
 //
-
+#include <algorithm>
 #include "TreeEntry.h"
 
 TreeEntry::TreeEntry():
