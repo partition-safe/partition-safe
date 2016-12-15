@@ -34,6 +34,12 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
 
+    // Setup the encryption config
+    std::fill_n(_disk_encryption_conf.key, 32, 0x00);
+    std::fill_n(_disk_encryption_conf.iv, 16, 0x00);
+    memcpy(_disk_encryption_conf.key, encryptionKey, 32);
+    memcpy(_disk_encryption_conf.iv, encryptionKey, 16);
+
     // Try to create the vault
     Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
     Vault *vault = Vault::init(vaultPath);
@@ -83,11 +89,10 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
 
     // Setup the encryption config
-    size_t usernameLength = strlen(username);
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
     std::fill_n(_disk_encryption_conf.iv, 16, 0x00);
     memcpy(_disk_encryption_conf.key, decryptionKey, 32);
-    memcpy(_disk_encryption_conf.iv, username, usernameLength > 16 ? 16 : usernameLength);
+    memcpy(_disk_encryption_conf.iv, decryptionKey, 16);
 
     // Cleanup
     delete[] decryptedIdentifier;
