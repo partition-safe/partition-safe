@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     watcher = new QFileSystemWatcher(this);
     connect(watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(fileChanged(const QString &)));
 
+
 #ifdef QT_DEBUG
 #ifndef __WIN32
         const char *vaultPath = "/tmp/marc.vault";
@@ -328,4 +329,9 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
     ui->buttonDelete->setEnabled(hasSelection);
     ui->buttonExport->setEnabled(hasSelection);
     ui->actionExport->setEnabled(hasSelection);
+}
+
+void MainWindow::on_treeViewExplorer_viewportEntered()
+{
+    qDebug() << "haha";
 }

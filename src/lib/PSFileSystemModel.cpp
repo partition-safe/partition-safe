@@ -68,7 +68,7 @@ void PSFileSystemModel::setCurrentDirectory(QString path)
     emit dataChanged(index(0), index(rowCount(QModelIndex())));
 }
 
-void PSFileSystemModel::importFile(char* source, char* destination)
+void PSFileSystemModel::importFile(const char* source, const char* destination)
 {
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     psInstance->getVault()->getPartition()->importFile(source, destination);
