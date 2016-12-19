@@ -34,6 +34,10 @@ void  DialogNewDirectory::enableOkButton(bool enable){
 
 void DialogNewDirectory::on_txtDirectoryName_textChanged(const QString &dirName)
 {
+    bool validDir = validDirectory(dirName);
     // Check if input is valid and enable/diable the OK button
-    enableOkButton(validDirectory(dirName));
+    enableOkButton(validDir);
+
+    if(!validDir)ui->lblWarning->setText("A Directory name can't be empty or contain any of the following characters:  \\ / : * ? \" < > | .");
+    else ui->lblWarning->setText(""); // Clear the label
 }
