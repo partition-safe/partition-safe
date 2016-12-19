@@ -50,7 +50,22 @@ public:
      * @param notification
      */
     void loadNotification(int id, BaseNotification **notification);
-    
+
+    /**
+     * Delete a notification.
+     *
+     * @param id
+     */
+    void deleteNotification(BaseNotification *notification);
+
+    /**
+     * Load all notifications for a specific user.
+     *
+     * @param user_id
+     * @return
+     */
+    std::vector *loadNotificationsForUser(int user_id);
+
 };
 
 
