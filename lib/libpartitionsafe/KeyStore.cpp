@@ -93,6 +93,10 @@ void KeyStore::close() {
     sqlite3_close(sqliteHandle);
 }
 
+sqlite3 *KeyStore::getSqliteHandle() {
+    return sqliteHandle;
+}
+
 //
 // Database handling
 //

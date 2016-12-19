@@ -86,6 +86,12 @@ public:
      */
     void close();
 
+    /**
+     * Get the SQLite handle.
+     * @return
+     */
+    sqlite3 *getSqliteHandle();
+
     //
     // Metadata
     //
