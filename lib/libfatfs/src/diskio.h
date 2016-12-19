@@ -31,7 +31,7 @@ typedef enum {
 /* Encryption connection stuff */
 
 /* Disk encryption configuration struct */
-typedef struct DISK_ENCRYPTION_CONFIG {
+struct DISK_ENCRYPTION_CONFIG {
     /**
      * The encryption key
      */
