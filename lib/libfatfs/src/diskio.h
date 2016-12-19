@@ -22,9 +22,29 @@ typedef enum {
 	RES_ERROR,		/* 1: R/W Error */
 	RES_WRPRT,		/* 2: Write Protected */
 	RES_NOTRDY,		/* 3: Not Ready */
-	RES_PARERR		/* 4: Invalid Parameter */
+	RES_PARERR,		/* 4: Invalid Parameter */
+    RES_ENCERR,     /* 5: Encryption failed */
+    RES_DECERR      /* 6: Decryption failed */
 } DRESULT;
 
+/*---------------------------------------*/
+/* Encryption connection stuff */
+
+/* Disk encryption configuration struct */
+struct DISK_ENCRYPTION_CONFIG {
+    /**
+     * The encryption key
+     */
+    unsigned char key[32];
+
+    /**
+     * The encryption IV
+     */
+    unsigned char iv[16];
+};
+
+extern struct DISK_ENCRYPTION_CONFIG _disk_encryption_conf;
+extern FILE *currentFileDescriptor;
 
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
@@ -81,6 +101,3 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 #endif
 
 #endif
-
-
-FILE * currentFileDescriptor;

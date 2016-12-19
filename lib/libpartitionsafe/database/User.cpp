@@ -28,7 +28,9 @@ User *User::create(const char *username, const char *password) {
     // Create the user
     User *user = new User(0, username, salt, pubKey, privKey);
 
+#ifndef __WIN32
     delete[] salted_password;
+#endif
 
     // Return the user
     return user;
