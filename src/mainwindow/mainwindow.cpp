@@ -341,6 +341,7 @@ void MainWindow::on_buttonNewDirectory_clicked()
     {
         // Get new directory name
         QString dirName = newDialogDirectory->dirName;
+        dirName = dirName.trimmed();
         QString fullPath = model->getCurrentDirectory()+"/"+dirName;
         // if not existing, create new directory
         if(!model->directoryExists(fullPath)) model->createDirectory(fullPath);
