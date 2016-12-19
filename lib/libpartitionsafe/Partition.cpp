@@ -141,7 +141,7 @@ Partition *Partition::readFile(const char *fileName, void *buff, const UINT size
 }
 #endif
 
-std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
+std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
     // The instances
     FRESULT res;
     DIR dir;
@@ -154,6 +154,18 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     // Convert directory name to string
     std::string sDirectoryName = Common::tCharToStdString(directoryName);
 
+    // Temporary parent
+    TreeEntry *_parentEntry = nullptr;
+
+    // Parent entry setup?
+    if(parentEntry != nullptr && *parentEntry == nullptr) {
+        // Create the new parent entry
+        _parentEntry = new TreeEntry();
+    } else if(parentEntry != nullptr) {
+        // Set temp
+        _parentEntry = *parentEntry;
+    }
+
     // The result list
     std::vector<Entry*>* entries = new std::vector<Entry*>();
 
@@ -165,8 +177,24 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
         // Break on error or end of dir
         if (res != FR_OK || fno.fname[0] == 0) break;
 
-        // Create the entry and add it to the list
-        entries->push_back(new Entry(fno, sDirectoryName));
+        // Create the tree entry
+        Entry *entry = new Entry(fno, sDirectoryName);
+
+        // Directories only?
+        if((directoriesOnly && entry->isDirectory()) || !directoriesOnly) {
+            // Create the entry and add it to the list
+            entries->push_back(entry);
+            if(_parentEntry != nullptr) _parentEntry->addChild(new TreeEntry(entry, _parentEntry));
+        } else {
+            // Cleanup
+            delete entry;
+        }
+    }
+
+    // Parent entry setup?
+    if(_parentEntry != nullptr) {
+        // Create the new parent entry
+        *parentEntry = _parentEntry;
     }
 
     // Close the directory
@@ -177,13 +205,13 @@ std::vector<Entry*> *Partition::listDirectory(const TCHAR *directoryName) {
     return entries;
 }
 
-std::vector<Entry *> *Partition::listDirectory(const std::string directoryName) {
-    return listDirectory(Common::stdStringToTChar(directoryName));
+std::vector<Entry*> *Partition::listDirectory(const std::string directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
+    return listDirectory(Common::stdStringToTChar(directoryName), parentEntry, directoriesOnly);
 }
 
 #ifndef __WIN32
-std::vector<Entry *> *Partition::listDirectory(const char *directoryName) {
-    return listDirectory(std::string(directoryName));
+std::vector<Entry*> *Partition::listDirectory(const char *directoryName, TreeEntry **parentEntry, const bool directoriesOnly) {
+    return listDirectory(std::string(directoryName), parentEntry, directoriesOnly);
 }
 #endif
 

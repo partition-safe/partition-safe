@@ -15,7 +15,7 @@ Vault::~Vault() {
 
 void Vault::create(const char *label, const unsigned size, const char *path, const unsigned char *encryptedIdentifier) {
     // Open the file path
-    FILE* fd = fopen(path, "w");
+    FILE* fd = fopen(path, "wb");
 
     // Check the file descriptor
     if(fd == nullptr) {
@@ -50,7 +50,7 @@ void Vault::create(const char *label, const unsigned size, const char *path, con
 
 Vault *Vault::init(const char* vaultPath) {
     // Open the vault file
-    FILE* vaultFileDescriptor = fopen(vaultPath, "r+");
+    FILE* vaultFileDescriptor = fopen(vaultPath, "r+b");
 
     // Check both descriptors
     if(vaultFileDescriptor == NULL) {
