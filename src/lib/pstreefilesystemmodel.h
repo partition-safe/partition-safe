@@ -40,6 +40,15 @@ public:
     ~PSTreeFileSystemModel();
 
     /**
+     * @brief headerData
+     * @param section
+     * @param orientation
+     * @param role
+     * @return
+     */
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    /**
      * @brief init Initialize the model.
      */
     void init();

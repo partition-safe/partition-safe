@@ -24,6 +24,7 @@ public:
 private slots:
     void on_treeViewExplorer_doubleClicked(const QModelIndex &index);
     void on_treeViewExplorer_selectionChanged();
+    void on_treeViewExplorer_viewportEntered();
     void on_buttonBack_clicked();
     void on_buttonForward_clicked();
     void on_buttonExport_clicked();
@@ -34,13 +35,9 @@ private slots:
     void on_actionFolder_triggered();
     void on_buttonImport_clicked();
     void on_buttonDelete_clicked();
+    void on_actionUser_triggered();
 
     void fileChanged(const QString &);
-
-
-    void on_treeViewExplorer_viewportEntered();
-
-    void on_actionUser_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -16,6 +16,9 @@ public:
     explicit DialogNewUser(QWidget *parent = 0, PartitionSafe* partitionSafe = 0);
     ~DialogNewUser();
 
+private slots:
+    void on_btnCreate_clicked();
+
 private:
     Ui::DialogNewUser *ui;
 
