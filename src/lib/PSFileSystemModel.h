@@ -91,7 +91,7 @@ public:
      */
     void init();
 
-    void importFile(char* source, char* destination);
+    void importFile(const char* source, const char* destination);
     void deleteFileDirectory(QModelIndexList &selectedRowsList);
     void deleteFileDirectory(QString path);
     void createDirectory( QString directoryName);

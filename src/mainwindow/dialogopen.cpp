@@ -1,7 +1,7 @@
 #include "dialogopen.h"
 #include "ui_dialogopen.h"
-#include "../lib/libpartitionsafe/PartitionSafe.h"
 
+#include <PartitionSafe.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFileInfo>

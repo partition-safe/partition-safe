@@ -8,14 +8,19 @@
 /*-----------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <memory.h>
 #include "diskio.h"		/* FatFs lower layer API */
 #include "ffconf.h"
+#include "../../libmbedtls/include/mbedtls/aes.h"
 
 /* Definitions of physical drive number for each drive */
 #define DEV_PSV		0	/* Partition Safe Vault */
 
 #define RESERVED_SECTORS 10
 #define RESERVED_SECTORS_BYTES RESERVED_SECTORS * _MAX_SS
+
+struct DISK_ENCRYPTION_CONFIG _disk_encryption_conf = {};
+FILE *currentFileDescriptor;
 
 DWORD get_fattime(){
 	return 0;
@@ -81,23 +86,47 @@ DRESULT disk_read (
 )
 {
     DRESULT result;
+    BYTE outBuf[_MAX_SS * count];
 
-	switch (pdrv) {
+    switch (pdrv) {
         case DEV_PSV:
-			fseek(currentFileDescriptor, _MAX_SS * sector + RESERVED_SECTORS_BYTES, SEEK_SET);
-			fread(buff, _MAX_SS * count, 1, currentFileDescriptor);
-			result = RES_OK;
+            // Read data
+            fseek(currentFileDescriptor, _MAX_SS * sector + RESERVED_SECTORS_BYTES, SEEK_SET);
+            fread(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
+
+            // Decrypt the data
+            result = _disk_read_decrypt(_MAX_SS * count, outBuf, buff);
             break;
 
-		default:
-			result = RES_ERROR;
-			break;
-	}
+        default:
+            result = RES_ERROR;
+            break;
+    }
 
-	return result;
+    return result;
 }
 
+DRESULT _disk_read_decrypt(int size, BYTE *encryptedBuf, BYTE *decryptedBuf) {
+    // Setup decrypt variables
+    DRESULT result;
+    unsigned char key[32];
+    unsigned char iv[16];
+    memcpy(key, _disk_encryption_conf.key, 32);
+    memcpy(iv, _disk_encryption_conf.iv, 16);
+    mbedtls_aes_context dtx;
 
+    // Initialize AES
+    mbedtls_aes_init(&dtx);
+
+    // Set decryption key
+    mbedtls_aes_setkey_dec(&dtx, key, 256);
+    int res = mbedtls_aes_crypt_cbc(&dtx, MBEDTLS_AES_DECRYPT, size, iv, encryptedBuf, decryptedBuf);
+    result = (res == 0 ? RES_OK : RES_DECERR);
+
+    // Cleanup
+    mbedtls_aes_free(&dtx);
+    return result;
+}
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
@@ -110,24 +139,55 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-	DRESULT result;
-	DWORD startPosition = _MAX_SS * sector + RESERVED_SECTORS_BYTES;
+    DRESULT result;
+    DWORD startPosition = _MAX_SS * sector + RESERVED_SECTORS_BYTES;
+    BYTE outBuf[_MAX_SS * count];
+    DRESULT res;
 
-	switch (pdrv) {
+    switch (pdrv) {
         case DEV_PSV:
-			fseek(currentFileDescriptor, startPosition, SEEK_SET);
-			fwrite(buff, _MAX_SS * count, 1, currentFileDescriptor);
-			result = RES_OK;
+            // Encrypt data
+            result = _disk_write_encrypt(_MAX_SS * count, buff, outBuf);
+            if(result == RES_OK) {
+                // Write new buffer
+                fseek(currentFileDescriptor, startPosition, SEEK_SET);
+                fwrite(outBuf, _MAX_SS * count, 1, currentFileDescriptor);
+            }
             break;
 
-		default:
-			result = RES_ERROR;
-			break;
-	}
-
-	return result;
+        default:
+            result = RES_ERROR;
+            break;
+    }
+    return result;
 }
 
+
+DRESULT _disk_write_encrypt(int size, BYTE const *unEncruptedBuf, BYTE *encryptedBuf) {
+    // Setup encryption variables
+    DRESULT result;
+    unsigned char key[32];
+    unsigned char iv[16];
+    memcpy(key, _disk_encryption_conf.key, 32);
+    memcpy(iv, _disk_encryption_conf.iv, 16);
+    mbedtls_aes_context ctx;
+
+    // Initialize AES
+    mbedtls_aes_init(&ctx);
+
+    // Set encryption key
+    mbedtls_aes_setkey_enc(&ctx, key, 256);
+
+    // Encrypt buffer
+    int res = mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, size, iv, unEncruptedBuf, encryptedBuf);
+    result = (res == 0 ? RES_OK : RES_ENCERR);
+
+    // Cleanup
+    mbedtls_aes_free(&ctx);
+
+    // Result already error?
+    return result;
+}
 
 
 /*-----------------------------------------------------------------------*/

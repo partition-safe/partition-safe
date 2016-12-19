@@ -64,11 +64,11 @@ QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 void PSFileSystemModel::setCurrentDirectory(QString path)
 {
     currentDirectory = path;
-    currentDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
+    currentDirectoryListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
     emit dataChanged(index(0), index(rowCount(QModelIndex())));
 }
 
-void PSFileSystemModel::importFile(char* source, char* destination)
+void PSFileSystemModel::importFile(const char* source, const char* destination)
 {
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     psInstance->getVault()->getPartition()->importFile(source, destination);
@@ -107,7 +107,7 @@ void PSFileSystemModel::deleteFileDirectory(QString path)
         switch(fno.fattrib){
         case AM_DIR:
             qDebug()<< "directory";
-            subDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
+            subDirectoryListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
             while(subDirectoryListing->size()>=1){
                 entry = subDirectoryListing->back();
                 subDirectoryListing->pop_back();

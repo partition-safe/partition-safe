@@ -1,7 +1,8 @@
 #include "dialognew.h"
 #include "ui_dialognew.h"
+
+#include <PartitionSafe.h>
 #include <QMessageBox>
-#include "../lib/libpartitionsafe/PartitionSafe.h"
 
 DialogNew::DialogNew(QWidget *parent) :
     QDialog(parent),

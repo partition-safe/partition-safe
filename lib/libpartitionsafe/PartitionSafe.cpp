@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include "PartitionSafe.h"
+#include "../libfatfs/src/diskio.h"
 
 PartitionSafe::~PartitionSafe() {
     delete vault;
@@ -33,6 +34,12 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
 
+    // Setup the encryption config
+    std::fill_n(_disk_encryption_conf.key, 32, 0x00);
+    std::fill_n(_disk_encryption_conf.iv, 16, 0x00);
+    memcpy(_disk_encryption_conf.key, encryptionKey, 32);
+    memcpy(_disk_encryption_conf.iv, encryptionKey, 16);
+
     // Try to create the vault
     Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
     Vault *vault = Vault::init(vaultPath);
@@ -42,6 +49,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     keyStore->setMetadata("label", vault->header->label);
     keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
 
+#ifndef __WIN32
     // Cleanup
     delete[] saltedPassword;
     delete[] encryptionKey;
@@ -50,6 +58,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     delete key;
     delete vault;
     delete keyStore;
+#endif
 }
 
 PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
@@ -81,9 +90,14 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Check identifier
     if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
 
+    // Setup the encryption config
+    std::fill_n(_disk_encryption_conf.key, 32, 0x00);
+    std::fill_n(_disk_encryption_conf.iv, 16, 0x00);
+    memcpy(_disk_encryption_conf.key, decryptionKey, 32);
+    memcpy(_disk_encryption_conf.iv, decryptionKey, 16);
+
     // Cleanup
     delete[] decryptedIdentifier;
-    delete[] decryptionKey;
 
     // Return myself
     return this;
