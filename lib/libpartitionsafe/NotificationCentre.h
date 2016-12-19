@@ -10,16 +10,16 @@
 #include "notification/BaseNotification.h"
 
 class NotificationCentre {
+private:
+    // We do not want these
+    NotificationCentre(NotificationCentre const&);
+    void operator=(NotificationCentre const&);
+
 protected:
     /**
      * The partition safe instance
      */
     PartitionSafe *partitionSafe;
-private:
-    /**
-     * The notification centre instance
-     */
-    static NotificationCentre *_instance;
 
     /**
      * Private constructor for singleton
@@ -33,7 +33,7 @@ public:
      * @param partitionSafe The partition safe instance to use
      * @return
      */
-    static NotificationCentre *getInstance(PartitionSafe *partitionSafe = nullptr);
+    static NotificationCentre& getInstance(PartitionSafe *partitionSafe = nullptr);
 
     /**
      * Save a new notification.
@@ -64,7 +64,7 @@ public:
      * @param user_id
      * @return
      */
-    std::vector *loadNotificationsForUser(int user_id);
+    std::vector<BaseNotification *> *loadNotificationsForUser(int user_id);
 
 };
 

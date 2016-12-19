@@ -44,7 +44,7 @@ public:
      * @param type
      * @param content
      */
-    virtual BaseNotification(const int id, const int user_from, const int user_to, const int type, const std::string content);
+    BaseNotification(const int id, const int user_from, const int user_to, const int type, const std::string content);
 
 };
 

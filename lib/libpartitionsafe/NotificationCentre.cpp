@@ -7,9 +7,9 @@
 NotificationCentre::NotificationCentre(PartitionSafe *partitionSafe):
         partitionSafe(partitionSafe) {}
 
-NotificationCentre *NotificationCentre::getInstance(PartitionSafe *partitionSafe) {
-    if(!_instance) _instance = new NotificationCentre(partitionSafe);
-    return _instance;
+NotificationCentre& NotificationCentre::getInstance(PartitionSafe *partitionSafe) {
+    static NotificationCentre instance(partitionSafe);
+    return instance;
 }
 
 int NotificationCentre::saveNotification(BaseNotification *notification) {
@@ -92,7 +92,7 @@ void NotificationCentre::deleteNotification(BaseNotification *notification) {
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
 }
 
-std::vector *NotificationCentre::loadNotificationsForUser(int user_id) {
+std::vector<BaseNotification *> *NotificationCentre::loadNotificationsForUser(int user_id) {
     // Prepare the query
     sqlite3_stmt *stmt;
     int index;
