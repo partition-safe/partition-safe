@@ -75,7 +75,10 @@ QModelIndex PSTreeFileSystemModel::parent(const QModelIndex &index) const
     if (parentItem == currentDirectory)
         return QModelIndex();
 
-    return createIndex(parentItem->row(), 0, (void *)parentItem);
+    if(parentItem != NULL){
+        return createIndex(parentItem->row(), 0, (void *)parentItem);
+    }
+    return QModelIndex();
 }
 
 int PSTreeFileSystemModel::rowCount(const QModelIndex &parent) const
