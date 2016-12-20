@@ -74,8 +74,8 @@ MainWindow::~MainWindow()
     delete psInstance;
 }
 
-void MainWindow::fileChanged(const QString & file){
-
+void MainWindow::fileChanged(const QString & file)
+{
     std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
     Entry* item = modifiedFileList.value(file);
 
@@ -83,7 +83,6 @@ void MainWindow::fileChanged(const QString & file){
         QFileInfo fileInfo(file);
         psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), item->getFullPath().c_str());
     }
-
 }
 
 void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
@@ -92,8 +91,8 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
     Entry* item = model->getFile(index);
 
     // The item is a directory
-    if(item->isDirectory()){
-
+    if(item->isDirectory())
+    {
         // Get the path
         QString path = QString(item->getFullPath().c_str());
 
@@ -102,12 +101,11 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
 
         // Show path in status bar
         this->setPath();
-
     }
 
     // The double clicked item seems to be a file
-    else{
-
+    else
+    {
         QUuid uuid = QUuid::createUuid();
 
         // Export the file to a temporary location
@@ -122,7 +120,6 @@ void MainWindow::on_treeViewExplorer_doubleClicked(const QModelIndex &index)
         // Try to open it with the default application
         QDesktopServices::openUrl(QUrl(tmpFile.prepend("file:///"), QUrl::TolerantMode));
     }
-
 }
 
 void MainWindow::on_buttonBack_clicked()
@@ -157,7 +154,6 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     DialogNew *newDialog = new DialogNew(this);
-
     newDialog->exec();
 }
 
@@ -272,7 +268,8 @@ void MainWindow::exportFiles()
     }
 }
 
-void MainWindow::exportFolder(QString sourcePath, QString destinationDir, QString destinationPath){
+void MainWindow::exportFolder(QString sourcePath, QString destinationDir, QString destinationPath)
+{
     FRESULT exists;
     FILINFO fno;
     std::vector<Entry*>* subItemsListing;
