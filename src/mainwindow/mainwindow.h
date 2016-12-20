@@ -53,6 +53,7 @@ private:
     void setPath();
     void importFiles();
     void importFolder();
+    void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
 
     /** Export selected files or folders from the partion
      *
@@ -68,8 +69,6 @@ private:
      * @param destinationPath - Full destination path including file/folder name to export.
      */
     void exportFile(QString sourcePath, QString destinationDir, QString destinationPath);
-
-    void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
 
     /** Delete the slected files and directories
      *
