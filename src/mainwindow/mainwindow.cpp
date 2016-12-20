@@ -263,12 +263,11 @@ void MainWindow::exportFiles()
         qDebug() << destinationPath;
 
         // export the current file
-        //psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
-        exportFolder(sourcePath, destinationDir, destinationPath);
+        exportFile(sourcePath, destinationDir, destinationPath);
     }
 }
 
-void MainWindow::exportFolder(QString sourcePath, QString destinationDir, QString destinationPath)
+void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString destinationPath)
 {
     FRESULT exists;
     FILINFO fno;
@@ -304,7 +303,7 @@ void MainWindow::exportFolder(QString sourcePath, QString destinationDir, QStrin
                     // Make sub-directory on the system
                     mkdir(fullDesPath.toStdString().c_str());
                     // Recursive call for sub items of the sub-directory
-                    exportFolder(entry->getFullPath().c_str(), destinationPath, fullDesPath);
+                    exportFile(entry->getFullPath().c_str(), destinationPath, fullDesPath);
                 }
                 // if a sub-file, export the file.
                 else psInstance->getVault()->getPartition()->exportFile(fullSourPath.toLatin1().data(), fullDesPath.toLatin1().data());
