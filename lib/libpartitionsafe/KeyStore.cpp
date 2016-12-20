@@ -152,7 +152,7 @@ void KeyStore::getMetadata(const char *key, char **value) {
     if (res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    *value = (char *) sqlite3_column_text(stmt, 0);
+    strcpy(*value, (char *) sqlite3_column_text(stmt, 0));
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -241,14 +241,16 @@ void KeyStore::getUser(const int id, User **user) {
     if (res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    const int _id = sqlite3_column_int(stmt, 0);
-    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
+    int _id = sqlite3_column_int(stmt, 0);
+
+    // Read data
+    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
+    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
+    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
+    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
 
     // Create the user
-    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -273,13 +275,15 @@ void KeyStore::getUser(const char *username, User **user) {
 
     // Get the result of the current row
     const int _id = sqlite3_column_int(stmt, 0);
-    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
+
+    // Read data
+    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
+    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
+    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
+    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
 
     // Create the user
-    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -310,10 +314,10 @@ void KeyStore::getKey(const int id, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const unsigned char *_key = (const unsigned char *) sqlite3_column_blob(stmt, 3);
+    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
 
     // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -342,10 +346,10 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const unsigned char *_key = (const unsigned char *) sqlite3_column_blob(stmt, 3);
+    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
 
     // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -471,10 +475,10 @@ void KeyStore::loadNotification(int id, BaseNotification **notification) {
     const int _user_from = sqlite3_column_int(stmt, 1);
     const int _user_to = sqlite3_column_int(stmt, 2);
     const int _type = sqlite3_column_int(stmt, 3);
-    const char *_details = (const char *) sqlite3_column_text(stmt, 4);
+    std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
 
     // Create the user
-    *notification = new BaseNotification(_id, _user_from, _user_to, _type, std::string(_details));
+    *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -523,10 +527,10 @@ std::vector<BaseNotification *> *KeyStore::loadNotificationsForUser(int user_id)
         const int _user_from = sqlite3_column_int(stmt, 1);
         const int _user_to = sqlite3_column_int(stmt, 2);
         const int _type = sqlite3_column_int(stmt, 3);
-        const char *_details = (const char *) sqlite3_column_text(stmt, 4);
+        std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
 
         // Create the user
-        BaseNotification *notification = new BaseNotification(_id, _user_from, _user_to, _type, std::string(_details));
+        BaseNotification *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
 
         // Add notification to vector
         vector->push_back(notification);

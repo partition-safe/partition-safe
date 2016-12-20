@@ -6,19 +6,16 @@
 #include <fstream>
 #include "PartitionSafe.h"
 #include "Common.h"
-#include "notification/BaseNotification.h"
 #include "NotificationCentre.h"
 
 int main() {
-    std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
-
-    try {
+        std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
 
         //
         // Create vault
         //
 
-        // Vault metadata
+// Vault metadata
 #ifndef __WIN32
         const char *vaultPath = "/tmp/marc.vault";
         const char *keyStorePath = "/tmp/marc.keystore";
@@ -123,7 +120,7 @@ int main() {
 
         // Print entries
         for(Entry* const& value : *entries) {
-            std::cout << value->getFullPath() << std::endl;
+                std::cout << value->getFullPath() << std::endl;
         }
 
         //
@@ -141,7 +138,7 @@ int main() {
         std::cout << "Should print 2 notifications:" << std::endl;
         std::vector<BaseNotification *> *notifications = NotificationCentre::getInstance().loadNotificationsForUser(1);
         for(BaseNotification *value : *notifications) {
-            std::cout << value->toString() << std::endl;
+                std::cout << value->toString() << std::endl;
         }
 
         //
@@ -154,10 +151,6 @@ int main() {
 
         // Finish
         std::cout << "-- Finished test script! --" << std::endl;
-    } catch(const char* exception) {
-        // Hey, exception
-        std::cout << "Thrown exception: " << exception << std::endl;
-    }
 
-    return 0;
+        return 0;
 }
