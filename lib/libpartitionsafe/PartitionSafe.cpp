@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include "PartitionSafe.h"
+#include "NotificationCentre.h"
 
 PartitionSafe::~PartitionSafe() {
     delete vault;
@@ -46,8 +47,8 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     delete[] saltedPassword;
     delete[] encryptionKey;
     delete[] encrypted;
-    delete user;
-    delete key;
+//    delete user;
+//    delete key;
     delete vault;
     delete keyStore;
 }
@@ -58,6 +59,9 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
 
     // Get the key store instance
     keyStore = KeyStore::init(keyStorePath);
+
+    // Initialize the notification centre
+    NotificationCentre::getInstance(this);
 
     // Check header stuff
     char *uuid;
@@ -79,7 +83,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
     // Check identifier
-    if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
+    if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) throw "Could not decrypt the identifier";
 
     // Cleanup
     delete[] decryptedIdentifier;
