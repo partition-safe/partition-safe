@@ -10,8 +10,11 @@
 #include <QDesktopServices>
 #include <QFileSystemWatcher>
 #include <QUuid>
+#include <NotificationCentre.h>
 
 #include <QDebug>
+
+#include <mainwindow/notifications/dialognotifications.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -272,6 +275,18 @@ void MainWindow::deleteFileDirectory()
     on_treeViewExplorer_selectionChanged();
 }
 
+void MainWindow::setNotifications()
+{
+    // Get the notifications
+    auto *notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
+
+    // Set notifications
+    std::string s = "Notifications [";
+    s += std::to_string(notifications->size());
+    s += "]";
+    ui->buttonNotifications->setText(QString(s.c_str()));
+}
+
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
 {
     try {
@@ -298,6 +313,10 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->buttonImport->setEnabled(true);
         ui->actionImports->setEnabled(true);
         ui->actionFile->setEnabled(true);
+        ui->buttonNotifications->setEnabled(true);
+
+        // Set notifications
+        setNotifications();
 
         // Set paths
         this->setPath();
@@ -334,4 +353,11 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
 void MainWindow::on_treeViewExplorer_viewportEntered()
 {
     qDebug() << "haha";
+}
+
+void MainWindow::on_buttonNotifications_clicked()
+{
+    // Open the dialog
+    DialogNotifications *open = new DialogNotifications(psInstance, this);
+    int dialogResult = open->exec();
 }

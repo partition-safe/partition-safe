@@ -40,6 +40,8 @@ private slots:
 
     void on_treeViewExplorer_viewportEntered();
 
+    void on_buttonNotifications_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
@@ -56,6 +58,7 @@ private:
     void exportFiles();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
     void deleteFileDirectory();
+    void setNotifications();
 };
 
 #endif // MAINWINDOW_H
