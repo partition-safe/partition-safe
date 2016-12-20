@@ -6,6 +6,8 @@
 #include <fstream>
 #include "PartitionSafe.h"
 #include "Common.h"
+#include "notification/BaseNotification.h"
+#include "NotificationCentre.h"
 
 int main() {
     std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
@@ -123,6 +125,28 @@ int main() {
         for(Entry* const& value : *entries) {
             std::cout << value->getFullPath() << std::endl;
         }
+
+        //
+        // Notifications
+        //
+
+        // Create and save the notifications
+        std::cout << "-- Notification tests" << std::endl;
+        BaseNotification *notification1 = new BaseNotification(0, 1, 1, 1, "Notificatie 1");
+        BaseNotification *notification2 = new BaseNotification(0, 1, 1, 2, "Notificatie 2");
+        NotificationCentre::getInstance().saveNotification(notification1);
+        NotificationCentre::getInstance().saveNotification(notification2);
+
+        // Retrieve notifications
+        std::cout << "Should print 2 notifications:" << std::endl;
+        std::vector<BaseNotification *> *notifications = NotificationCentre::getInstance().loadNotificationsForUser(1);
+        for(BaseNotification *value : *notifications) {
+            std::cout << value->toString() << std::endl;
+        }
+
+        //
+        // Finish
+        //
 
         // Cleanup
         std::cout << "-- Cleanup" << std::endl;

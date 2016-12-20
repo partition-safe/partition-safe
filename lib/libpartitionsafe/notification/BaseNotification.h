@@ -46,6 +46,12 @@ public:
      */
     BaseNotification(const int id, const int user_from, const int user_to, const int type, const std::string content);
 
+    /**
+     * String representation of the base notification.
+     * @return
+     */
+    virtual std::string toString();
+
 };
 
 
