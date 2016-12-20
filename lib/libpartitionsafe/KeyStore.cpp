@@ -152,7 +152,8 @@ void KeyStore::getMetadata(const char *key, char **value) {
     if (res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    strcpy(*value, (char *) sqlite3_column_text(stmt, 0));
+    std::string _details = std::string((char *)sqlite3_column_text(stmt, 0));
+    strcpy(*value, _details.c_str());
 
     // Finalize
     res = sqlite3_finalize(stmt);

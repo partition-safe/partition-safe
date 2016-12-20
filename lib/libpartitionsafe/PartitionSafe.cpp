@@ -64,7 +64,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     NotificationCentre::getInstance(this);
 
     // Check header stuff
-    char *uuid;
+    char *uuid = new char[36]();
     keyStore->getMetadata("uuid", &uuid);
     if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
 
