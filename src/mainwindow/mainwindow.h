@@ -54,6 +54,7 @@ private:
     void importFiles();
     void importFolder();
     void exportFiles();
+    void exportFolder(QString sourcePath, QString destinationDir, QString destinationPath);
     void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
     void deleteFileDirectory();
 };
