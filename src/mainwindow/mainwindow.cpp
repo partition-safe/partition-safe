@@ -275,37 +275,46 @@ void MainWindow::exportFiles()
 void MainWindow::exportFolder(QString sourcePath, QString destinationDir, QString destinationPath){
     FRESULT exists;
     FILINFO fno;
-    std::vector<Entry*>* subDirectoryListing;
+    std::vector<Entry*>* subItemsListing;
 
     Entry* entry;
 
+    // Check if the file or directory exists and save file info in 'fno'.
     exists = f_stat(Common::stdStringToTChar(sourcePath.toStdString()), &fno);
-    if(exists == FR_OK){
-        switch(fno.fattrib){
-        case AM_DIR:
-            qDebug()<< "directory";
-
+    if(exists == FR_OK) // If file/directory exists
+    {
+        switch(fno.fattrib)
+        {
+        case AM_DIR: // If the item is an directory
+            // Make the directory on the system
             mkdir(destinationPath.toStdString().c_str());
 
-            subDirectoryListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(sourcePath.toStdString());
-            while(subDirectoryListing->size()>=1){
-                entry = subDirectoryListing->back();
-                subDirectoryListing->pop_back();
+            // Get all sub-items from the selected directory (in the partition)
+            subItemsListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(sourcePath.toStdString());
+            // for all the sub-directories
+            while(subItemsListing->size()>=1)
+            {
+                // Get and pop a sub-item
+                entry = subItemsListing->back();
+                subItemsListing->pop_back();
+
+                // Full destination path for the file to export or directory to create.
                 QString fullDesPath = destinationPath + "/" + entry->name.data();
+                // Full source path to the file or directory to export
                 QString fullSourPath = sourcePath + "/" + entry->name.data();
-                if(entry->isDirectory()) {
+                if(entry->isDirectory()) // If sub item is a directory
+                {
+                    // Make sub-directory on the system
                     mkdir(fullDesPath.toStdString().c_str());
-                    qDebug()<< "after mkdir";
+                    // Recursive call for sub items of the sub-directory
                     exportFolder(entry->getFullPath().c_str(), destinationPath, fullDesPath);
                 }
-                //else psInstance->getVault()->getPartition()->deleteFileDirectory(entry->getFullPath().c_str());
+                // if a sub-file, export the file.
                 else psInstance->getVault()->getPartition()->exportFile(fullSourPath.toLatin1().data(), fullDesPath.toLatin1().data());
             }
-            //if(subDirectoryListing->size()<=0) psInstance->getVault()->getPartition()->deleteFileDirectory(path.toStdString().c_str());
-            //if(subDirectoryListing->size()<=0) psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
             break;
-        default:
-            //psInstance->getVault()->getPartition()->deleteFileDirectory(path.toStdString().c_str());
+        default: // If not an directory
+            // Export the file.
             psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
             break;
         }
