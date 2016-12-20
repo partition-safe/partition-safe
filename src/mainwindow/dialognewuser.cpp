@@ -34,6 +34,13 @@ void DialogNewUser::on_btnCreate_clicked()
 
         return;
     }
+    if(password.size() < 8){
+        QMessageBox msgBox;
+        msgBox.setText("The password needs to be at least 8 characters.");
+        msgBox.exec();
+
+        return;
+    }
     if(password.compare(password2) != 0){
         QMessageBox msgBox;
         msgBox.setText("Both provided passwords should be eqeal.");
