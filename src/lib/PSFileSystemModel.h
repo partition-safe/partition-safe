@@ -92,6 +92,8 @@ public:
     void init();
 
     void importFile(const char* source, const char* destination);
+    void importFolder(QModelIndexList &selectedRowsList, const char* destination);
+    void importFolder(QString source, QString destination);
     void deleteFileDirectory(QModelIndexList &selectedRowsList);
     void deleteFileDirectory(QString path);
     void createDirectory( QString directoryName);
