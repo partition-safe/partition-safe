@@ -55,6 +55,8 @@ private:
     void importFolder();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
 
+    void makeDir(const char* path);
+
     /** Export selected files or folders from the partion
      *
      * @brief exportFiles

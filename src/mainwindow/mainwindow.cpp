@@ -14,7 +14,6 @@
 #include <QUuid>
 #include <QMessageBox>
 #include <Common.h>
-#include <direct.h>
 
 #include <QDebug>
 
@@ -283,7 +282,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
         {
         case AM_DIR: // If the item is an directory
             // Make the directory on the system
-            mkdir(destinationPath.toStdString().c_str());
+           makeDir(destinationPath.toStdString().c_str());
 
             // Get all sub-items from the selected directory (in the partition)
             subItemsListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(sourcePath.toStdString());
@@ -301,7 +300,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
                 if(entry->isDirectory()) // If sub item is a directory
                 {
                     // Make sub-directory on the system
-                    mkdir(fullDesPath.toStdString().c_str());
+                    makeDir(fullDesPath.toStdString().c_str());
                     // Recursive call for sub items of the sub-directory
                     exportFile(entry->getFullPath().c_str(), destinationPath, fullDesPath);
                 }
@@ -309,8 +308,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
                 else psInstance->getVault()->getPartition()->exportFile(fullSourPath.toLatin1().data(), fullDesPath.toLatin1().data());
             }
             break;
-        default: // If not an directory
-            // Export the file.
+        default:
             psInstance->getVault()->getPartition()->exportFile(sourcePath.toLatin1().data(), destinationPath.toLatin1().data());
             break;
         }
@@ -321,6 +319,14 @@ void MainWindow::deleteFileDirectory()
 {
     model->deleteFileDirectory(selectedRowsList);
     on_treeViewExplorer_selectionChanged();
+}
+
+void MainWindow::makeDir(const char* path)
+{
+    QDir dir(path);
+    if (!dir.exists()){
+      dir.mkdir(".");
+    }
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
