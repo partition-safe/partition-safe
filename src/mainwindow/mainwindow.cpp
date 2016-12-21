@@ -282,7 +282,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
         {
         case AM_DIR: // If the item is an directory
             // Make the directory on the system
-           makeDir(destinationPath.toStdString().c_str());
+           makeDir(destinationPath);
 
             // Get all sub-items from the selected directory (in the partition)
             subItemsListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(sourcePath.toStdString());
@@ -300,7 +300,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
                 if(entry->isDirectory()) // If sub item is a directory
                 {
                     // Make sub-directory on the system
-                    makeDir(fullDesPath.toStdString().c_str());
+                    makeDir(fullDesPath);
                     // Recursive call for sub items of the sub-directory
                     exportFile(entry->getFullPath().c_str(), destinationPath, fullDesPath);
                 }
@@ -321,12 +321,9 @@ void MainWindow::deleteFileDirectory()
     on_treeViewExplorer_selectionChanged();
 }
 
-void MainWindow::makeDir(const char* path)
+void MainWindow::makeDir(QString path)
 {
-    QDir dir(path);
-    if (!dir.exists()){
-      dir.mkdir(".");
-    }
+    QDir().mkdir(path);
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
