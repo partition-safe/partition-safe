@@ -31,6 +31,7 @@ bool DialogNewDirectory::validDirectory(QString directoryName)
     // \        = Esc character.
     // $        = End of string
     QRegExp re("^(?!\\s)+^[^<>\\\\/:|\"\*\?\.]+$");
+    // Return true if directory name matching regex
     return re.exactMatch(directoryName);
 }
 

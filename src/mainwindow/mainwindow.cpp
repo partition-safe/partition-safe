@@ -300,7 +300,8 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
                 if(entry->isDirectory()) // If sub item is a directory
                 {
                     // Make sub-directory on the system
-                    makeDir(fullDesPath);
+                    // makeDir(fullDesPath);
+
                     // Recursive call for sub items of the sub-directory
                     exportFile(entry->getFullPath().c_str(), destinationPath, fullDesPath);
                 }
