@@ -72,7 +72,7 @@ private:
      */
     void exportFile(QString sourcePath, QString destinationDir, QString destinationPath);
 
-    /** Delete the slected files and directories
+    /** Delete the slected files and directories.
      *
      * @brief deleteFileDirectory
      */

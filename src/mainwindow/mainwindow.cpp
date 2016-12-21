@@ -78,7 +78,8 @@ void MainWindow::fileChanged(const QString & file)
     std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
     Entry* item = modifiedFileList.value(file);
 
-    if(item != NULL){
+    if(item != NULL)
+    {
         QFileInfo fileInfo(file);
         psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), item->getFullPath().c_str());
     }
@@ -139,15 +140,12 @@ void MainWindow::on_buttonForward_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    // Open the dialog
+    // Create dialog open
     DialogOpen *open = new DialogOpen(this);
-    int dialogResult = open->exec();
 
-    // Accepted dialog?
-    if(dialogResult == QDialog::Accepted) {
-        // Open the vault
-        initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
-    }
+    // Open the dialog and wait for a result.
+    // On result open partition.
+    if(open->exec()) initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -282,7 +280,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
         {
         case AM_DIR: // If the item is an directory
             // Make the directory on the system
-           makeDir(destinationPath);
+            makeDir(destinationPath);
 
             // Get all sub-items from the selected directory (in the partition)
             subItemsListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(sourcePath.toStdString());
@@ -329,7 +327,8 @@ void MainWindow::makeDir(QString path)
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
 {
-    try {
+    try
+    {
         // Setup vault
         psInstance->init(vaultPath.c_str(), keyStorePath.c_str(), username.c_str(), password.c_str());
         psInstance->open();
@@ -352,11 +351,13 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         // Enable import/export/Delete
         ui->buttonImport->setEnabled(true);
         ui->actionImports->setEnabled(true);
+        ui->buttonNewDirectory->setEnabled(true);
         ui->actionFile->setEnabled(true);
 
         // Set paths
         this->setPath();
-    } catch(const char *exception) {
+    } catch(const char *exception)
+    {
         std::cout << "Exception: " << exception << std::endl;
     }
 }

@@ -150,6 +150,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="buttonNewDirectory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>New Directory</string>
         </property>
