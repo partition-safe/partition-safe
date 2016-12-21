@@ -193,7 +193,7 @@ void MainWindow::importFiles()
 {
     QFileDialog qFile;
     // Allow selecting of multiple files
-    qFile.setFileMode(QFileDialog::ExistingFile);
+    qFile.setFileMode(QFileDialog::ExistingFiles);
     // Open File dialog
     qFile.exec();
 

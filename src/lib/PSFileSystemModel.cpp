@@ -89,17 +89,22 @@ void PSFileSystemModel::importFolder(QModelIndexList &selectedRowsList, const ch
 
 void PSFileSystemModel::importFolder(QString source, QString destination)
 {
+    FRESULT exists;
+    FILINFO fno;
+
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
 
     QDir impDir;
     impDir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
 
     if(impDir.cd(source)){
-        qDebug() << "stuff";
-
         QString newDestination = destination;
         newDestination = destination + "/" + impDir.dirName();
-        createDirectory(newDestination);
+        //Check if folder already exists
+        exists = f_stat(Common::stdStringToTChar(newDestination.toStdString()), &fno);
+        if(exists != FR_OK){
+            createDirectory(newDestination);
+        }
 
         QFileInfoList list = impDir.entryInfoList();
 
@@ -110,6 +115,11 @@ void PSFileSystemModel::importFolder(QString source, QString destination)
                     importFolder(fileInfo.path() + "/" + fileInfo.fileName(), newDestination);
                 }
                 else{
+                    //check if file already exists
+                    QFile chFile(newDestination + "/" + fileInfo.fileName());
+                    if(chFile.exists()){
+                        chFile.remove();
+                    }
                     psInstance->getVault()->getPartition()->importFile(fileInfo.absoluteFilePath().toLatin1().data(), (newDestination + "/" + fileInfo.fileName()).toLatin1().data());
                 }
         }
