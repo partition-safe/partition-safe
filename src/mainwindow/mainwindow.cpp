@@ -228,12 +228,12 @@ void MainWindow::importFolder()
     // Allow selecting of multiple files
     qFile.setFileMode(QFileDialog::Directory);
     // Open File dialog
-    qFile.exec();
 
-    foreach (QString folderPath, qFile.selectedFiles()) {
-        qDebug() << folderPath;
-
-        // TODO: import folder from filePath
+    if(qFile.exec()){
+        foreach (QString filePath, qFile.selectedFiles()) {
+            qDebug() << filePath;
+            model->importFolder(filePath.toLatin1().data(), model->getCurrentDirectory().toLatin1().data());
+        }
     }
 }
 
@@ -353,6 +353,7 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->actionImports->setEnabled(true);
         ui->buttonNewDirectory->setEnabled(true);
         ui->actionFile->setEnabled(true);
+        ui->actionFolder->setEnabled(true);
 
         // Set paths
         this->setPath();

@@ -7,6 +7,7 @@
 #include <mainwindow/mainwindow.h>
 #include <Common.h>
 #include <QDebug>
+#include <QDir>
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
@@ -75,6 +76,58 @@ void PSFileSystemModel::importFile(const char* source, const char* destination)
     endInsertRows();
 
     setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::importFolder(QModelIndexList &selectedRowsList, const char* destination)
+{
+    foreach (QModelIndex index, selectedRowsList)
+    {
+        importFolder(this->getFile(index)->getFullPath().data(), destination);
+    }
+    setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::importFolder(QString source, QString destination)
+{
+    FRESULT exists;
+    FILINFO fno;
+
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+
+    QDir impDir;
+    impDir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+
+    if(impDir.cd(source)){
+        QString newDestination = destination;
+        newDestination = destination + "/" + impDir.dirName();
+        //Check if folder already exists
+        exists = f_stat(Common::stdStringToTChar(newDestination.toStdString()), &fno);
+        if(exists != FR_OK){
+            createDirectory(newDestination);
+        }
+
+        QFileInfoList list = impDir.entryInfoList();
+
+        for (int i = 0; i < list.size(); ++i) {
+                QFileInfo fileInfo = list.at(i);
+
+                if(fileInfo.isDir()){
+                    importFolder(fileInfo.path() + "/" + fileInfo.fileName(), newDestination);
+                }
+                else{
+                    //check if file already exists
+                    QFile chFile(newDestination + "/" + fileInfo.fileName());
+                    if(chFile.exists()){
+                        chFile.remove();
+                    }
+                    psInstance->getVault()->getPartition()->importFile(fileInfo.absoluteFilePath().toLatin1().data(), (newDestination + "/" + fileInfo.fileName()).toLatin1().data());
+                }
+        }
+    }
+    else{
+        qDebug() << "Map doesnt exists";
+    }
+    endInsertRows();
 }
 
 void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
