@@ -7,8 +7,7 @@ namespace Ui {
 class DialogNewDirectory;
 }
 
-class DialogNewDirectory : public QDialog
-{
+class DialogNewDirectory : public QDialog {
     Q_OBJECT
 
 public:
@@ -21,8 +20,19 @@ private slots:
 
 private:
     Ui::DialogNewDirectory *ui;
+
+    /** Check if directory name is valid. Uses regex to check the directory name.
+   *
+   * @brief validDirectory
+   * @param directoryName - name of the directory to check
+   * @return - True if valid directory name
+   */
     bool validDirectory(QString directoryName);
-    bool directoryExists(const QString directoryName);
+
+    /** Enabels the OK (submit) button and saves the directory name in the var dirName.
+   * @brief enableOkButton
+   * @param enable - True or False.
+   */
     void enableOkButton(bool enable);
 };
 
