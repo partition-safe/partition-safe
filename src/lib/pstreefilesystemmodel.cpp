@@ -89,7 +89,10 @@ QModelIndex PSTreeFileSystemModel::parent(const QModelIndex &index) const
     if (parentItem == currentDirectory)
         return QModelIndex();
 
-    return createIndex(parentItem->row(), 0, (void *)parentItem);
+    if(parentItem != NULL){
+        return createIndex(parentItem->row(), 0, (void *)parentItem);
+    }
+    return QModelIndex();
 }
 
 int PSTreeFileSystemModel::rowCount(const QModelIndex &parent) const
@@ -132,4 +135,18 @@ void PSTreeFileSystemModel::setCurrentDirectory(QString path)
 void PSTreeFileSystemModel::setDirectoriesOnly(const bool state)
 {
     directoriesOnly = state;
+}
+
+QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    switch(role)
+    {
+    case Qt::DisplayRole:
+        switch(section)
+        {
+        case 0:
+            return QVariant("Directory Name");
+        }
+    }
+    return QVariant();
 }
