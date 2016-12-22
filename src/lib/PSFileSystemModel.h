@@ -92,10 +92,14 @@ public:
     void init();
 
     void importFile(const char* source, const char* destination);
+    void importFolder(QModelIndexList &selectedRowsList, const char* destination);
+    void importFolder(QString source, QString destination);
     void deleteFileDirectory(QModelIndexList &selectedRowsList);
     void deleteFileDirectory(QString path);
+    void createDirectory( QString directoryName);
     void navigation_buttons(QStack<QString> &stackToCheck, QStack<QString> &stackToAdd);
     void enterDirectory(QString path, QStack<QString> &folderHistory, QStack<QString> &folderForwardHistory);
+    bool directoryExists(QString path);
 };
 
 
