@@ -49,10 +49,17 @@ void PSFileSystemModel::init()
 
 QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 {
+    Entry* entry = currentDirectoryListing->at(index.row());
+
     switch(role)
     {
+    case Qt::DecorationRole:
+        if(entry->isDirectory()){
+            return QIcon::fromTheme("folder");
+        }else{
+             return QIcon::fromTheme("text-x-generic");
+        }
     case Qt::DisplayRole:
-        Entry* entry = currentDirectoryListing->at(index.row());
         switch (index.column()) {
         case 0: return QString(entry->name.c_str());
             // case 1: return entry->size;

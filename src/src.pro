@@ -13,6 +13,9 @@ TARGET = src
 TEMPLATE = app
 INCLUDEPATH += ../lib/libpartitionsafe
 
+RESOURCES     = application.qrc \
+    application.qrc
+
 LIBS += ../cmake-build-debug/libpslib.a \
         ../cmake-build-debug/lib/libmbedtls/library/libmbedcrypto.a
 
