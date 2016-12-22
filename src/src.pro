@@ -27,8 +27,7 @@ SOURCES += main.cpp\
     lib/PSFileSystemModel.cpp \
     lib/pstreefilesystemmodel.cpp \
     maintreeviewfiles.cpp \
-    lib/psfilesystemmodel/psfilesystemmodel.cpp \
-    mainwindow/notifications/dialognotifications.cpp
+    mainwindow/dialognotifications.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
@@ -36,10 +35,9 @@ HEADERS  += mainwindow/mainwindow.h \
     lib/PSFileSystemModel.h \
     lib/pstreefilesystemmodel.h \
     maintreeviewfiles.h \
-    lib/psfilesystemmodel/psfilesystemmodel.h \
-    mainwindow/notifications/dialognotifications.h
+    mainwindow/dialognotifications.h
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
     mainwindow/dialognew.ui \
-    mainwindow/notifications/dialognotifications.ui
+    mainwindow/dialognotifications.ui

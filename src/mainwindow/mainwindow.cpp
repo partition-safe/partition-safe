@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dialogopen.h"
 #include "dialognew.h"
+#include "dialognotifications.h"
 
 #include <QDirModel>
 #include <QFileDialog>
@@ -13,8 +14,6 @@
 #include <NotificationCentre.h>
 
 #include <QDebug>
-
-#include <mainwindow/notifications/dialognotifications.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
