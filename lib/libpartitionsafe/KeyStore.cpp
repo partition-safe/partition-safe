@@ -90,7 +90,12 @@ KeyStore *KeyStore::init(const char *keyStorePath) {
 
 void KeyStore::close() {
     // Close the connection
-    sqlite3_close(sqliteHandle);
+    int res = sqlite3_close(sqliteHandle);
+    if(res != SQLITE_OK) throw "Could not close SQLite handle";
+}
+
+sqlite3 *KeyStore::getSqliteHandle() {
+    return sqliteHandle;
 }
 
 //
@@ -124,6 +129,10 @@ void KeyStore::setMetadata(const char *key, const char *value) {
     // Execute query
     int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::getMetadata(const char *key, char **value) {
@@ -143,7 +152,12 @@ void KeyStore::getMetadata(const char *key, char **value) {
     if (res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    *value = (char *) sqlite3_column_text(stmt, 0);
+    std::string _details = std::string((char *)sqlite3_column_text(stmt, 0));
+    strcpy(*value, _details.c_str());
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 //
@@ -185,6 +199,10 @@ void KeyStore::saveUser(User *user) {
     // Execute query
     int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::deleteUser(const User *user) {
@@ -201,6 +219,10 @@ void KeyStore::deleteUser(const User *user) {
     // Execute query
     int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::getUser(const int id, User **user) {
@@ -220,14 +242,20 @@ void KeyStore::getUser(const int id, User **user) {
     if (res != SQLITE_ROW) throw "Could not execute query";
 
     // Get the result of the current row
-    const int _id = sqlite3_column_int(stmt, 0);
-    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
+    int _id = sqlite3_column_int(stmt, 0);
+
+    // Read data
+    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
+    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
+    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
+    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
 
     // Create the user
-    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::getUser(const char *username, User **user) {
@@ -248,13 +276,19 @@ void KeyStore::getUser(const char *username, User **user) {
 
     // Get the result of the current row
     const int _id = sqlite3_column_int(stmt, 0);
-    const char *_username = (const char *) sqlite3_column_text(stmt, 1);
-    const char *_salt = (const char *) sqlite3_column_text(stmt, 2);
-    const char *_public = (const char *) sqlite3_column_text(stmt, 3);
-    const char *_private = (const char *) sqlite3_column_text(stmt, 4);
+
+    // Read data
+    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
+    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
+    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
+    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
 
     // Create the user
-    *user = new User((const unsigned) _id, _username, _salt, _public, _private);
+    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 //
@@ -281,10 +315,14 @@ void KeyStore::getKey(const int id, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const unsigned char *_key = (const unsigned char *) sqlite3_column_blob(stmt, 3);
+    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
 
     // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
@@ -309,10 +347,14 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    const unsigned char *_key = (const unsigned char *) sqlite3_column_blob(stmt, 3);
+    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
 
     // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, _key);
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::saveKey(Key *key) {
@@ -348,6 +390,10 @@ void KeyStore::saveKey(Key *key) {
     // Execute query
     int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
 void KeyStore::deleteKey(const Key *key) {
@@ -364,4 +410,137 @@ void KeyStore::deleteKey(const Key *key) {
     // Execute query
     int rc = sqlite3_step(stmt);
     if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+}
+
+//
+// Notifications
+//
+
+int KeyStore::saveNotification(BaseNotification *notification) {
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Setup the query
+    const char *query = "INSERT INTO NOTIFICATIONS (USER_FROM, USER_TO, TYPE, DETAILS) VALUES (:user_from, :user_to, :type, :details)";
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, query, -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":user_from")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, notification->user_from) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":user_to")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if (sqlite3_bind_int(stmt, index, notification->user_to) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":type")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if (sqlite3_bind_int(stmt, index, notification->type) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":details")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if (sqlite3_bind_text(stmt, index, notification->content.c_str(), -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Retrieve the last inserted row ID
+    int id = static_cast<int>(sqlite3_last_insert_rowid(sqliteHandle));
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+
+    // Return the ID
+    return id;
+}
+
+void KeyStore::loadNotification(int id, BaseNotification **notification) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER_FROM, USER_TO, TYPE, DETAILS FROM NOTIFICATIONS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int res = sqlite3_step(stmt);
+    if (res != SQLITE_ROW) throw "Could not execute query";
+
+    // Get the result of the current row
+    const int _id = sqlite3_column_int(stmt, 0);
+    const int _user_from = sqlite3_column_int(stmt, 1);
+    const int _user_to = sqlite3_column_int(stmt, 2);
+    const int _type = sqlite3_column_int(stmt, 3);
+    std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
+
+    // Create the user
+    *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+
+    // Finalize
+    res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+}
+
+void KeyStore::deleteNotification(BaseNotification *notification) {
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "DELETE FROM NOTIFICATIONS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, notification->id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Execute query
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_OK && rc != SQLITE_DONE) throw "Could not execute query";
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+}
+
+std::vector<BaseNotification *> *KeyStore::loadNotificationsForUser(int user_id) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER_FROM, USER_TO, TYPE, DETAILS FROM NOTIFICATIONS WHERE USER_TO = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Bind parameters
+    if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if(sqlite3_bind_int(stmt, index, user_id) != SQLITE_OK) throw "Could not bind parameter";
+
+    // Create vector
+    std::vector<BaseNotification *> *vector = new std::vector<BaseNotification *>();
+
+    // Iterate over all rows
+    while(sqlite3_step(stmt) == SQLITE_ROW) {
+        // Get the result of the current row
+        const int _id = sqlite3_column_int(stmt, 0);
+        const int _user_from = sqlite3_column_int(stmt, 1);
+        const int _user_to = sqlite3_column_int(stmt, 2);
+        const int _type = sqlite3_column_int(stmt, 3);
+        std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
+
+        // Create the user
+        BaseNotification *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+
+        // Add notification to vector
+        vector->push_back(notification);
+    }
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+
+    // Return the vector
+    return vector;
 }
