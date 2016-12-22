@@ -315,10 +315,12 @@ void KeyStore::getKey(const int id, Key **key) {
     const int _id = sqlite3_column_int(stmt, 0);
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
-    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
+    unsigned char *_key = (unsigned char *)sqlite3_column_blob(stmt, 3);
+    unsigned char *_nKey = new unsigned char[strlen((char *)_key)]();
+    strncpy((char *)_nKey, (char *)_key, strlen((char *)_key));
 
     // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
+    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _nKey);
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -349,7 +351,7 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _inode = sqlite3_column_int(stmt, 2);
     unsigned char *_key = (unsigned char *)sqlite3_column_blob(stmt, 3);
     unsigned char *_nKey = new unsigned char[strlen((char *)_key)]();
-    memcpy(_nKey, _key, strlen((char *)_key));
+    strncpy((char *)_nKey, (char *)_key, strlen((char *)_key));
 
     // Create the user
     *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _nKey);
