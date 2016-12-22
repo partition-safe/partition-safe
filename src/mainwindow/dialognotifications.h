@@ -16,9 +16,14 @@ public:
     explicit DialogNotifications(PartitionSafe *psInstance, QWidget *parent = 0);
     ~DialogNotifications();
 
+private slots:
+    void on_listNotifications_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::DialogNotifications *ui;
     PartitionSafe *psInstance;
+    std::vector<BaseNotification *> *notifications;
+    void load();
 };
 
 #endif // DIALOGNOTIFICATIONS_H

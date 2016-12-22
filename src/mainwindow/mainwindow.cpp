@@ -358,5 +358,8 @@ void MainWindow::on_buttonNotifications_clicked()
 {
     // Open the dialog
     DialogNotifications *open = new DialogNotifications(psInstance, this);
-    int dialogResult = open->exec();
+    open->exec();
+
+    // Reload notifications
+    setNotifications();
 }
