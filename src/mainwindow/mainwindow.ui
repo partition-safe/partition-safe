@@ -67,6 +67,9 @@
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
@@ -146,6 +149,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="buttonNewDirectory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>New Directory</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="buttonDelete">
         <property name="enabled">
          <bool>false</bool>
@@ -165,7 +178,7 @@
      <x>0</x>
      <y>0</y>
      <width>789</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPartitionSafe">

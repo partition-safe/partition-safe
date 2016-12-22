@@ -51,6 +51,15 @@ public:
     QString getCurrentDirectory();
 
     /**
+     * @brief headerData
+     * @param section
+     * @param orientation
+     * @param role
+     * @return
+     */
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    /**
      * @brief setCurrentDirectory
      * @param path
      */
