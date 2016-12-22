@@ -36,11 +36,9 @@ private slots:
     void on_buttonImport_clicked();
     void on_buttonDelete_clicked();
     void on_actionUser_triggered();
+    void on_buttonNewDirectory_clicked();
 
     void fileChanged(const QString &);
-
-    void on_buttonNewDirectory_clicked();
-    void on_treeViewExplorer_viewportEntered();
 
 private:
     Ui::MainWindow *ui;
