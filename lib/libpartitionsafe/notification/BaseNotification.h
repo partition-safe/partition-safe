@@ -8,6 +8,9 @@
 
 #include <string>
 
+// Define the partition safe class to prevent circular dependencies
+class PartitionSafe;
+
 class BaseNotification {
 public:
     /**
@@ -51,6 +54,16 @@ public:
      * @return
      */
     virtual std::string toString();
+
+    /**
+     * Handle the notification.
+     *
+     * The notification knows best what to do.
+     *
+     * @param psInstance The partition safe instance
+     * @return 0 when ok, > 0 when not ok
+     */
+    virtual int handle(PartitionSafe *psInstance);
 
 };
 

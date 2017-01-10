@@ -7,6 +7,8 @@
 
 #define KEY_SIZE 2048
 #define EXPONENT 65537
+#define RSA_PUBLIC_SIZE 512 + 6 + 1
+#define RSA_PRIVATE_SIZE 512 + 6 + 512 + (256 * 5) + 1
 
 class Common {
 public:

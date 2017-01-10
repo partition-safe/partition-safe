@@ -10,7 +10,9 @@
 #include "../../libmbedtls/include/mbedtls/aes.h"
 
 Key::Key(const unsigned id, const unsigned userId, const unsigned inode, const unsigned char *key):
-    id(id), userId(userId), inode(inode), key(key) {}
+    id(id), userId(userId), inode(inode), key(new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]) {
+    strncpy((char *)this->key, (char *)key, ENCRYPTION_KEY_LENGTH_BYTES);
+}
 
 Key *Key::create(const User *user, const char *password, const unsigned inode) {
     // Create the salted password
@@ -53,7 +55,7 @@ Key *Key::create(const User *user, const char *password, const unsigned char *en
 }
 
 void Key::generateKey(unsigned char **key) {
-    Common::randomChars(ENCRYPTION_KEY_LENGTH_BYTES, key);
+    Common::randomChars(ENCRYPTION_KEY_LENGTH_BYTES + 1, key);
 }
 
 void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKey, unsigned char **encryptedKey) {
@@ -89,8 +91,9 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, unEncryptedKey, temp);
 
     // Copy to output
-    *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]();
     strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
+    (*encryptedKey)[ENCRYPTION_KEY_LENGTH_BYTES] = 0x00;
 
     // Free up the AES context
     mbedtls_aes_free(&aes);
@@ -148,8 +151,9 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, encryptedKey, temp);
 
     // Copy to output
-    *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]();
     strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
+    (*decryptedKey)[ENCRYPTION_KEY_LENGTH_BYTES] = 0x00;
 
     // Free up the AES context
     mbedtls_aes_free(&aes);

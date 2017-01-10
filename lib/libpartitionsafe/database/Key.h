@@ -33,7 +33,7 @@ public:
     /**
      * The public key of the user.
      */
-    const unsigned char *key;
+    unsigned char *key;
 
     /**
      * User constructor.

@@ -33,3 +33,5 @@
 
 *.pro.user
 cmake-build-debug/
+build-*
+

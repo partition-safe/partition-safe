@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <iostream>
 #include "KeyStore.h"
 
 const char *KeyStore::STMT_CREATE_TABLE_METADATA =
@@ -244,14 +245,12 @@ void KeyStore::getUser(const int id, User **user) {
     // Get the result of the current row
     int _id = sqlite3_column_int(stmt, 0);
 
-    // Read data
-    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
-    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
-    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
-    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
-
     // Create the user
-    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
+    *user = new User((const unsigned) _id,
+                     (char *)sqlite3_column_text(stmt, 1),
+                     (char *)sqlite3_column_text(stmt, 2),
+                     (char *)sqlite3_column_text(stmt, 3),
+                     (char *)sqlite3_column_text(stmt, 4));
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -277,14 +276,12 @@ void KeyStore::getUser(const char *username, User **user) {
     // Get the result of the current row
     const int _id = sqlite3_column_int(stmt, 0);
 
-    // Read data
-    std::string _username = std::string((char *)sqlite3_column_text(stmt, 1));
-    std::string _salt = std::string((char *)sqlite3_column_text(stmt, 2));
-    std::string _public = std::string((char *)sqlite3_column_text(stmt, 3));
-    std::string _private = std::string((char *)sqlite3_column_text(stmt, 4));
-
     // Create the user
-    *user = new User((const unsigned) _id, _username.c_str(), _salt.c_str(), _public.c_str(), _private.c_str());
+    *user = new User((const unsigned) _id,
+                     (char *)sqlite3_column_text(stmt, 1),
+                     (char *)sqlite3_column_text(stmt, 2),
+                     (char *)sqlite3_column_text(stmt, 3),
+                     (char *)sqlite3_column_text(stmt, 4));
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -311,14 +308,11 @@ void KeyStore::getKey(const int id, Key **key) {
     int res = sqlite3_step(stmt);
     if (res != SQLITE_ROW) throw "Could not execute query";
 
-    // Get the result of the current row
-    const int _id = sqlite3_column_int(stmt, 0);
-    const int _user = sqlite3_column_int(stmt, 1);
-    const int _inode = sqlite3_column_int(stmt, 2);
-    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
-
-    // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
+    // Create the key
+    *key = new Key((const unsigned) sqlite3_column_int(stmt, 0),
+                   (const unsigned) sqlite3_column_int(stmt, 1),
+                   (const unsigned) sqlite3_column_int(stmt, 2),
+                   (const unsigned char *) sqlite3_column_blob(stmt, 3));
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -343,14 +337,11 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     int res = sqlite3_step(stmt);
     if (res != SQLITE_ROW) throw "Could not execute query";
 
-    // Get the result of the current row
-    const int _id = sqlite3_column_int(stmt, 0);
-    const int _user = sqlite3_column_int(stmt, 1);
-    const int _inode = sqlite3_column_int(stmt, 2);
-    std::string _key = std::string((char *)sqlite3_column_text(stmt, 3));
-
-    // Create the user
-    *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _key.c_str());
+    // Create the key
+    *key = new Key((const unsigned) sqlite3_column_int(stmt, 0),
+                   (const unsigned) sqlite3_column_int(stmt, 1),
+                   (const unsigned) sqlite3_column_int(stmt, 2),
+                   (const unsigned char *) sqlite3_column_blob(stmt, 3));
 
     // Finalize
     res = sqlite3_finalize(stmt);

@@ -40,6 +40,8 @@ private slots:
 
     void fileChanged(const QString &);
 
+    void on_buttonNotifications_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
@@ -77,6 +79,7 @@ private:
      * @brief deleteFileDirectory
      */
     void deleteFileDirectory();
+    void setNotifications();
 };
 
 #endif // MAINWINDOW_H

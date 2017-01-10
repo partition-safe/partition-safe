@@ -92,7 +92,9 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
     // Check identifier
-    if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) throw "Could not decrypt the identifier";
+    if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) {
+        throw "Could not decrypt the identifier";
+    }
 
     // Setup the encryption config
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
