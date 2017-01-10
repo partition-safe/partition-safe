@@ -7,9 +7,11 @@
 
 
 #include <cstdio>
+#include <vector>
 #include "../libsqlite/sqlite3.h"
 #include "database/User.h"
 #include "database/Key.h"
+#include "notification/BaseNotification.h"
 
 class KeyStore {
     /**
@@ -85,6 +87,12 @@ public:
      * Close the current key store instance.
      */
     void close();
+
+    /**
+     * Get the SQLite handle.
+     * @return
+     */
+    sqlite3 *getSqliteHandle();
 
     //
     // Metadata
@@ -177,6 +185,41 @@ public:
      * @param value
      */
     void deleteKey(const Key *key);
+
+    //
+    // Notifications
+    //
+
+    /**
+     * Save a new notification.
+     *
+     * @param notification
+     * @return The notification ID
+     */
+    int saveNotification(BaseNotification *notification);
+
+    /**
+     * Load a simple notification.
+     *
+     * @param id
+     * @param notification
+     */
+    void loadNotification(int id, BaseNotification **notification);
+
+    /**
+     * Delete a notification.
+     *
+     * @param id
+     */
+    void deleteNotification(BaseNotification *notification);
+
+    /**
+     * Load all notifications for a specific user.
+     *
+     * @param user_id
+     * @return
+     */
+    std::vector<BaseNotification *> *loadNotificationsForUser(int user_id);
 
 };
 

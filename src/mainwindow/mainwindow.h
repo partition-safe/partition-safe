@@ -40,6 +40,8 @@ private slots:
     void on_buttonNewDirectory_clicked();
     void on_treeViewExplorer_viewportEntered();
 
+    void on_buttonNotifications_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;
@@ -77,6 +79,7 @@ private:
      * @brief deleteFileDirectory
      */
     void deleteFileDirectory();
+    void setNotifications();
 };
 
 #endif // MAINWINDOW_H

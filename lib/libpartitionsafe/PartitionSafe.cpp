@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include "PartitionSafe.h"
+#include "NotificationCentre.h"
 #include "../libfatfs/src/diskio.h"
 
 PartitionSafe::~PartitionSafe() {
@@ -54,8 +55,8 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     delete[] saltedPassword;
     delete[] encryptionKey;
     delete[] encrypted;
-    delete user;
-    delete key;
+//    delete user;
+//    delete key;
     delete vault;
     delete keyStore;
 #endif
@@ -68,8 +69,11 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Get the key store instance
     keyStore = KeyStore::init(keyStorePath);
 
+    // Initialize the notification centre
+    NotificationCentre::getInstance(this);
+
     // Check header stuff
-    char *uuid;
+    char *uuid = new char[36]();
     keyStore->getMetadata("uuid", &uuid);
     if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
 
@@ -88,7 +92,9 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
     // Check identifier
-    if(memcmp(Partition::IDENTIFIER, decryptedIdentifier, strlen((const char *)decryptedIdentifier)) != 0) throw "Could not decrypt the identifier";
+    if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) {
+        throw "Could not decrypt the identifier";
+    }
 
     // Setup the encryption config
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
