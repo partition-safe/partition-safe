@@ -233,14 +233,14 @@ public:
     /**
      * Delete the given file or directory.
      *
-     * @param path
+     * @param path The directory to delete
      */
     Partition *deleteFileDirectory(const TCHAR *path);
 
     /**
      * Delete the given file or directory.
      *
-     * @param path
+     * @param path The directory to delete
      */
     Partition *deleteFileDirectory(const std::string path);
 
@@ -248,14 +248,30 @@ public:
     /**
      * Delete the given file or directory.
      *
-     * @param path
+     * @param path The directory to delete
      */
     Partition *deleteFileDirectory(const char *path);
 #endif
 
-    int importFile(const char* source, const char* destination);
+    /**
+     * Import a single file by providing the source (file on your local disk)
+     * and destination (file inside the PartitionSafe partition) paths.
+     *
+     * @param source The source file path
+     * @param destination The destination path
+     * @return
+     */
+    Partition *importFile(const char* source, const char* destination);
 
-    int exportFile(const char* source, const char* destination);
+    /**
+     * Export a single file by providing a source (file inside the PartitionSafe
+     * partition) and destination (file on your local disk) paths.
+     *
+     * @param source The source file path
+     * @param destination The destination path
+     * @return
+     */
+    Partition *exportFile(const char* source, const char* destination);
 
 };
 

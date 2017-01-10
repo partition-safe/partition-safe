@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>PartitionSafe</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../application.qrc">
+    <normaloff>:/resource/icon.png</normaloff>:/resource/icon.png</iconset>
+  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
@@ -301,6 +305,8 @@
   <tabstop>treeViewFiles</tabstop>
   <tabstop>treeViewExplorer</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>
