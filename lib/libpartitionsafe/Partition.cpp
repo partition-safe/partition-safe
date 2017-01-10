@@ -259,7 +259,7 @@ Partition *Partition::deleteFileDirectory(const char *path) {
 }
 #endif
 
-int Partition::importFile(const char *source, const char *destination) {
+Partition *Partition::importFile(const char *source, const char *destination) {
     int SIZE = 1024;
 
     // The instances
@@ -286,9 +286,11 @@ int Partition::importFile(const char *source, const char *destination) {
 
     fclose(fSource);
     f_close(&fDestination);
+
+    return this;
 }
 
-int Partition::exportFile(const char *source, const char *destination) {
+Partition *Partition::exportFile(const char *source, const char *destination) {
     int SIZE = 1024;
 
     // The instances
@@ -319,4 +321,6 @@ int Partition::exportFile(const char *source, const char *destination) {
 
     fclose(fDestination);
     f_close(&fSource);
+
+    return this;
 }
