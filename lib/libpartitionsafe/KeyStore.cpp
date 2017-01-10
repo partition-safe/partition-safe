@@ -351,14 +351,17 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
     unsigned char *_key = (unsigned char *)sqlite3_column_blob(stmt, 3);
-    std::cout << "Get key stuff 1: " << strlen((const char *)_key) << std::endl;
-    unsigned char *_nKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1];
+    std::cout << "Get key stuff 1: " << _key << " - " << strlen((const char *)_key) << std::endl;
+
+    unsigned char *_nKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]();
     std::cout << "Get key stuff 2: " << strlen((const char *)_nKey) << std::endl;
-    strncpy((char *)_nKey, (char *)_key, ENCRYPTION_KEY_LENGTH_BYTES);
+
+    strncpy((char *)_nKey, (char *)_key, ENCRYPTION_KEY_LENGTH_BYTES + 1);
     std::cout << "Get key stuff 3: " << _nKey << " - " << strlen((const char *)_nKey) << std::endl;
 
     // Create the user
     *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _nKey);
+    std::cout << "Get key stuff 4: " << (*key)->key << " - " << strlen((const char *)(*key)->key) << std::endl;
 
     // Finalize
     res = sqlite3_finalize(stmt);

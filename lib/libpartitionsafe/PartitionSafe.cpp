@@ -99,7 +99,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     unsigned char *decryptionKey;
     key->decrypt(user, password, key->key, &decryptionKey);
 
-    std::cout << "Decrypting 7 - " << decryptionKey << " : " << vault->header->identifier_encrypted << std::endl;
+    std::cout << "Decrypting 7 - " << decryptionKey << " : " << strlen((char *)decryptionKey) << " : " << vault->header->identifier_encrypted << std::endl;
 
     // Get the decrypted key
     unsigned char *decryptedIdentifier;
