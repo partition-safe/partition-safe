@@ -31,13 +31,9 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     unsigned char *encryptionKey;
     key->decrypt(saltedPassword, key->key, &encryptionKey);
 
-    std::cout << "Encrypting 1 - " << Partition::IDENTIFIER << " : " << strlen((char *)Partition::IDENTIFIER) << std::endl;
-
     // Encrypt the test string
     unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
-
-    std::cout << "Encrypting 2 - " << encrypted << " : " << strlen((char *)encrypted) << std::endl;
 
     // Setup the encryption config
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
@@ -70,51 +66,33 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Get the vault instance
     vault = Vault::init(vaultPath);
 
-//    std::cout << "Decrypting 1 - " << std::endl;
-
     // Get the key store instance
     keyStore = KeyStore::init(keyStorePath);
 
-//    std::cout << "Decrypting 2 - " << std::endl;
-
     // Initialize the notification centre
     NotificationCentre::getInstance(this);
-
-//    std::cout << "Decrypting 3 - " << std::endl;
 
     // Check header stuff
     char *uuid = new char[36]();
     keyStore->getMetadata("uuid", &uuid);
     if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
 
-    std::cout << "Decrypting 4 - " << std::endl;
-
     // Retrieve user
     keyStore->getUser(username, &user);
 
-    std::cout << "Decrypting 5 - " << std::endl;
-
     // Retrieve root key
     keyStore->getKey(0, user, &key);
-
-    std::cout << "Decrypting 6 - " << key->key << " : " << std::to_string(strlen((const char *)key->key)) << std::endl;
 
     // Decrypt key
     unsigned char *decryptionKey;
     key->decrypt(user, password, key->key, &decryptionKey);
 
-    std::cout << "Decrypting 7 - " << decryptionKey << " : " << strlen((char *)decryptionKey) << std::endl;
-    std::cout << "Decrypting 8 - " << vault->header->identifier_encrypted << " : " << strlen((char *)vault->header->identifier_encrypted) << std::endl;
-
     // Get the decrypted key
     unsigned char *decryptedIdentifier;
     key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
-    std::cout << "Checking - " << decryptedIdentifier << std::endl;
-
     // Check identifier
     if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) {
-        std::cout << "Damn - " << std::endl;
         throw "Could not decrypt the identifier";
     }
 

@@ -10,12 +10,11 @@
 #include "Key.h"
 
 User::User(const unsigned id, const char *username, const char *salt, const char *publicKey, const char *privateKey):
-    id(id), username(new char[strlen(username) + 1]), salt(new char[strlen(salt) + 1]), publicKey(new char[strlen(publicKey) + 1]), privateKey(new char[strlen(privateKey) + 1]) {
+    id(id), username(new char[strlen(username) + 1]), salt(new char[ENCRYPTION_IV_LENGTH + 1]), publicKey(new char[RSA_PUBLIC_SIZE]), privateKey(new char[RSA_PRIVATE_SIZE]) {
     strncpy(this->username, username, strlen(username));
-//    std::cout << "Salt: " << salt << " : " << strlen(salt) << std::endl;
     strncpy(this->salt, salt, ENCRYPTION_IV_LENGTH + 1);
-    strncpy(this->publicKey, publicKey, 512 + 6 + 1);
-    strncpy(this->privateKey, privateKey, 512 + 6 + 512 + (256 * 5) + 1);
+    strncpy(this->publicKey, publicKey, RSA_PUBLIC_SIZE);
+    strncpy(this->privateKey, privateKey, RSA_PRIVATE_SIZE);
 }
 
 User *User::create(const char *username, const char *password) {

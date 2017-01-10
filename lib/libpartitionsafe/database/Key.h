@@ -79,7 +79,7 @@ public:
      * @param unEncryptedKey The unencrypted key of the user to encrypt
      * @param encryptedKey The encrypted key as output
      */
-    static void encrypt(const char *saltedPassword, const unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **encryptedKey, int size = ENCRYPTION_KEY_LENGTH_BYTES);
+    static void encrypt(const char *saltedPassword, const unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **encryptedKey);
 
     /**
      * Decrypt the key.
@@ -88,7 +88,7 @@ public:
      * @param encryptedKey The encrypted key to decrypt
      * @param decryptedKey The decrypted key as output
      */
-    static void decrypt(const User *user, const char *password, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey, int size = ENCRYPTION_KEY_LENGTH_BYTES);
+    static void decrypt(const User *user, const char *password, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 
     /**
      * Decrypt the key.
@@ -97,7 +97,7 @@ public:
      * @param encryptedKey The encrypted key to decrypt
      * @param decryptedKey The decrypted key as output
      */
-    static void decrypt(const char *saltedPassword, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey, int size = ENCRYPTION_KEY_LENGTH_BYTES);
+    static void decrypt(const char *saltedPassword, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 
 };
 
