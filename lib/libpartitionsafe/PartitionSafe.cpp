@@ -31,9 +31,13 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     unsigned char *encryptionKey;
     key->decrypt(saltedPassword, key->key, &encryptionKey);
 
+    std::cout << "Encrypting 1 - " << Partition::IDENTIFIER << " : " << strlen((char *)Partition::IDENTIFIER) << std::endl;
+
     // Encrypt the test string
     unsigned char *encrypted;
     key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
+
+    std::cout << "Encrypting 2 - " << encrypted << " : " << strlen((char *)encrypted) << std::endl;
 
     // Setup the encryption config
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
@@ -99,7 +103,8 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     unsigned char *decryptionKey;
     key->decrypt(user, password, key->key, &decryptionKey);
 
-    std::cout << "Decrypting 7 - " << decryptionKey << " : " << strlen((char *)decryptionKey) << " : " << vault->header->identifier_encrypted << std::endl;
+    std::cout << "Decrypting 7 - " << decryptionKey << " : " << strlen((char *)decryptionKey) << std::endl;
+    std::cout << "Decrypting 8 - " << vault->header->identifier_encrypted << " : " << strlen((char *)vault->header->identifier_encrypted) << std::endl;
 
     // Get the decrypted key
     unsigned char *decryptedIdentifier;

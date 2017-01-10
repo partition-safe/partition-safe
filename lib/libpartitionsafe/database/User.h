@@ -16,22 +16,22 @@ public:
     /**
      * The username of the user.
      */
-    const char *username;
+    char *username;
 
     /**
      * The salt of the user's password.
      */
-    const char *salt;
+    char *salt;
 
     /**
      * The public key of the user.
      */
-    const char *publicKey;
+    char *publicKey;
 
     /**
      * The private key of the user.
      */
-    const char *privateKey;
+    char *privateKey;
 
     /**
      * User constructor.
