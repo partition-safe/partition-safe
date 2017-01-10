@@ -55,9 +55,9 @@ QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
     {
     case Qt::DecorationRole:
         if(entry->isDirectory()){
-            return QIcon::fromTheme("folder");
+            return *new QIcon(QString::fromStdString(":/resource/ic_folder_black_48dp.png"));
         }else{
-             return QIcon::fromTheme("text-x-generic");
+            return *new QIcon(QString::fromStdString(":/resource/ic_insert_drive_file_black_48dp.png"));
         }
     case Qt::DisplayRole:
         switch (index.column()) {
