@@ -10,7 +10,24 @@
 #include "../../libmbedtls/include/mbedtls/aes.h"
 
 Key::Key(const unsigned id, const unsigned userId, const unsigned inode, const unsigned char *key):
-    id(id), userId(userId), inode(inode), key(key) {}
+    id(id), userId(userId), inode(inode), key(new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]) {
+    std::cout << "KEY 1: " << key << " - " << strlen((const char *)key) << std::endl;
+
+    // Convert key to std::string
+    std::string t = std::string((const char *)key);
+    std::cout << "KEY 2: " << t << " - " << std::to_string(t.length()) << std::endl;
+
+    // Insert key into value
+//    std::copy_n(t.begin(), ENCRYPTION_KEY_LENGTH_BYTES,  std::back_inserter(this->key));
+    std::strncpy((char *)this->key, t.c_str(), ENCRYPTION_KEY_LENGTH_BYTES);
+    std::cout << "KEY 2: " << this->key << " - " << strlen((const char *)this->key) << std::endl;
+
+
+
+//    std::cout << "KEY 1: " << key << " - " << strlen((const char *)key) << std::endl;
+//    std::copy(key, key + ENCRYPTION_KEY_LENGTH_BYTES, this->key);
+//    std::cout << "KEY 2: " << this->key << " - " << strlen((const char *)this->key) << std::endl;
+}
 
 Key *Key::create(const User *user, const char *password, const unsigned inode) {
     // Create the salted password
@@ -20,10 +37,12 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
     // The new encryption key
     unsigned char *encryptionKey;
     generateKey(&encryptionKey);
+    std::cout << "Encryption key: " << encryptionKey << std::endl;
 
     // Encrypt the key
     unsigned char *encrypted;
     encrypt(saltedPassword, encryptionKey, &encrypted);
+    std::cout << "Encrypted key: " << encrypted << " : " << std::to_string(strlen((const char *)encrypted)) << std::endl;
 
     // Cleanup
 #ifndef __WIN32

@@ -93,7 +93,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Retrieve root key
     keyStore->getKey(0, user, &key);
 
-    std::cout << "Decrypting 6 - " << std::endl;
+    std::cout << "Decrypting 6 - " << key->key << " : " << std::to_string(strlen((const char *)key->key)) << std::endl;
 
     // Decrypt key
     unsigned char *decryptionKey;

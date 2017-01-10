@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <iostream>
 #include "KeyStore.h"
 
 const char *KeyStore::STMT_CREATE_TABLE_METADATA =
@@ -350,8 +351,11 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     const int _user = sqlite3_column_int(stmt, 1);
     const int _inode = sqlite3_column_int(stmt, 2);
     unsigned char *_key = (unsigned char *)sqlite3_column_blob(stmt, 3);
-    unsigned char *_nKey = new unsigned char[strlen((char *)_key)]();
-    strncpy((char *)_nKey, (char *)_key, strlen((char *)_key));
+    std::cout << "Get key stuff 1: " << strlen((const char *)_key) << std::endl;
+    unsigned char *_nKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1];
+    std::cout << "Get key stuff 2: " << strlen((const char *)_nKey) << std::endl;
+    strncpy((char *)_nKey, (char *)_key, ENCRYPTION_KEY_LENGTH_BYTES);
+    std::cout << "Get key stuff 3: " << _nKey << " - " << strlen((const char *)_nKey) << std::endl;
 
     // Create the user
     *key = new Key((const unsigned) _id, (const unsigned) _user, (const unsigned) _inode, (const unsigned char *) _nKey);
@@ -377,6 +381,7 @@ void KeyStore::saveKey(Key *key) {
     if(sqlite3_prepare_v2(sqliteHandle, query, -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
 
     // Bind parameters
+    std::cout << "Save key stuff: " << key->key << " - " << strlen((const char *)key->key) << std::endl;
     if ((index = sqlite3_bind_parameter_index(stmt, ":key")) <= 0) throw "Could not retrieve parameter index in the statement";
     if(sqlite3_bind_blob(stmt, index, (const void *)key->key, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
 
