@@ -3,8 +3,8 @@
 //
 
 #include "Partition.h"
-#include "../libfatfs/src/diskio.h"
 #include "Common.h"
+#include "../libfatfs/src/diskio.h"
 
 /**
  * NEVER, NEVER, NEVER CHANGE THIS VALUE.
@@ -26,12 +26,16 @@ Partition::Partition(const char* path, FILE* fh):
     currentFileDescriptor = fd;
 }
 
-Partition *Partition::open() {
-    // The instances
-    FRESULT res;
+Partition::~Partition() {
+    // Unmount the file system
+    FRESULT res = f_mount(nullptr, Partition::LETTER, 0);
+    if(res != FR_OK) throw "Could not mount partition";
+}
 
+
+Partition *Partition::open() {
     // Mount the file system
-    res = f_mount(&fs, Partition::LETTER, 0);
+    FRESULT res = f_mount(&fs, Partition::LETTER, 0);
     if(res != FR_OK) throw "Could not mount partition";
 
     // Return myself
@@ -316,4 +320,3 @@ int Partition::exportFile(const char *source, const char *destination) {
     fclose(fDestination);
     f_close(&fSource);
 }
-

@@ -111,23 +111,12 @@ void DialogOpen::on_buttonSelectPartition_clicked()
     if(!qFile.selectedFiles().empty()) ui->textPartition->setText(qFile.selectedFiles()[0]);
 }
 
-/** Display warning message.
- *
- * @brief DialogOpen::show_warning
- * @param message - Given message to display
- */
 void DialogOpen::show_warning(const char* message)
 {
     QMessageBox messageBox;
     messageBox.warning(0,"Warning",message);
 }
 
-/** Check if given path is an existing file
- *
- * @brief DialogOpen::fileExists
- * @param path - Given path to check
- * @return - true if file exists
- */
 bool DialogOpen::fileExists(QString path)
 {
     QFileInfo check_file(path);
@@ -135,13 +124,6 @@ bool DialogOpen::fileExists(QString path)
     return check_file.exists() && check_file.isFile();
 }
 
-/** Check if a given path has a given suffix
- *
- * @brief DialogOpen::has_suffix
- * @param filePath - Path to check if contains suffix
- * @param suffix - The suffix path sould contain
- * @return
- */
 bool DialogOpen::has_suffix(const QString &filePath, const QString &suffix)
 {
     // Regular expresion to check if key files end with '.keystore' and

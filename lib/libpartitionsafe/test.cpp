@@ -28,15 +28,13 @@ int main() {
 #endif
         char label[40] = "Marc";
 
-        // Delete old files
-        std::remove(vaultPath);
-        std::remove(keyStorePath);
-
         // Create the partition safe instance
         PartitionSafe *ps = new PartitionSafe();
 
         // Create the vault
         std::cout << "-- Partition create" << std::endl;
+        std::remove(vaultPath);
+        std::remove(keyStorePath);
         ps->create(vaultPath, keyStorePath, label, 1024, "test", "test");
 
         //

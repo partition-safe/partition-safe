@@ -26,8 +26,10 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
     encrypt(saltedPassword, encryptionKey, &encrypted);
 
     // Cleanup
+#ifndef __WIN32
     delete[] saltedPassword;
     delete[] encryptionKey;
+#endif
 
     // The new key
     Key *key = new Key(0, user->id, inode, encrypted);
@@ -107,8 +109,10 @@ void Key::decrypt(const User *user, const char *password, const unsigned char *e
     // Get the decrypted key
     decrypt(saltedPassword, encryptedKey, decryptedKey);
 
+#ifndef __WIN32
     // Remove salted password
     delete[] saltedPassword;
+#endif
 }
 
 void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey, unsigned char **decryptedKey) {
