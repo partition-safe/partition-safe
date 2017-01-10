@@ -7,6 +7,7 @@
 #include <mainwindow/mainwindow.h>
 #include <Common.h>
 #include <QDebug>
+#include <QDir>
 
 PSFileSystemModel::PSFileSystemModel(QObject *parent, PartitionSafe* psInstance):
     QAbstractListModel(parent), psInstance(psInstance)
@@ -64,17 +65,69 @@ QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 void PSFileSystemModel::setCurrentDirectory(QString path)
 {
     currentDirectory = path;
-    currentDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
+    currentDirectoryListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
     emit dataChanged(index(0), index(rowCount(QModelIndex())));
 }
 
-void PSFileSystemModel::importFile(char* source, char* destination)
+void PSFileSystemModel::importFile(const char* source, const char* destination)
 {
     beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     psInstance->getVault()->getPartition()->importFile(source, destination);
     endInsertRows();
 
     setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::importFolder(QModelIndexList &selectedRowsList, const char* destination)
+{
+    foreach (QModelIndex index, selectedRowsList)
+    {
+        importFolder(this->getFile(index)->getFullPath().data(), destination);
+    }
+    setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::importFolder(QString source, QString destination)
+{
+    FRESULT exists;
+    FILINFO fno;
+
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+
+    QDir impDir;
+    impDir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+
+    if(impDir.cd(source)){
+        QString newDestination = destination;
+        newDestination = destination + "/" + impDir.dirName();
+        //Check if folder already exists
+        exists = f_stat(Common::stdStringToTChar(newDestination.toStdString()), &fno);
+        if(exists != FR_OK){
+            createDirectory(newDestination);
+        }
+
+        QFileInfoList list = impDir.entryInfoList();
+
+        for (int i = 0; i < list.size(); ++i) {
+                QFileInfo fileInfo = list.at(i);
+
+                if(fileInfo.isDir()){
+                    importFolder(fileInfo.path() + "/" + fileInfo.fileName(), newDestination);
+                }
+                else{
+                    //check if file already exists
+                    QFile chFile(newDestination + "/" + fileInfo.fileName());
+                    if(chFile.exists()){
+                        chFile.remove();
+                    }
+                    psInstance->getVault()->getPartition()->importFile(fileInfo.absoluteFilePath().toLatin1().data(), (newDestination + "/" + fileInfo.fileName()).toLatin1().data());
+                }
+        }
+    }
+    else{
+        qDebug() << "Map doesnt exists";
+    }
+    endInsertRows();
 }
 
 void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
@@ -84,6 +137,13 @@ void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
         deleteFileDirectory(this->getFile(index)->getFullPath().data());
     }
     setCurrentDirectory(getCurrentDirectory());
+}
+
+void PSFileSystemModel::createDirectory( QString directoryName){
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
 }
 
 void PSFileSystemModel::deleteFileDirectory(QString path)
@@ -100,7 +160,7 @@ void PSFileSystemModel::deleteFileDirectory(QString path)
         switch(fno.fattrib){
         case AM_DIR:
             qDebug()<< "directory";
-            subDirectoryListing = psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
+            subDirectoryListing = (std::vector<Entry*>*) psInstance->getVault()->getPartition()->listDirectory(path.toStdString());
             while(subDirectoryListing->size()>=1){
                 entry = subDirectoryListing->back();
                 subDirectoryListing->pop_back();
@@ -116,6 +176,15 @@ void PSFileSystemModel::deleteFileDirectory(QString path)
         }
     }
     endRemoveRows();
+}
+bool PSFileSystemModel::directoryExists(QString path){
+    FRESULT exists;
+    FILINFO fno;
+
+    exists = f_stat(Common::stdStringToTChar(path.toStdString()), &fno);
+
+    if(exists==FR_OK && fno.fattrib == AM_DIR) return true;
+    else return false;
 }
 
 QString PSFileSystemModel::getCurrentDirectory()

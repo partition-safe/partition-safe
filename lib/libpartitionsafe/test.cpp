@@ -28,15 +28,13 @@ int main() {
 #endif
         char label[40] = "Marc";
 
-        // Delete old files
-        std::remove(vaultPath);
-        std::remove(keyStorePath);
-
         // Create the partition safe instance
         PartitionSafe *ps = new PartitionSafe();
 
         // Create the vault
         std::cout << "-- Partition create" << std::endl;
+        std::remove(vaultPath);
+        std::remove(keyStorePath);
         ps->create(vaultPath, keyStorePath, label, 1024, "test", "test");
 
         //
@@ -93,6 +91,13 @@ int main() {
         ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_1, line, sizeof(line));
         ps->getVault()->getPartition()->writeFile(directoryName + "\\" + filename2_2, line, sizeof(line));
 
+        ps->getVault()->getPartition()->createDirectory("beast");
+        ps->getVault()->getPartition()->createDirectory("beast/1");
+        ps->getVault()->getPartition()->createDirectory("beast/2");
+        ps->getVault()->getPartition()->createDirectory("beast/2/1");
+        ps->getVault()->getPartition()->createDirectory("beast/2/2");
+        ps->getVault()->getPartition()->createDirectory("beast/2/2/3");
+
         // Import a file
 #ifndef __WIN32
         const char *importTest = "/tmp/test.txt";
@@ -111,7 +116,8 @@ int main() {
 
         // Read directories/files for root
         std::cout << "-- List directories" << std::endl;
-        std::vector<Entry*>* entries = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"));
+        TreeEntry *root = new TreeEntry();
+        std::vector<Entry*>* entries = ps->getVault()->getPartition()->listDirectory(Common::stdStringToTChar("/"), &root);
 
         // Print entries
         for(Entry* const& value : *entries) {

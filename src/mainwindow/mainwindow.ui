@@ -56,11 +56,8 @@
          <property name="rootIsDecorated">
           <bool>true</bool>
          </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
         </widget>
-        <widget class="QTreeView" name="treeViewExplorer">
+        <widget class="MainTreeViewFiles" name="treeViewExplorer">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>3</horstretch>
@@ -72,9 +69,6 @@
          </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
          </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
@@ -91,9 +85,6 @@
          <property name="wordWrap">
           <bool>true</bool>
          </property>
-         <attribute name="headerShowSortIndicator" stdset="0">
-          <bool>true</bool>
-         </attribute>
         </widget>
        </widget>
       </item>
@@ -154,6 +145,16 @@
         </property>
         <property name="text">
          <string>Export</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonNewDirectory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>New Directory</string>
         </property>
        </widget>
       </item>
@@ -279,6 +280,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MainTreeViewFiles</class>
+   <extends>QTreeView</extends>
+   <header location="global">maintreeviewfiles.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>treeViewFiles</tabstop>
   <tabstop>treeViewExplorer</tabstop>

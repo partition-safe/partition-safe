@@ -31,22 +31,12 @@ public:
         /**
          * Identifier of the vault
          */
-        unsigned char identifier[13];
-
-        /**
-         * The current version of the partition.
-         */
-        unsigned int version;
+        unsigned char identifier[14];
 
         /**
          * Custom partition label
          */
         char label[40];
-
-        /**
-         * Partition size in bytes
-         */
-        unsigned long size;
 
         /**
          * The personal UUID of the vault.
@@ -57,6 +47,16 @@ public:
          * The encrypted identifier.
          */
         unsigned char identifier_encrypted[24];
+
+        /**
+         * The current version of the partition.
+         */
+        unsigned int version;
+
+        /**
+         * Partition size in bytes
+         */
+        unsigned long size;
     };
 
     /**
