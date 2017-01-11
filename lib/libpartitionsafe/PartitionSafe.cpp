@@ -144,12 +144,8 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
 
     // First decrypt the current encryption key and then create the key
     if(this->key) {
-        // Decrypt encryption key
-        unsigned char *encryptionKey;
-        this->key->decrypt(*user, password, this->key->key, &encryptionKey);
-
         // Create the new key
-        *key = Key::create(*user, password, encryptionKey, 0);
+        *key = Key::create(*user, password, _disk_encryption_conf.key, 0);
     } else {
         // Create a new key
         *key = Key::create(*user, password);

@@ -22,39 +22,50 @@ void DialogNewUser::on_btnCreate_clicked()
     KeyStore *keyStore = partitionSafe->getKeyStore();
 
     // Retrieve user credentials
-    QString username  = ui->txtUsername->text();
-    QString password  = ui->txtPassword->text();
-    QString password2 = ui->txtPassword2->text();
+    QByteArray baUsername = ui->txtUsername->text().toLatin1();
+    const char *username = baUsername.data();
+    QByteArray baPassword = ui->txtPassword->text().toLatin1();
+    const char *password = baPassword.data();
+    QByteArray baPassword2 = ui->txtPassword2->text().toLatin1();
+    const char *password2 = baPassword2.data();
 
     // Do some validation
-    if(username.size() == 0 || password.size() == 0 || password2.size() == 0){
+    if(strlen(username) == 0 || strlen(password) == 0 || strlen(password2) == 0){
         QMessageBox msgBox;
         msgBox.setText("Please fill in all form fields.");
         msgBox.exec();
 
         return;
     }
-    if(password.size() < 8){
+    if(strlen(password) < 8){
         QMessageBox msgBox;
         msgBox.setText("The password needs to be at least 8 characters.");
         msgBox.exec();
 
         return;
     }
-    if(password.compare(password2) != 0){
+    if(strcmp(password, password2) != 0){
         QMessageBox msgBox;
         msgBox.setText("Both provided passwords should be eqeal.");
         msgBox.exec();
-
         return;
     }
 
-    // Validation passed, continue creating the user
+    try {
+        // Validation passed, continue creating the user
+        User *user;
+        Key *key;
+        partitionSafe->createUser(username, password, &user, &key);
 
+        QMessageBox msgBox;
+        msgBox.setText("The user has been created");
+        msgBox.exec();
 
-    // Create a new user
-    User *user = User::create(username.toLatin1().data(), password.toLatin1().data());
+        close();
 
-    // Save that user to our keystore
-    keyStore->saveUser(user);
+    } catch(char const *error) {
+        QMessageBox msgBox;
+        msgBox.setText(error);
+        msgBox.exec();
+    }
 }

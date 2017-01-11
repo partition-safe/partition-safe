@@ -128,6 +128,8 @@ void Common::randomChars(unsigned size, char **output) {
     // Setup the output
     char *temp = new char[size + 1]();
 
+    srand(time(0));
+
     // Populate the string
     for (int i = 0; i < size; ++i) {
         temp[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
