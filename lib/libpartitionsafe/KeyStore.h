@@ -121,6 +121,13 @@ public:
     /**
      * Retrieve an user by it's ID.
      *
+     * @param users The list of users
+     */
+    void getUsers(std::vector<User*> **users);
+
+    /**
+     * Retrieve an user by it's ID.
+     *
      * @param id
      * @param user
      */

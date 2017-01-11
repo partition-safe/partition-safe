@@ -226,6 +226,35 @@ void KeyStore::deleteUser(const User *user) {
     if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
+void KeyStore::getUsers(std::vector<User*> **users) {
+    // Prepare the query
+    sqlite3_stmt *stmt;
+    int index;
+
+    // Prepare the statement
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USERNAME, SALT, PUBLIC_KEY, PRIVATE_KEY FROM USERS", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+
+    // Execute query
+    while(sqlite3_step(stmt) == SQLITE_ROW) {
+        // Get the result of the current row
+        int _id = sqlite3_column_int(stmt, 0);
+
+        // Create the user
+        User *user = new User((const unsigned) _id,
+                             (char *)sqlite3_column_text(stmt, 1),
+                             (char *)sqlite3_column_text(stmt, 2),
+                             (char *)sqlite3_column_text(stmt, 3),
+                             (char *)sqlite3_column_text(stmt, 4));
+
+        // Create the user
+        (*users)->push_back(user);
+    }
+
+    // Finalize
+    int res = sqlite3_finalize(stmt);
+    if(res != SQLITE_OK) throw "Could not finalize statement";
+}
+
 void KeyStore::getUser(const int id, User **user) {
     // Prepare the query
     sqlite3_stmt *stmt;
