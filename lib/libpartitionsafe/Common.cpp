@@ -6,6 +6,8 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <sstream>
+#include <time.h>
+
 #endif
 
 #include "../libmbedtls/include/mbedtls/entropy.h"
@@ -127,6 +129,8 @@ void Common::randomChars(unsigned size, char **output) {
 
     // Setup the output
     char *temp = new char[size + 1]();
+
+    srand(time(0));
 
     // Populate the string
     for (int i = 0; i < size; ++i) {

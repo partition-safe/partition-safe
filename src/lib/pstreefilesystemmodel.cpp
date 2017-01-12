@@ -28,6 +28,20 @@ void PSTreeFileSystemModel::setupData(TreeEntry **node, const char *path)
     }
 }
 
+QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    switch(role)
+    {
+    case Qt::DisplayRole:
+        switch(section)
+        {
+        case 0:
+            return QVariant("Directory");
+        }
+    }
+    return QVariant();
+}
+
 void PSTreeFileSystemModel::init()
 {
     currentDirectory = new TreeEntry();
@@ -135,18 +149,4 @@ void PSTreeFileSystemModel::setCurrentDirectory(QString path)
 void PSTreeFileSystemModel::setDirectoriesOnly(const bool state)
 {
     directoriesOnly = state;
-}
-
-QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    switch(role)
-    {
-    case Qt::DisplayRole:
-        switch(section)
-        {
-        case 0:
-            return QVariant("Directory Name");
-        }
-    }
-    return QVariant();
 }
