@@ -150,6 +150,16 @@ void MainWindow::on_actionOpen_triggered()
     if(open->exec()) initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
 }
 
+void MainWindow::on_buttonEdit_clicked()
+{
+    renameFileFolder();
+}
+
+void MainWindow::on_actionRename_triggered()
+{
+    renameFileFolder();
+}
+
 void MainWindow::on_actionNew_triggered()
 {
     DialogNew *newDialog = new DialogNew(this);
@@ -171,6 +181,16 @@ void MainWindow::on_buttonDelete_clicked()
     deleteFileDirectory();
 }
 
+void MainWindow::on_actionDelete_triggered()
+{
+    deleteFileDirectory();
+}
+
+void MainWindow::on_actionNew_Directory_triggered()
+{
+    newDirectory();
+}
+
 void MainWindow::on_actionFolder_triggered()
 {
     importFolder();
@@ -185,6 +205,12 @@ void MainWindow::on_actionExport_triggered()
 {
     exportFiles();
 }
+
+void MainWindow::on_buttonNewDirectory_clicked()
+{
+    newDirectory();
+}
+
 
 void MainWindow::importFiles()
 {
@@ -316,6 +342,11 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
     }
 }
 
+void MainWindow::renameFileFolder()
+{
+    qDebug()<<"rename"<<endl;
+}
+
 void MainWindow::deleteFileDirectory()
 {
     model->deleteFileDirectory(selectedRowsList);
@@ -404,23 +435,7 @@ void MainWindow::setPath()
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
 }
 
-void MainWindow::on_treeViewExplorer_selectionChanged()
-{
-    //checks if someting is selected
-    selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
-    bool hasSelection = selectedRowsList.size()>=1;
-
-    // Enable export/delete
-    ui->buttonDelete->setEnabled(hasSelection);
-    ui->buttonExport->setEnabled(hasSelection);
-    ui->buttonEdit->setEnabled(hasSelection);
-    // Action menu
-    ui->actionDelete->setEnabled(hasSelection);
-    ui->actionExport->setEnabled(hasSelection);
-    ui->actionRename->setEnabled(hasSelection);
-}
-
-void MainWindow::on_buttonNewDirectory_clicked()
+void MainWindow::newDirectory()
 {
     DialogNewDirectory *newDialogDirectory = new DialogNewDirectory(this);
 
@@ -436,6 +451,22 @@ void MainWindow::on_buttonNewDirectory_clicked()
         if(!model->directoryExists(fullPath)) model->createDirectory(fullPath);
         else QMessageBox::warning(0,"Can't ctory", "Directory already exists");
     }
+}
+
+void MainWindow::on_treeViewExplorer_selectionChanged()
+{
+    //checks if someting is selected
+    selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    bool hasSelection = selectedRowsList.size()>=1;
+
+    // Enable export/delete
+    ui->buttonDelete->setEnabled(hasSelection);
+    ui->buttonExport->setEnabled(hasSelection);
+    ui->buttonEdit->setEnabled(hasSelection);
+    // Action menu
+    ui->actionDelete->setEnabled(hasSelection);
+    ui->actionExport->setEnabled(hasSelection);
+    ui->actionRename->setEnabled(hasSelection);
 }
 
 void MainWindow::on_treeViewExplorer_viewportEntered()

@@ -364,7 +364,7 @@
     <string>Folder...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
+    <string>Ctrl+U</string>
    </property>
   </action>
   <action name="actionDelete">
