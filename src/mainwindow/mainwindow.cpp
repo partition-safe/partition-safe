@@ -4,6 +4,7 @@
 #include "dialognew.h"
 #include "dialognotifications.h"
 #include "dialognewdirectory.h"
+#include "dialogrename.h"
 
 #include <QDirModel>
 #include <QFileDialog>
@@ -344,7 +345,23 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
 
 void MainWindow::renameFileFolder()
 {
-    qDebug()<<"rename"<<endl;
+    qDebug()<<"rename";
+    QFileInfo fileInfo(model->getFile(selectedRowsList[0])->getFullPath().data());
+    QString oldPath = fileInfo.fileName();
+    QString newPath = "";
+
+    DialogRename *dialogRename = new DialogRename(this, oldPath);
+
+    int dialogResult = dialogRename->exec();
+
+    if(dialogResult == QDialog::Accepted)
+    {
+        // Get new directory name
+        newPath = dialogRename->fileName;
+        newPath = newPath.trimmed();
+
+        model->renameFileFolder(oldPath, newPath);
+    }
 }
 
 void MainWindow::deleteFileDirectory()

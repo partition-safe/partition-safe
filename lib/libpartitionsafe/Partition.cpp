@@ -324,3 +324,16 @@ Partition *Partition::exportFile(const char *source, const char *destination) {
 
     return this;
 }
+
+Partition *Partition::renameFileFolder(const char *oldPath, const char *newPath)
+{
+    // Instances
+    FRESULT res;
+
+    // Retrieve file status
+    res = f_rename(oldPath, newPath);
+    if(res != FR_OK) throw "Could not rename file or directory";
+
+    // Return myself
+    return this;
+}

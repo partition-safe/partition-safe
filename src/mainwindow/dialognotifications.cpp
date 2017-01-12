@@ -6,6 +6,10 @@ DialogNotifications::DialogNotifications(PartitionSafe *psInstance, QWidget *par
     QDialog(parent), ui(new Ui::DialogNotifications), psInstance(psInstance)
 {
     ui->setupUi(this);
+
+    // Remove [?] Button from window
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     load();
 }
 

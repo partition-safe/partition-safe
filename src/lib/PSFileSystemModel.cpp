@@ -137,6 +137,22 @@ void PSFileSystemModel::importFolder(QString source, QString destination)
     endInsertRows();
 }
 
+void PSFileSystemModel::createDirectory( QString directoryName){
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
+}
+
+
+void PSFileSystemModel::renameFileFolder(QString oldPath, QString newPath)
+{
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->renameFileFolder(oldPath.toLatin1().data(), newPath.toLatin1().data());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
+}
+
 void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
 {
     foreach (QModelIndex index, selectedRowsList)
@@ -144,13 +160,6 @@ void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
         deleteFileDirectory(this->getFile(index)->getFullPath().data());
     }
     setCurrentDirectory(getCurrentDirectory());
-}
-
-void PSFileSystemModel::createDirectory( QString directoryName){
-    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
-    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
-    setCurrentDirectory(getCurrentDirectory());
-    endInsertRows();
 }
 
 void PSFileSystemModel::deleteFileDirectory(QString path)

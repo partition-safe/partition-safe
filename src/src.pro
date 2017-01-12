@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     mainwindow/dialognewdirectory.cpp \
     lib/pstreefilesystemmodel.cpp \
     maintreeviewfiles.cpp \
-    mainwindow/dialognotifications.cpp
+    mainwindow/dialognotifications.cpp \
+    mainwindow/dialogrename.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
@@ -40,10 +41,12 @@ HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialognewdirectory.h \
     lib/pstreefilesystemmodel.h \
     maintreeviewfiles.h \
-    mainwindow/dialognotifications.h
+    mainwindow/dialognotifications.h \
+    mainwindow/dialogrename.h
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
     mainwindow/dialognew.ui \
     mainwindow/dialognotifications.ui \
-    mainwindow/dialognewdirectory.ui
+    mainwindow/dialognewdirectory.ui \
+    mainwindow/dialogrename.ui
