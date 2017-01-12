@@ -327,11 +327,20 @@ void MainWindow::setNotifications()
     // Get the notifications
     auto *notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
 
-    // Set notifications
-    std::string s = "Notifications [";
-    s += std::to_string(notifications->size());
-    s += "]";
-    ui->buttonNotifications->setText(QString(s.c_str()));
+    if (notifications->size()>0)
+    {
+        ui->buttonNotifications->setVisible(true);
+
+        // Set notifications
+        std::string s = "[";
+        s += std::to_string(notifications->size());
+        s += "]";
+        ui->buttonNotifications->setText(QString(s.c_str()));
+    } else
+    {
+        ui->buttonNotifications->setVisible(false);
+    }
+
 }
 
 void MainWindow::makeDir(QString path)
@@ -366,6 +375,7 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->buttonImport->setEnabled(true);
         ui->actionImports->setEnabled(true);
         ui->buttonNewDirectory->setEnabled(true);
+        ui->actionNew_Directory->setEnabled(true);
         ui->actionFile->setEnabled(true);
         ui->buttonNotifications->setEnabled(true);
         ui->actionFolder->setEnabled(true);
@@ -403,7 +413,11 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
     // Enable export/delete
     ui->buttonDelete->setEnabled(hasSelection);
     ui->buttonExport->setEnabled(hasSelection);
+    ui->buttonEdit->setEnabled(hasSelection);
+    // Action menu
+    ui->actionDelete->setEnabled(hasSelection);
     ui->actionExport->setEnabled(hasSelection);
+    ui->actionRename->setEnabled(hasSelection);
 }
 
 void MainWindow::on_buttonNewDirectory_clicked()
