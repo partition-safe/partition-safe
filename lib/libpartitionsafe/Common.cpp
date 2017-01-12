@@ -6,6 +6,8 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <sstream>
+#include <time.h>
+
 #endif
 
 #include "../libmbedtls/include/mbedtls/entropy.h"
