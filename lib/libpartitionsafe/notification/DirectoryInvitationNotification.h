@@ -7,6 +7,7 @@
 
 
 #include "BaseNotification.h"
+#include "../database/User.h"
 
 /**
  * The content of a directory invitation should be formatted as follows:
@@ -15,14 +16,16 @@
  */
 class DirectoryInvitationNotification : public BaseNotification {
 public:
-    int inode;
+    std::string path;
 
     std::string encryptionKey;
 
     DirectoryInvitationNotification(const int id, const int user_from, const int user_to, const int type,
                                     const std::string &content);
 
-    static DirectoryInvitationNotification *create(const int user_from, const int user_to, const int inode, const std::string &encryptionKey);
+    static DirectoryInvitationNotification *create(const int user_from, const int user_to, const std::string path, const std::string &encryptionKey);
+
+    static DirectoryInvitationNotification *create(const User *user_from, const User *user_to, const std::string path, const std::string &encryptionKey);
 
     std::string toString() override;
 

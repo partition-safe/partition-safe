@@ -5,6 +5,7 @@
 #include "dialognewuser.h"
 #include "dialognotifications.h"
 #include "dialognewdirectory.h"
+#include "dialogshare.h"
 
 #include <QDirModel>
 #include <QFileDialog>
@@ -60,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Debug mode only, load a default vault
     initializeVault((const char *)vaultPath, (const char *)keyStorePath, "test", "test");
+//    initializeVault((const char *)vaultPath, (const char *)keyStorePath, "youri", "12345678");
 
     // Show path in status bar
     this->setPath();
@@ -402,6 +404,7 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
     bool hasSelection = selectedRowsList.size()>=1;
 
     // Enable export/delete
+    ui->buttonShare->setEnabled(selectedRowsList.size() == 1);
     ui->buttonDelete->setEnabled(hasSelection);
     ui->buttonExport->setEnabled(hasSelection);
     ui->actionExport->setEnabled(hasSelection);
@@ -444,4 +447,11 @@ void MainWindow::on_actionUser_triggered()
 {
     DialogNewUser* dialog = new DialogNewUser(this, psInstance);
     dialog->show();
+}
+
+void MainWindow::on_buttonShare_clicked()
+{
+    // Open the dialog
+    DialogShare *share = new DialogShare(model->getCurrentDirectory().toUtf8().constData(), this->psInstance, this);
+    share->show();
 }

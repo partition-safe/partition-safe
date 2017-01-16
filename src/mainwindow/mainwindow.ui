@@ -133,6 +133,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="buttonShare">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Share</string>
+        </property>
+        <property name="text">
+         <string>Share</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="buttonImport">
         <property name="enabled">
          <bool>false</bool>

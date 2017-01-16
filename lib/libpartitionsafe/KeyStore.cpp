@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include "KeyStore.h"
+#include "notification/DirectoryInvitationNotification.h"
 
 const char *KeyStore::STMT_CREATE_TABLE_METADATA =
         "CREATE TABLE `METADATA` ("
@@ -498,8 +499,15 @@ void KeyStore::loadNotification(int id, BaseNotification **notification) {
     const int _type = sqlite3_column_int(stmt, 3);
     std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
 
-    // Create the user
-    *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+    // What is the type?
+    switch(_type) {
+        case 3:
+            *notification = new DirectoryInvitationNotification(_id, _user_from, _user_to, _type, _details);
+            break;
+        default:
+            *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+            break;
+    }
 
     // Finalize
     res = sqlite3_finalize(stmt);
@@ -550,8 +558,18 @@ std::vector<BaseNotification *> *KeyStore::loadNotificationsForUser(int user_id)
         const int _type = sqlite3_column_int(stmt, 3);
         std::string _details = std::string((char *)sqlite3_column_text(stmt, 4));
 
-        // Create the user
-        BaseNotification *notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+        // Push the notification
+        BaseNotification *notification;
+
+        // What is the type?
+        switch(_type) {
+            case 3:
+                notification = new DirectoryInvitationNotification(_id, _user_from, _user_to, _type, _details);
+                break;
+            default:
+                notification = new BaseNotification(_id, _user_from, _user_to, _type, _details);
+                break;
+        }
 
         // Add notification to vector
         vector->push_back(notification);

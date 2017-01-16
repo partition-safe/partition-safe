@@ -8,12 +8,12 @@ DirectoryInvitationNotification::DirectoryInvitationNotification(const int id, c
                                                                  const int type, const std::string &content)
         : BaseNotification(id, user_from, user_to, type, content) {
     // Split content
-    this->inode = std::stoi(content.substr(0, content.find("::")));
+    this->path = content.substr(0, content.find("::"));
     this->encryptionKey = content.substr(content.find("::") + 2);
 }
 
 std::string DirectoryInvitationNotification::toString() {
-    return "User '" + std::to_string(user_from) + "' wants to share a directory (" + std::to_string(inode) + ") with you.";
+    return "User '" + std::to_string(user_from) + "' wants to share a directory (" + path + ") with you.";
 }
 
 int DirectoryInvitationNotification::handle(PartitionSafe *psInstance) {
@@ -21,7 +21,13 @@ int DirectoryInvitationNotification::handle(PartitionSafe *psInstance) {
 }
 
 DirectoryInvitationNotification *
-DirectoryInvitationNotification::create(const int user_from, const int user_to, const int inode,
+DirectoryInvitationNotification::create(const int user_from, const int user_to, const std::string path,
                                         const std::string &encryptionKey) {
-    return new DirectoryInvitationNotification(0, user_from, user_to, 3, std::to_string(inode) + "::" + encryptionKey);
+    return new DirectoryInvitationNotification(0, user_from, user_to, 3, path + "::" + encryptionKey);
+}
+
+DirectoryInvitationNotification *
+DirectoryInvitationNotification::create(const User *user_from, const User *user_to, const std::string path,
+                                        const std::string &encryptionKey) {
+    return new DirectoryInvitationNotification(0, user_from->id, user_to->id, 3, path + "::" + encryptionKey);
 }
