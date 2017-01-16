@@ -9,7 +9,9 @@
 #include "NotificationCentre.h"
 
 int main() {
-        std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
+    srand(time(0));
+
+    std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
 
         //
         // Create vault
