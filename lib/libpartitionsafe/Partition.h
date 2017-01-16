@@ -98,6 +98,15 @@ public:
      */
     Partition* writeFile(const std::string fileName, const void* buff, const UINT size);
 
+    /**
+ * Rename a file or folder.
+ *
+ * @param oldPath - Path to the file or folder to be renamed
+ * @param newPath - Path to the file or folder with changed name
+ * @return
+ */
+    Partition *renameFileFolder(const char *oldPath, const char *newPath);
+
 #ifndef __WIN32
     /**
      * Write to a file on the partition.

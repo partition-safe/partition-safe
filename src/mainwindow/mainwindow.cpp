@@ -6,6 +6,7 @@
 #include "dialognotifications.h"
 #include "dialognewdirectory.h"
 #include "dialogshare.h"
+#include "dialogrename.h"
 
 #include <QDirModel>
 #include <QFileDialog>
@@ -153,6 +154,16 @@ void MainWindow::on_actionOpen_triggered()
     if(open->exec()) initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
 }
 
+void MainWindow::on_buttonEdit_clicked()
+{
+    renameFileFolder();
+}
+
+void MainWindow::on_actionRename_triggered()
+{
+    renameFileFolder();
+}
+
 void MainWindow::on_actionNew_triggered()
 {
     DialogNew *newDialog = new DialogNew(this);
@@ -174,6 +185,16 @@ void MainWindow::on_buttonDelete_clicked()
     deleteFileDirectory();
 }
 
+void MainWindow::on_actionDelete_triggered()
+{
+    deleteFileDirectory();
+}
+
+void MainWindow::on_actionNew_Directory_triggered()
+{
+    newDirectory();
+}
+
 void MainWindow::on_actionFolder_triggered()
 {
     importFolder();
@@ -188,6 +209,12 @@ void MainWindow::on_actionExport_triggered()
 {
     exportFiles();
 }
+
+void MainWindow::on_buttonNewDirectory_clicked()
+{
+    newDirectory();
+}
+
 
 void MainWindow::importFiles()
 {
@@ -319,6 +346,27 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
     }
 }
 
+void MainWindow::renameFileFolder()
+{
+    qDebug()<<"rename";
+    QFileInfo fileInfo(model->getFile(selectedRowsList[0])->getFullPath().data());
+    QString oldPath = fileInfo.fileName();
+    QString newPath = "";
+
+    DialogRename *dialogRename = new DialogRename(this, oldPath);
+
+    int dialogResult = dialogRename->exec();
+
+    if(dialogResult == QDialog::Accepted)
+    {
+        // Get new directory name
+        newPath = dialogRename->fileName;
+        newPath = newPath.trimmed();
+
+        model->renameFileFolder(oldPath, newPath);
+    }
+}
+
 void MainWindow::deleteFileDirectory()
 {
     model->deleteFileDirectory(selectedRowsList);
@@ -330,11 +378,20 @@ void MainWindow::setNotifications()
     // Get the notifications
     auto *notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
 
-    // Set notifications
-    std::string s = "Notifications [";
-    s += std::to_string(notifications->size());
-    s += "]";
-    ui->buttonNotifications->setText(QString(s.c_str()));
+    if (notifications->size()>0)
+    {
+        ui->buttonNotifications->setVisible(true);
+
+        // Set notifications
+        std::string s = "[";
+        s += std::to_string(notifications->size());
+        s += "]";
+        ui->buttonNotifications->setText(QString(s.c_str()));
+    } else
+    {
+        ui->buttonNotifications->setVisible(false);
+    }
+
 }
 
 void MainWindow::makeDir(QString path)
@@ -369,6 +426,7 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->buttonImport->setEnabled(true);
         ui->actionImports->setEnabled(true);
         ui->buttonNewDirectory->setEnabled(true);
+        ui->actionNew_Directory->setEnabled(true);
         ui->actionFile->setEnabled(true);
         ui->buttonNotifications->setEnabled(true);
         ui->actionFolder->setEnabled(true);
@@ -397,20 +455,7 @@ void MainWindow::setPath()
     ui->buttonForward->setEnabled(folderForwardHistory->size() > 0);
 }
 
-void MainWindow::on_treeViewExplorer_selectionChanged()
-{
-    //checks if someting is selected
-    selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
-    bool hasSelection = selectedRowsList.size()>=1;
-
-    // Enable export/delete
-    ui->buttonShare->setEnabled(selectedRowsList.size() == 1);
-    ui->buttonDelete->setEnabled(hasSelection);
-    ui->buttonExport->setEnabled(hasSelection);
-    ui->actionExport->setEnabled(hasSelection);
-}
-
-void MainWindow::on_buttonNewDirectory_clicked()
+void MainWindow::newDirectory()
 {
     DialogNewDirectory *newDialogDirectory = new DialogNewDirectory(this);
 
@@ -426,6 +471,23 @@ void MainWindow::on_buttonNewDirectory_clicked()
         if(!model->directoryExists(fullPath)) model->createDirectory(fullPath);
         else QMessageBox::warning(0,"Can't ctory", "Directory already exists");
     }
+}
+
+void MainWindow::on_treeViewExplorer_selectionChanged()
+{
+    //checks if someting is selected
+    selectedRowsList = ui->treeViewExplorer->selectionModel()->selectedRows();
+    bool hasSelection = selectedRowsList.size()>=1;
+
+    // Enable export/delete
+    ui->buttonShare->setEnabled(selectedRowsList.size() == 1);
+    ui->buttonDelete->setEnabled(hasSelection);
+    ui->buttonExport->setEnabled(hasSelection);
+    ui->buttonEdit->setEnabled(hasSelection);
+    // Action menu
+    ui->actionDelete->setEnabled(hasSelection);
+    ui->actionExport->setEnabled(hasSelection);
+    ui->actionRename->setEnabled(hasSelection);
 }
 
 void MainWindow::on_treeViewExplorer_viewportEntered()
@@ -451,7 +513,16 @@ void MainWindow::on_actionUser_triggered()
 
 void MainWindow::on_buttonShare_clicked()
 {
+    // Get the path
+    QFileInfo fileInfo(model->getFile(selectedRowsList[0])->getFullPath().data());
+    std::string oldPath = "/" + std::string(fileInfo.fileName().toUtf8().constData());
+
+    // Current directory not root? Add the path.
+    if(strcmp(model->getCurrentDirectory().toUtf8().constData(), "/") != 0) {
+        oldPath = model->getCurrentDirectory().toUtf8().constData() + oldPath;
+    }
+
     // Open the dialog
-    DialogShare *share = new DialogShare(model->getCurrentDirectory().toUtf8().constData(), this->psInstance, this);
+    DialogShare *share = new DialogShare(oldPath, this->psInstance, this);
     share->show();
 }

@@ -3,5 +3,14 @@
         <file>resource/icon.png</file>
         <file>resource/ic_folder_black_48dp.png</file>
         <file>resource/ic_insert_drive_file_black_48dp.png</file>
+        <file>resource/ic_create_new_folder_black_48dp.png</file>
+        <file>resource/ic_delete_black_48dp.png</file>
+        <file>resource/ic_file_download_black_48dp.png</file>
+        <file>resource/ic_file_upload_black_48dp.png</file>
+        <file>resource/ic_mode_edit_black_48dp.png</file>
+        <file>resource/ic_notifications_none_black_48dp.png</file>
+        <file>resource/ic_navigate_before_black_48dp.png</file>
+        <file>resource/ic_navigate_next_black_48dp.png</file>
+        <file>resource/ic_share_black_48dp.png</file>
     </qresource>
 </RCC>

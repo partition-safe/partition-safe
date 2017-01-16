@@ -9,7 +9,9 @@
 #include "NotificationCentre.h"
 
 int main() {
-        std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
+    srand(time(0));
+
+    std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
 
         srand(time(0));
 
@@ -147,8 +149,8 @@ int main() {
         // Lets create a new user for this vault
         //
 
-        User *user;
-        Key *key;
+        std::cout << "-- Creating user test" << std::endl;
+        User *user; Key *key;
         ps->createUser("youri", "12345678", &user, &key);
 
         //
