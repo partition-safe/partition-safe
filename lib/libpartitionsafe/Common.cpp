@@ -136,11 +136,12 @@ void Common::randomChars(unsigned size, char **output) {
     }
 
     // End the output
-    temp[size - 1] = 0;
+    temp[size] = 0x00;
 
     // Copy to output
     *output = new char[size + 1]();
     strcpy(*output, temp);
+//    std::cout << "Random string: " << *output << std::endl;
 
     // Free temp
 //    delete[] temp;
@@ -162,12 +163,13 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     }
 
     // End the output
-    temp[size - 1] = 0;
+    temp[size] = 0x00;
 
     // Copy to output
     *output = new unsigned char[size + 1]();
     memcpy(*output, temp, size + 1);
+//    std::cout << "Random string: " << *output << std::endl;
 
     // Free temp
-    delete[] temp;
+//    delete[] temp;
 }

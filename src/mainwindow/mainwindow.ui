@@ -153,6 +153,26 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="buttonShare">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Share</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../application.qrc">
+          <normaloff>:/resource/ic_share_black_48dp.png</normaloff>:/resource/ic_share_black_48dp.png</iconset>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="buttonImport">
         <property name="enabled">
          <bool>false</bool>
@@ -264,7 +284,7 @@
      <x>0</x>
      <y>0</y>
      <width>789</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPartitionSafe">

@@ -11,5 +11,6 @@
         <file>resource/ic_notifications_none_black_48dp.png</file>
         <file>resource/ic_navigate_before_black_48dp.png</file>
         <file>resource/ic_navigate_next_black_48dp.png</file>
+        <file>resource/ic_share_black_48dp.png</file>
     </qresource>
 </RCC>

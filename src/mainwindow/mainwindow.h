@@ -48,6 +48,8 @@ private slots:
 
     void on_buttonNotifications_clicked();
 
+    void on_buttonShare_clicked();
+
 private:
     Ui::MainWindow *ui;
     PSFileSystemModel *model;

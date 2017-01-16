@@ -26,9 +26,9 @@ public:
     const unsigned userId;
 
     /**
-     * The salt of the user's password.
+     * The path of the key.
      */
-    const unsigned inode;
+    char *path;
 
     /**
      * The public key of the user.
@@ -40,30 +40,30 @@ public:
      *
      * @param id
      * @param userId
-     * @param inode
+     * @param path
      * @param key
      */
-    Key(const unsigned id, const unsigned userId, const unsigned inode, const unsigned char *key);
+    Key(const unsigned id, const unsigned userId, const char *path, const unsigned char *key);
 
     /**
      * Create a new key for an user.
      *
      * @param user
      * @param password
-     * @param inode
+     * @param path
      * @return
      */
-    static Key *create(const User *user, const char *password, const unsigned inode = 0);
+    static Key *create(const User *user, const char *password, const char *path = "/");
 
     /**
      * Create a new key for an user based on an existing key.
      *
      * @param user
      * @param password
-     * @param inode
+     * @param path
      * @return
      */
-    static Key *create(const User *user, const char *password, const unsigned char *encryptionKey, const unsigned inode = 0);
+    static Key *create(const User *user, const char *password, const unsigned char *encryptionKey, const char *path = "/");
 
     /**
      * Generate a new encryption key.
