@@ -27,7 +27,7 @@ const char *KeyStore::STMT_CREATE_TABLE_KEYS =
         "CREATE TABLE `KEYS` ("
                 " `ID` INTEGER PRIMARY KEY AUTOINCREMENT,"
                 " `USER` INTEGER NOT NULL,"
-                " `INODE` INTEGER NOT NULL,"
+                " `PATH` TEXT NOT NULL,"
                 " `KEY` BLOB NOT NULL"
                 ");";
 
@@ -328,7 +328,7 @@ void KeyStore::getKey(const int id, Key **key) {
     int index;
 
     // Prepare the statement
-    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, INODE, KEY FROM KEYS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, PATH, KEY FROM KEYS WHERE ID = :id", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
 
     // Bind parameters
     if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
@@ -341,7 +341,7 @@ void KeyStore::getKey(const int id, Key **key) {
     // Create the key
     *key = new Key((const unsigned) sqlite3_column_int(stmt, 0),
                    (const unsigned) sqlite3_column_int(stmt, 1),
-                   (const unsigned) sqlite3_column_int(stmt, 2),
+                   (const char *) sqlite3_column_text(stmt, 2),
                    (const unsigned char *) sqlite3_column_blob(stmt, 3));
 
     // Finalize
@@ -349,17 +349,17 @@ void KeyStore::getKey(const int id, Key **key) {
     if(res != SQLITE_OK) throw "Could not finalize statement";
 }
 
-void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
+void KeyStore::getKey(const char *path, const User *user, Key **key) {
     // Prepare the query
     sqlite3_stmt *stmt;
     int index;
 
     // Prepare the statement
-    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, INODE, KEY FROM KEYS WHERE INODE = :inode AND USER = :user", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
+    if(sqlite3_prepare_v2(sqliteHandle, "SELECT ID, USER, PATH, KEY FROM KEYS WHERE PATH = :path AND USER = :user", -1, &stmt, 0) != SQLITE_OK) throw "Could not prepare a statement";
 
     // Bind parameters
-    if ((index = sqlite3_bind_parameter_index(stmt, ":inode")) <= 0) throw "Could not retrieve parameter index in the statement";
-    if(sqlite3_bind_int(stmt, index, inode) != SQLITE_OK) throw "Could not bind parameter";
+    if ((index = sqlite3_bind_parameter_index(stmt, ":path")) <= 0) throw "Could not retrieve parameter index in the statement";
+    if (sqlite3_bind_text(stmt, index, path, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
     if ((index = sqlite3_bind_parameter_index(stmt, ":user")) <= 0) throw "Could not retrieve parameter index in the statement";
     if(sqlite3_bind_int(stmt, index, user->id) != SQLITE_OK) throw "Could not bind parameter";
 
@@ -370,7 +370,7 @@ void KeyStore::getKey(const unsigned inode, const User *user, Key **key) {
     // Create the key
     *key = new Key((const unsigned) sqlite3_column_int(stmt, 0),
                    (const unsigned) sqlite3_column_int(stmt, 1),
-                   (const unsigned) sqlite3_column_int(stmt, 2),
+                   (const char *) sqlite3_column_text(stmt, 2),
                    (const unsigned char *) sqlite3_column_blob(stmt, 3));
 
     // Finalize
@@ -385,7 +385,7 @@ void KeyStore::saveKey(Key *key) {
 
     // Setup the query
     if(key->id == 0) {
-        query = "INSERT INTO KEYS (USER, INODE, KEY) VALUES (:user, :inode, :key)";
+        query = "INSERT INTO KEYS (USER, PATH, KEY) VALUES (:user, :path, :key)";
     } else {
         query = "UPDATE KEYS SET KEY = :key WHERE ID = :id";
     }
@@ -401,8 +401,8 @@ void KeyStore::saveKey(Key *key) {
     if(key->id == 0) {
         if ((index = sqlite3_bind_parameter_index(stmt, ":user")) <= 0) throw "Could not retrieve parameter index in the statement";
         if (sqlite3_bind_int(stmt, index, key->userId) != SQLITE_OK) throw "Could not bind parameter";
-        if ((index = sqlite3_bind_parameter_index(stmt, ":inode")) <= 0) throw "Could not retrieve parameter index in the statement";
-        if (sqlite3_bind_int(stmt, index, key->inode) != SQLITE_OK) throw "Could not bind parameter";
+        if ((index = sqlite3_bind_parameter_index(stmt, ":path")) <= 0) throw "Could not retrieve parameter index in the statement";
+        if (sqlite3_bind_text(stmt, index, key->path, -1, SQLITE_TRANSIENT) != SQLITE_OK) throw "Could not bind parameter";
     } else {
         if ((index = sqlite3_bind_parameter_index(stmt, ":id")) <= 0) throw "Could not retrieve parameter index in the statement";
         if (sqlite3_bind_int(stmt, index, key->id) != SQLITE_OK) throw "Could not bind parameter";

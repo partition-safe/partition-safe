@@ -3,6 +3,9 @@
 //
 
 #include "DirectoryInvitationNotification.h"
+#include "../database/Key.h"
+
+class PartitionSafe;
 
 DirectoryInvitationNotification::DirectoryInvitationNotification(const int id, const int user_from, const int user_to,
                                                                  const int type, const std::string &content)
@@ -17,6 +20,7 @@ std::string DirectoryInvitationNotification::toString() {
 }
 
 int DirectoryInvitationNotification::handle(PartitionSafe *psInstance) {
+    // Remove notification
     return BaseNotification::handle(psInstance);
 }
 

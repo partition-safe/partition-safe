@@ -81,7 +81,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     keyStore->getUser(username, &user);
 
     // Retrieve root key
-    keyStore->getKey(0, user, &key);
+    keyStore->getKey("/", user, &key);
 
     // Decrypt key
     unsigned char *decryptionKey;
@@ -145,7 +145,7 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
     // First decrypt the current encryption key and then create the key
     if(this->key) {
         // Create the new key
-        *key = Key::create(*user, password, _disk_encryption_conf.key, 0);
+        *key = Key::create(*user, password, _disk_encryption_conf.key, "/");
     } else {
         // Create a new key
         *key = Key::create(*user, password);
@@ -153,5 +153,5 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
 
     // Create the new root key based on the current encryption key
     keyStore->saveKey(*key);
-    keyStore->getKey(0, *user, key);
+    keyStore->getKey("/", *user, key);
 }

@@ -170,12 +170,12 @@ public:
     void getKey(const int id, Key **key);
 
     /**
-     * Retrieve a key by it's inode and user ID.
+     * Retrieve a key by it's path and user ID.
      *
      * @param username
      * @param user
      */
-    void getKey(const unsigned inode, const User *user, Key **key);
+    void getKey(const char *path, const User *user, Key **key);
 
     /**
      * Save a (new) key.

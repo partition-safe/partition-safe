@@ -13,8 +13,6 @@ int main() {
 
     std::cout << "PartitionSafe :: Test script" << std::endl << std::endl;
 
-        srand(time(0));
-
         //
         // Create vault
         //
