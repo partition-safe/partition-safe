@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dialogopen.h"
 #include "dialognew.h"
+#include "dialognewuser.h"
 #include "dialognotifications.h"
 #include "dialognewdirectory.h"
 #include "dialogrename.h"
@@ -499,4 +500,10 @@ void MainWindow::on_buttonNotifications_clicked()
 
     // Reload notifications
     setNotifications();
+}
+
+void MainWindow::on_actionUser_triggered()
+{
+    DialogNewUser* dialog = new DialogNewUser(this, psInstance);
+    dialog->show();
 }
