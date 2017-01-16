@@ -38,6 +38,12 @@ private slots:
     void on_actionUser_triggered();
     void on_buttonNewDirectory_clicked();
 
+    void on_actionDelete_triggered();
+    void on_actionNew_Directory_triggered();
+
+    void on_buttonEdit_clicked();
+    void on_actionRename_triggered();
+
     void fileChanged(const QString &);
 
     void on_buttonNotifications_clicked();
@@ -55,6 +61,7 @@ private:
     void setPath();
     void importFiles();
     void importFolder();
+    void renameFileFolder();
     void initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password);
 
     void makeDir(QString path);
@@ -80,6 +87,7 @@ private:
      */
     void deleteFileDirectory();
     void setNotifications();
+    void newDirectory();
 };
 
 #endif // MAINWINDOW_H
