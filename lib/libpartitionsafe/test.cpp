@@ -145,8 +145,8 @@ int main() {
         // Lets create a new user for this vault
         //
 
-        User *user;
-        Key *key;
+        std::cout << "-- Creating user test" << std::endl;
+        User *user; Key *key;
         ps->createUser("youri", "12345678", &user, &key);
 
         //
