@@ -331,7 +331,7 @@ Partition *Partition::renameFileFolder(const char *oldPath, const char *newPath)
     FRESULT res;
 
     // Retrieve file status
-    res = f_rename(oldPath, newPath);
+    res = f_rename(Common::stdStringToTChar(std::string(oldPath)),  Common::stdStringToTChar(std::string(newPath)));
     if(res != FR_OK) throw "Could not rename file or directory";
 
     // Return myself
