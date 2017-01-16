@@ -31,7 +31,6 @@ SOURCES += main.cpp \
     mainwindow/dialognewuser.cpp \
     mainwindow/dialognotifications.cpp \
     maintreeviewfiles.cpp \
-    mainwindow/dialognotifications.cpp \
     mainwindow/dialogrename.cpp \
     lib/PSFileSystemModel.cpp \
     lib/pstreefilesystemmodel.cpp
