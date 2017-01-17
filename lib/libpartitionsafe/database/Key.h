@@ -16,59 +16,62 @@
 class Key {
 public:
     /**
-     * The ID of the user.
+     * The ID of the key.
      */
     const unsigned id;
 
     /**
-     * The username of the user.
+     * The ID of the user.
      */
     const unsigned userId;
 
     /**
-     * The path of the key.
+     * The path of the key' directory.
      */
     char *path;
 
     /**
-     * The public key of the user.
+     * The encrypted encryption key
      */
     unsigned char *key;
 
     /**
-     * User constructor.
+     * Key constructor.
      *
-     * @param id
-     * @param userId
-     * @param path
-     * @param key
+     * @param id The ID of the key
+     * @param userId The ID of the user
+     * @param path The path of this key' directory
+     * @param key The encrypted encryption key
      */
     Key(const unsigned id, const unsigned userId, const char *path, const unsigned char *key);
 
     /**
      * Create a new key for an user.
      *
-     * @param user
-     * @param password
-     * @param path
-     * @return
+     * @param user The user to create for
+     * @param password The password of the user
+     * @param path The path of this key
+     *
+     * @return The created key
      */
     static Key *create(const User *user, const char *password, const char *path = "/");
 
     /**
      * Create a new key for an user based on an existing key.
      *
-     * @param user
-     * @param password
-     * @param path
-     * @return
+     * @param user The user to create for
+     * @param password The password of the user
+     * @param path The encryption key
+     * @param path The path of this key
+     *
+     * @return The created key
      */
     static Key *create(const User *user, const char *password, const unsigned char *encryptionKey, const char *path = "/");
 
     /**
      * Generate a new encryption key.
      *
-     * @param key The generated key
+     * @param key OUTPUT The generated key
      */
     static void generateKey(unsigned char **key);
 
@@ -77,16 +80,17 @@ public:
      *
      * @param saltedPassword The salted password of the user
      * @param unEncryptedKey The unencrypted key of the user to encrypt
-     * @param encryptedKey The encrypted key as output
+     * @param encryptedKey OUTPUT The encrypted key as output
      */
     static void encrypt(const char *saltedPassword, const unsigned char unEncryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **encryptedKey);
 
     /**
      * Decrypt the key.
      *
-     * @param saltedPassword The salted password of the user
+     * @param user The user to use
+     * @param password The password of the user
      * @param encryptedKey The encrypted key to decrypt
-     * @param decryptedKey The decrypted key as output
+     * @param decryptedKey OUTPUT The decrypted key as output
      */
     static void decrypt(const User *user, const char *password, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 
@@ -95,7 +99,7 @@ public:
      *
      * @param saltedPassword The salted password of the user
      * @param encryptedKey The encrypted key to decrypt
-     * @param decryptedKey The decrypted key as output
+     * @param decryptedKey OUTPUT The decrypted key as output
      */
     static void decrypt(const char *saltedPassword, const unsigned char encryptedKey[ENCRYPTION_KEY_LENGTH], unsigned char **decryptedKey);
 

@@ -29,17 +29,15 @@ protected:
 public:
     /**
      * The tree entry constructor.
-     *
-     * @param filinfo The raw file info
-     * @param directory The directory of the entry
      */
     TreeEntry();
 
     /**
      * The tree entry constructor.
      *
-     * @param filinfo The raw file info
-     * @param directory The directory of the entry
+     * @param data The data entry
+     * @param parent The parent tree entry
+     * @param children The list of tree entries children
      */
     TreeEntry(const Entry *data, const TreeEntry *parent, std::vector<TreeEntry*> children = *(new std::vector<TreeEntry*>()));
 
@@ -51,32 +49,36 @@ public:
     /**
      * Add a new child to the children.
      *
-     * @param child
+     * @param child The child tree entry to add
      */
     void addChild(TreeEntry *child);
 
     /**
      * Get the list of child nodes.
      *
-     * @return
+     * @return The vector of tree entry children
      */
     const std::vector<TreeEntry*> getChildren();
 
     /**
      * Get the parent item.
      *
-     * @return
+     * @return The parent tree entry
      */
     const TreeEntry *getParent();
 
     /**
      * Retrieve the data of this node.
      *
-     * @return
+     * @return The entry data
      */
     const Entry *getData();
 
-
+    /**
+     * Retrieve the row number.
+     *
+     * @return The row number
+     */
     int row() const;
 
 };

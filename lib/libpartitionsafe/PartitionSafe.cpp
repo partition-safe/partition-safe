@@ -14,13 +14,15 @@ PartitionSafe::~PartitionSafe() {
     delete key;
 }
 
-void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password) {
+void PartitionSafe::create(const char *vaultPath, const char *keyStorePath, const char label[40], const unsigned size,
+                           const char *username, const char *password) {
     // Try to create the key store
     KeyStore::create(keyStorePath);
     KeyStore *keyStore = KeyStore::init(keyStorePath);
 
     // Create the user and save it
-    User *user; Key *key;
+    User *user;
+    Key *key;
     createUser(username, password, &user, &key, keyStore);
 
     // Create the salted password
@@ -33,7 +35,7 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
 
     // Encrypt the test string
     unsigned char *encrypted;
-    key->encrypt((const char *)encryptionKey, Partition::IDENTIFIER, &encrypted);
+    key->encrypt((const char *) encryptionKey, Partition::IDENTIFIER, &encrypted);
 
     // Setup the encryption config
     std::fill_n(_disk_encryption_conf.key, 32, 0x00);
@@ -42,13 +44,13 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
     memcpy(_disk_encryption_conf.iv, encryptionKey, 16);
 
     // Try to create the vault
-    Vault::create(label, size, vaultPath, (const unsigned char *)encrypted);
+    Vault::create(label, size, vaultPath, (const unsigned char *) encrypted);
     Vault *vault = Vault::init(vaultPath);
 
     // Save some metadata
     keyStore->setMetadata("uuid", vault->header->UUID);
     keyStore->setMetadata("label", vault->header->label);
-    keyStore->setMetadata("encrypted_identifier", (const char *)encrypted);
+    keyStore->setMetadata("encrypted_identifier", (const char *) encrypted);
 
 #ifndef __WIN32
     // Cleanup
@@ -62,7 +64,8 @@ void PartitionSafe::create(const char* vaultPath, const char* keyStorePath, cons
 #endif
 }
 
-PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
+PartitionSafe *
+PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password) {
     // Get the vault instance
     vault = Vault::init(vaultPath);
 
@@ -75,7 +78,7 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
     // Check header stuff
     char *uuid = new char[36]();
     keyStore->getMetadata("uuid", &uuid);
-    if(strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
+    if (strcmp(vault->header->UUID, uuid) != 0) throw "Vault and keystore aren't a couple";
 
     // Retrieve user
     keyStore->getUser(username, &user);
@@ -89,10 +92,10 @@ PartitionSafe *PartitionSafe::init(const char *vaultPath, const char *keyStorePa
 
     // Get the decrypted key
     unsigned char *decryptedIdentifier;
-    key->decrypt((const char *)decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
+    key->decrypt((const char *) decryptionKey, vault->header->identifier_encrypted, &decryptedIdentifier);
 
     // Check identifier
-    if(strncmp((const char *)Partition::IDENTIFIER, (const char *)decryptedIdentifier, 14) != 0) {
+    if (strncmp((const char *) Partition::IDENTIFIER, (const char *) decryptedIdentifier, 14) != 0) {
         throw "Could not decrypt the identifier";
     }
 
@@ -135,7 +138,7 @@ Key *PartitionSafe::getKey() {
 
 void PartitionSafe::createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore) {
     // Keystore a nullptr?
-    if(keyStore == nullptr) keyStore = this->keyStore;
+    if (keyStore == nullptr) keyStore = this->keyStore;
 
     // Create the new user
     *user = User::create(username, password);
@@ -143,7 +146,7 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
     keyStore->getUser(username, user);
 
     // First decrypt the current encryption key and then create the key
-    if(this->key) {
+    if (this->key) {
         // Create the new key
         *key = Key::create(*user, password, _disk_encryption_conf.key, "/");
     } else {

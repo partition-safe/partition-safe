@@ -5,8 +5,8 @@
 #include <cstring>
 #include "Vault.h"
 
-Vault::Vault(Partition *partition):
-    partition(partition) {}
+Vault::Vault(Partition *partition) :
+        partition(partition) {}
 
 Vault::~Vault() {
     delete header;
@@ -15,21 +15,21 @@ Vault::~Vault() {
 
 void Vault::create(const char *label, const unsigned size, const char *path, const unsigned char *encryptedIdentifier) {
     // Open the file path
-    FILE* fd = fopen(path, "wb");
+    FILE *fd = fopen(path, "wb");
 
     // Check the file descriptor
-    if(fd == nullptr) {
+    if (fd == nullptr) {
         throw "Could not open the file";
     }
 
     // Create the vault header
-    struct Header* header = new Header;
-    memcpy((void *)header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
+    struct Header *header = new Header;
+    memcpy((void *) header->identifier, Partition::IDENTIFIER, sizeof(header->identifier));
     strncpy(header->label, label, sizeof(header->label));
     strncpy(header->UUID, "23456", sizeof(header->UUID)); // @TODO Use real UUID
     header->size = size;
     header->version = Partition::VERSION;
-    memcpy((void *)header->identifier_encrypted, encryptedIdentifier, sizeof(header->identifier_encrypted));
+    memcpy((void *) header->identifier_encrypted, encryptedIdentifier, sizeof(header->identifier_encrypted));
 
     // Write our partition header to the file
     fwrite(&*header, 1, sizeof(*header), fd);
@@ -39,7 +39,7 @@ void Vault::create(const char *label, const unsigned size, const char *path, con
     fputc('\0', fd);
 
     // Open the partition
-    Partition* partition = new Partition(path, fd);
+    Partition *partition = new Partition(path, fd);
 
     // Let it create the file system
     partition->create();
@@ -48,29 +48,29 @@ void Vault::create(const char *label, const unsigned size, const char *path, con
     fclose(fd);
 }
 
-Vault *Vault::init(const char* vaultPath) {
+Vault *Vault::init(const char *vaultPath) {
     // Open the vault file
-    FILE* vaultFileDescriptor = fopen(vaultPath, "r+b");
+    FILE *vaultFileDescriptor = fopen(vaultPath, "r+b");
 
     // Check both descriptors
-    if(vaultFileDescriptor == NULL) {
+    if (vaultFileDescriptor == NULL) {
         throw strerror(errno);
     }
 
     // Read the partition header
-    Header* header = new Header;
+    Header *header = new Header;
     fread(&*header, sizeof(*header), 1, vaultFileDescriptor);
 
     // Check the identifier of the drive
-    if(memcmp(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier)) != 0) {
+    if (memcmp(header->identifier, Partition::IDENTIFIER, sizeof(header->identifier)) != 0) {
         throw "Header identifier does not match partition identifier";
     }
 
     // Open the partition and set information
-    Partition* partition = new Partition(vaultPath, vaultFileDescriptor);
+    Partition *partition = new Partition(vaultPath, vaultFileDescriptor);
 
     // Create the vault
-    Vault* vault = new Vault(partition);
+    Vault *vault = new Vault(partition);
     vault->header = header;
 
     // Return the vault

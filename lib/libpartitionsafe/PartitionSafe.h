@@ -38,63 +38,74 @@ public:
 
     /**
      * Get the vault instance.
-     * @return
+     *
+     * @return The vault instance
      */
     Vault *getVault();
 
     /**
      * Get the key store instance.
-     * @return
+     *
+     * @return The key store instance
      */
     KeyStore *getKeyStore();
 
     /**
      * Get the current user.
-     * @return
+     *
+     * @return The current user
      */
     User *getUser();
 
     /**
      * Get the current root key.
-     * @return
+     *
+     * @return The root key
      */
     Key *getKey();
 
     /**
-     * Create a new vault with key store.
+     * Create a new PartitionSafe instance.
      *
      * @param vaultPath The path to place the new vault
      * @param keyStorePath The path to place the new key store
-     * @param label The label of the partition
+     * @param label The label of the partition (max 40 characters)
      * @param size The size of the partition in bytes
+     * @param username The username of the first user
+     * @param password The password of the first user
      */
-    void create(const char* vaultPath, const char* keyStorePath, const char label[40], const unsigned size, const char *username, const char *password);
+    void create(const char *vaultPath, const char *keyStorePath, const char label[40], const unsigned size,
+                const char *username, const char *password);
 
     /**
-     * Initialize a vault instance.
+     * Initialize a PartitionSafe instance.
      *
      * @param vaultPath The path to the vault file
      * @param keyStorePath The path to the key store file
+     * @param username The username of the user to sign in
+     * @param password The password of the user to sign in
      *
-     * @return
+     * @return The initialized PartitionSafe instance
      */
-    PartitionSafe* init(const char* vaultPath, const char* keyStorePath, const char *username, const char *password);
+    PartitionSafe *init(const char *vaultPath, const char *keyStorePath, const char *username, const char *password);
 
     /**
      * Open the partition safe instance.
      *
-     * @return
+     * @return The opened PartitionSafe instance
      */
-    PartitionSafe* open();
+    PartitionSafe *open();
 
     /**
      * Create a new user and it's root key.
      *
      * The user will be saved to the current key store.
      *
-     * @param username
-     * @param password
-     * @param user
+     * @param username The username of the new user
+     * @param password The password of the new user
+     * @param user OUTPUT The created user object
+     * @param key OUTPUT The created root key object
+     * @param keyStore The key store instance to use
      */
     void createUser(const char *username, const char *password, User **user, Key **key, KeyStore *keyStore = nullptr);
 

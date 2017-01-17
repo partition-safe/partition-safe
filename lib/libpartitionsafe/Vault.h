@@ -12,17 +12,18 @@ class Vault {
     /**
      * Our file storage
      */
-    Partition* partition;
+    Partition *partition;
 
 public:
     /**
      * Get the partition instance.
-     * @return
+     *
+     * @return The partition instance
      */
-    Partition* getPartition();
+    Partition *getPartition();
 
     /**
-     * Partitio header information struct.
+     * Partition header information struct.
      *
      * NEVER, NEVER, NEVER CHANGE THE ORDER OF THIS STRUCT.
      * WHO CHANGES THE ORDER, WILL BE ASSASSINATED.
@@ -62,10 +63,9 @@ public:
     /**
      * The vault constructor.
      *
-     * @param partition
-     * @param keyStore
+     * @param partition The partition to use
      */
-    Vault(Partition* partition);
+    Vault(Partition *partition);
 
     /**
      * Vault destructor to close some stuff.
@@ -73,13 +73,13 @@ public:
     ~Vault();
 
     /**
-     * Open a vault instance.
+     * Initialize a vault instance.
      *
      * @param vaultPath The path to the vault file
      *
      * @return The opened vault instance
      */
-    static Vault* init(const char* vaultPath);
+    static Vault *init(const char *vaultPath);
 
     /**
      * Create a new partition.
@@ -87,24 +87,22 @@ public:
      * @param label The label of the partition
      * @param size The size of the partition in bytes
      * @param path The path to place the new partition
-     *
-     * @return
+     * @param encryptedIdentifier The encrypted identifier
      */
-    static void create(const char label[40], const unsigned size, const char* path, const unsigned char *encryptedIdentifier);
+    static void create(const char label[40], const unsigned size, const char *path,
+                       const unsigned char *encryptedIdentifier);
 
     /**
-     * Open the file and all internal properties.
+     * Open the vault and all internal properties.
      *
-     * @param fs
-     *
-     * @return
+     * @return The opened vault instance
      */
-    Vault* open();
+    Vault *open();
 
     /**
      * The vault header
      */
-    Header* header;
+    Header *header;
 
 };
 
