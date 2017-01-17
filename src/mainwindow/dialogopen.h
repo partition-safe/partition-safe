@@ -42,7 +42,7 @@ private slots:
     void on_buttonBoxDialogOpen_clicked(QAbstractButton *button);
 
 private:
-    Ui::DialogOpen *ui;
+    Ui::DialogOpen *ui; // Contains ui elements
 
     /** Display warning message.
      *

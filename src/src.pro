@@ -13,6 +13,9 @@ TARGET = src
 TEMPLATE = app
 INCLUDEPATH += ../lib/libpartitionsafe
 
+RESOURCES     = application.qrc \
+    application.qrc
+
 LIBS += ../cmake-build-debug/libpslib.a \
         ../cmake-build-debug/lib/libmbedtls/library/libmbedcrypto.a
 
@@ -20,24 +23,36 @@ unix {
     LIBS += -ldl
 }
 
-SOURCES += main.cpp\
+SOURCES += main.cpp \
         mainwindow/mainwindow.cpp \
     mainwindow/dialogopen.cpp \
     mainwindow/dialognew.cpp \
-    lib/PSFileSystemModel.cpp \
     mainwindow/dialognewdirectory.cpp \
+    mainwindow/dialognewuser.cpp \
+    mainwindow/dialognotifications.cpp \
+    maintreeviewfiles.cpp \
+    mainwindow/dialogrename.cpp \
+    lib/PSFileSystemModel.cpp \
     lib/pstreefilesystemmodel.cpp \
-    maintreeviewfiles.cpp
+    mainwindow/dialogshare.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
     mainwindow/dialogopen.h \
     mainwindow/dialognew.h \
-    lib/PSFileSystemModel.h \
     mainwindow/dialognewdirectory.h \
+    mainwindow/dialognewuser.h \
+    maintreeviewfiles.h \
+    mainwindow/dialognotifications.h \
+    mainwindow/dialogrename.h \
+    lib/PSFileSystemModel.h \
     lib/pstreefilesystemmodel.h \
-    maintreeviewfiles.h
+    mainwindow/dialogshare.h
 
 FORMS    += mainwindow/mainwindow.ui \
     mainwindow/dialogopen.ui \
     mainwindow/dialognew.ui \
-    mainwindow/dialognewdirectory.ui
+    mainwindow/dialognewuser.ui \
+    mainwindow/dialognotifications.ui \
+    mainwindow/dialognewdirectory.ui \
+    mainwindow/dialogshare.ui \
+    mainwindow/dialogrename.ui

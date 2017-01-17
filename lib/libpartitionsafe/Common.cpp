@@ -6,6 +6,8 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <sstream>
+#include <time.h>
+
 #endif
 
 #include "../libmbedtls/include/mbedtls/entropy.h"
@@ -86,9 +88,7 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
 
     // Write pub key
     size_t length;
-//    *pubKey = (char *)calloc(512 + 6 + 1, sizeof(char));
-//    if (*pubKey == NULL) throw "Could not allocate something";
-    *pubKey = new char[512 + 6 + 1]();
+    *pubKey = new char[RSA_PUBLIC_SIZE]();
     char *t = new char[1024]();
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*pubKey, t);
@@ -96,9 +96,7 @@ void Common::createKeyPair(const char *pers, char **pubKey, char **privKey) {
     strcat(*pubKey, t);
 
     // Write priv key
-//    *privKey = (char *)calloc(512 + 6 + 512 + (256 * 5) + 1, sizeof(char));
-//    if (*privKey == NULL) throw "Could not allocate something";
-    *privKey = new char[512 + 6 + 512 + (256 * 5) + 1]();
+    *privKey = new char[RSA_PRIVATE_SIZE]();
     mbedtls_mpi_write_string(&rsa.N, 16, t, 1024, &length); // 512
     strcpy(*privKey, t);
     mbedtls_mpi_write_string(&rsa.E, 16, t, 1024, &length); // 6
@@ -138,11 +136,12 @@ void Common::randomChars(unsigned size, char **output) {
     }
 
     // End the output
-    temp[size - 1] = 0;
+    temp[size] = 0x00;
 
     // Copy to output
     *output = new char[size + 1]();
     strcpy(*output, temp);
+//    std::cout << "Random string: " << *output << std::endl;
 
     // Free temp
 //    delete[] temp;
@@ -164,12 +163,13 @@ void Common::randomChars(unsigned size, unsigned char **output) {
     }
 
     // End the output
-    temp[size - 1] = 0;
+    temp[size] = 0x00;
 
     // Copy to output
     *output = new unsigned char[size + 1]();
     memcpy(*output, temp, size + 1);
+//    std::cout << "Random string: " << *output << std::endl;
 
     // Free temp
-    delete[] temp;
+//    delete[] temp;
 }

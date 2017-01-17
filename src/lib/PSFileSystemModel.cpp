@@ -49,10 +49,17 @@ void PSFileSystemModel::init()
 
 QVariant PSFileSystemModel::data(const QModelIndex &index, int role) const
 {
+    Entry* entry = currentDirectoryListing->at(index.row());
+
     switch(role)
     {
+    case Qt::DecorationRole:
+        if(entry->isDirectory()){
+            return *new QIcon(QString::fromStdString(":/resource/ic_folder_black_48dp.png"));
+        }else{
+            return *new QIcon(QString::fromStdString(":/resource/ic_insert_drive_file_black_48dp.png"));
+        }
     case Qt::DisplayRole:
-        Entry* entry = currentDirectoryListing->at(index.row());
         switch (index.column()) {
         case 0: return QString(entry->name.c_str());
             // case 1: return entry->size;
@@ -130,6 +137,22 @@ void PSFileSystemModel::importFolder(QString source, QString destination)
     endInsertRows();
 }
 
+void PSFileSystemModel::createDirectory( QString directoryName){
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
+}
+
+
+void PSFileSystemModel::renameFileFolder(QString oldPath, QString newPath)
+{
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
+    psInstance->getVault()->getPartition()->renameFileFolder(oldPath.toLatin1().data(), newPath.toLatin1().data());
+    setCurrentDirectory(getCurrentDirectory());
+    endInsertRows();
+}
+
 void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
 {
     foreach (QModelIndex index, selectedRowsList)
@@ -137,13 +160,6 @@ void PSFileSystemModel::deleteFileDirectory(QModelIndexList &selectedRowsList)
         deleteFileDirectory(this->getFile(index)->getFullPath().data());
     }
     setCurrentDirectory(getCurrentDirectory());
-}
-
-void PSFileSystemModel::createDirectory( QString directoryName){
-    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
-    psInstance->getVault()->getPartition()->createDirectory(directoryName.toStdString());
-    setCurrentDirectory(getCurrentDirectory());
-    endInsertRows();
 }
 
 void PSFileSystemModel::deleteFileDirectory(QString path)

@@ -9,10 +9,13 @@
 #include "../Common.h"
 #include "../../libmbedtls/include/mbedtls/aes.h"
 
-Key::Key(const unsigned id, const unsigned userId, const unsigned inode, const unsigned char *key):
-    id(id), userId(userId), inode(inode), key(key) {}
+Key::Key(const unsigned id, const unsigned userId, const char *path, const unsigned char *key):
+    id(id), userId(userId), path(new char[strlen(path) + 1]), key(new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]) {
+    strncpy(this->path, path, strlen(path));
+    strncpy((char *)this->key, (char *)key, ENCRYPTION_KEY_LENGTH_BYTES);
+}
 
-Key *Key::create(const User *user, const char *password, const unsigned inode) {
+Key *Key::create(const User *user, const char *password, const char *path) {
     // Create the salted password
     char *saltedPassword;
     user->saltedPassword(password, user->salt, &saltedPassword);
@@ -32,11 +35,11 @@ Key *Key::create(const User *user, const char *password, const unsigned inode) {
 #endif
 
     // The new key
-    Key *key = new Key(0, user->id, inode, encrypted);
+    Key *key = new Key(0, user->id, path, encrypted);
     return key;
 }
 
-Key *Key::create(const User *user, const char *password, const unsigned char *encryptionKey, const unsigned inode) {
+Key *Key::create(const User *user, const char *password, const unsigned char *encryptionKey, const char *path) {
     // Create the salted password
     char *saltedPassword;
     user->saltedPassword(password, user->salt, &saltedPassword);
@@ -49,11 +52,11 @@ Key *Key::create(const User *user, const char *password, const unsigned char *en
     delete saltedPassword;
 
     // The new key
-    return new Key(0, user->id, inode, encrypted);
+    return new Key(0, user->id, path, encrypted);
 }
 
 void Key::generateKey(unsigned char **key) {
-    Common::randomChars(ENCRYPTION_KEY_LENGTH_BYTES, key);
+    Common::randomChars(ENCRYPTION_KEY_LENGTH_BYTES + 1, key);
 }
 
 void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKey, unsigned char **encryptedKey) {
@@ -89,8 +92,9 @@ void Key::encrypt(const char *saltedPassword, const unsigned char *unEncryptedKe
     mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, unEncryptedKey, temp);
 
     // Copy to output
-    *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    *encryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]();
     strncpy((char *)*encryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
+    (*encryptedKey)[ENCRYPTION_KEY_LENGTH_BYTES] = 0x00;
 
     // Free up the AES context
     mbedtls_aes_free(&aes);
@@ -148,8 +152,9 @@ void Key::decrypt(const char *saltedPassword, const unsigned char *encryptedKey,
     mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, ENCRYPTION_KEY_LENGTH_BYTES, iv, encryptedKey, temp);
 
     // Copy to output
-    *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH + 1]();
+    *decryptedKey = new unsigned char[ENCRYPTION_KEY_LENGTH_BYTES + 1]();
     strncpy((char *)*decryptedKey, (char *)temp, ENCRYPTION_KEY_LENGTH_BYTES);
+    (*decryptedKey)[ENCRYPTION_KEY_LENGTH_BYTES] = 0x00;
 
     // Free up the AES context
     mbedtls_aes_free(&aes);

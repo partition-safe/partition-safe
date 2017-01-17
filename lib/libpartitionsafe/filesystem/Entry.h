@@ -56,25 +56,29 @@ public:
 
     /**
      * Get the full path of this entry.
-     * @return
+     *
+     * @return The full path to this entry
      */
     const std::string getFullPath();
 
     /**
      * Get the full path of this entry.
-     * @return
+     *
+     * @return The const full path to this entry
      */
     const std::string getFullPath() const;
 
     /**
      * Is the entry a directory.
-     * @return
+     *
+     * @return true when it is a directory, false when not
      */
     const bool isDirectory();
 
     /**
      * Is the entry a directory.
-     * @return
+     *
+     * @return const true when it is a directory, false when not
      */
     const bool isDirectory() const;
 

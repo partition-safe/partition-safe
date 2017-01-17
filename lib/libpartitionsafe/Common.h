@@ -7,6 +7,8 @@
 
 #define KEY_SIZE 2048
 #define EXPONENT 65537
+#define RSA_PUBLIC_SIZE 512 + 6 + 1
+#define RSA_PRIVATE_SIZE 512 + 6 + 512 + (256 * 5) + 1
 
 class Common {
 public:
@@ -24,7 +26,7 @@ public:
      *
      * @return
      */
-    static TCHAR* stdStringToTChar(std::string str);
+    static TCHAR *stdStringToTChar(std::string str);
 
     /**
      * Convert a tchar array to string.
@@ -38,24 +40,25 @@ public:
     /**
      * Create a new key pair.
      *
-     * @param pubKey
-     * @param privKey
+     * @param pers The personal seed
+     * @param pubKey OUTPUT The public key
+     * @param privKey OUTPUT The private key
      */
     static void createKeyPair(const char *pers, char **pubKey, char **privKey);
 
     /**
      * Generate a random string.
      *
-     * @param size
-     * @param output
+     * @param size The size of the array
+     * @param output OUTPUT The random char array
      */
     static void randomChars(unsigned size, char **output);
 
     /**
-     * Generate a random string.
+     * Generate a random unsigned string.
      *
-     * @param size
-     * @param output
+     * @param size The size of the array
+     * @param output OUTPUT The random char array
      */
     static void randomChars(unsigned size, unsigned char **output);
 

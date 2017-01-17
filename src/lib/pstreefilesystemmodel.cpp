@@ -1,5 +1,7 @@
 #include "lib/pstreefilesystemmodel.h"
 
+#include <QIcon>
+
 PSTreeFileSystemModel::PSTreeFileSystemModel(QObject *parent, PartitionSafe *psInstance):
     QAbstractItemModel(parent), psInstance(psInstance)
 {}
@@ -24,6 +26,20 @@ void PSTreeFileSystemModel::setupData(TreeEntry **node, const char *path)
             setupData(&child, child->getData()->getFullPath().c_str());
         }
     }
+}
+
+QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    switch(role)
+    {
+    case Qt::DisplayRole:
+        switch(section)
+        {
+        case 0:
+            return QVariant("Directory");
+        }
+    }
+    return QVariant();
 }
 
 void PSTreeFileSystemModel::init()
@@ -105,12 +121,24 @@ QVariant PSTreeFileSystemModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole)
-        return QVariant();
-
     TreeEntry *item = static_cast<TreeEntry*>(index.internalPointer());
 
-    return QVariant(item->getData()->name.c_str());
+    switch(role)
+    {
+    case Qt::DecorationRole:
+        if(item->getData()->isDirectory()){
+            return *new QIcon(QString::fromStdString(":/resource/ic_folder_black_48dp.png"));
+        }else{
+            return *new QIcon(QString::fromStdString(":/resource/ic_insert_drive_file_black_48dp.png"));
+        }
+    case Qt::DisplayRole:
+        switch (index.column()) {
+        case 0:
+            return QVariant(item->getData()->name.c_str());
+        }
+
+    }
+    return QVariant();
 }
 
 void PSTreeFileSystemModel::setCurrentDirectory(QString path)
@@ -121,18 +149,4 @@ void PSTreeFileSystemModel::setCurrentDirectory(QString path)
 void PSTreeFileSystemModel::setDirectoriesOnly(const bool state)
 {
     directoriesOnly = state;
-}
-
-QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    switch(role)
-    {
-    case Qt::DisplayRole:
-        switch(section)
-        {
-        case 0:
-            return QVariant("Directory Name");
-        }
-    }
-    return QVariant();
 }

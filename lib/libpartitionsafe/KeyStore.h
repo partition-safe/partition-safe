@@ -7,18 +7,20 @@
 
 
 #include <cstdio>
+#include <vector>
 #include "../libsqlite/sqlite3.h"
 #include "database/User.h"
 #include "database/Key.h"
+#include "notification/BaseNotification.h"
 
 class KeyStore {
     /**
      * File path to this partition
      */
-    const char* path;
+    const char *path;
 
     /**
-     * The sqlite handle.
+     * The SQLite handle.
      */
     sqlite3 *sqliteHandle;
 
@@ -43,9 +45,10 @@ class KeyStore {
     static const char *STMT_CREATE_TABLE_NOTIFICATIONS;
 
     /**
-     * Execute a statement with error handling.
+     * Execute a query with error handling.
      *
-     * @param stmt The statement
+     * @param db The database handle
+     * @param query The query to execute
      */
     static void execute(sqlite3 *db, const char *query);
 
@@ -53,8 +56,7 @@ public:
     /**
      * Constructor of a key store.
      *
-     * @param path
-     * @return
+     * @param path The path to the key store
      */
     KeyStore(const char* path);
 
@@ -67,10 +69,8 @@ public:
      * Create a new key store.
      *
      * @param path The path to place the new key store
-     *
-     * @return
      */
-    static void create(const char* path);
+    static void create(const char *path);
 
     /**
      * Open a key store instance.
@@ -79,12 +79,19 @@ public:
      *
      * @return The opened vault instance
      */
-    static KeyStore *init(const char* keyStorePath);
+    static KeyStore *init(const char *keyStorePath);
 
     /**
      * Close the current key store instance.
      */
     void close();
+
+    /**
+     * Get the SQLite handle.
+     *
+     * @return The SQLite handle
+     */
+    sqlite3 *getSqliteHandle();
 
     //
     // Metadata
@@ -93,16 +100,16 @@ public:
     /**
      * Set a metadata item.
      *
-     * @param key
-     * @param value
+     * @param key The key of the metadata item
+     * @param value The value to store
      */
     void setMetadata(const char *key, const char *value);
 
     /**
-     * Set a metadata item.
+     * Get a metadata item.
      *
-     * @param key
-     * @param value
+     * @param key The key of the metadata item
+     * @param value OUTPUT The value of the metadata item
      */
     void getMetadata(const char *key, char **value);
 
@@ -111,34 +118,39 @@ public:
     //
 
     /**
+     * Retrieve all existing users.
+     *
+     * @param users OUTPUT The list of users
+     */
+    void getUsers(std::vector<User *> **users);
+
+    /**
      * Retrieve an user by it's ID.
      *
-     * @param id
-     * @param user
+     * @param id The ID of the user
+     * @param user OUTPUT The retrieved user object
      */
     void getUser(const int id, User **user);
 
     /**
      * Retrieve an user by it's username.
      *
-     * @param username
-     * @param user
+     * @param username The username of the user
+     * @param user OUTPUT The retrieved user object
      */
     void getUser(const char *username, User **user);
 
     /**
      * Save a (new) user.
      *
-     * @param key
-     * @param value
+     * @param user The user to save
      */
     void saveUser(User *user);
 
     /**
      * Delete an user.
      *
-     * @param key
-     * @param value
+     * @param user The user to delete
      */
     void deleteUser(const User *user);
 
@@ -149,34 +161,70 @@ public:
     /**
      * Retrieve a key by it's ID.
      *
-     * @param id
-     * @param user
+     * @param id The ID of the key
+     * @param key OUTPUT The retrieved key object
      */
     void getKey(const int id, Key **key);
 
     /**
-     * Retrieve a key by it's inode and user ID.
+     * Retrieve a key by it's path and user ID.
      *
-     * @param username
-     * @param user
+     * @param path The path of this key
+     * @param user The user of this key
+     * @param key OUTPUT The retrieved key object
      */
-    void getKey(const unsigned inode, const User *user, Key **key);
+    void getKey(const char *path, const User *user, Key **key);
 
     /**
      * Save a (new) key.
      *
-     * @param key
-     * @param value
+     * @param key The key to save
      */
     void saveKey(Key *key);
 
     /**
      * Delete a key.
      *
-     * @param key
-     * @param value
+     * @param key The key to delete
      */
     void deleteKey(const Key *key);
+
+    //
+    // Notifications
+    //
+
+    /**
+     * Save a new notification.
+     *
+     * @param notification The notification to save
+     *
+     * @return The notification ID
+     */
+    int saveNotification(BaseNotification *notification);
+
+    /**
+     * Load a simple notification.
+     *
+     * @param id The ID of the notification
+     * @param notification OUTPUT The retrieved notification object
+     */
+    void loadNotification(int id, BaseNotification **notification);
+
+    /**
+     * Delete a notification.
+     *
+     * @param notification The notification to delete
+     */
+    void deleteNotification(BaseNotification *notification);
+
+    /**
+     * Load all notifications for a specific user.
+     *
+     * @param user_id The user ID of the user to retrieve notification for
+     *
+     * @return The vector of found notifications
+     */
+    std::vector<BaseNotification *> *loadNotificationsForUser(int user_id);
 
 };
 
