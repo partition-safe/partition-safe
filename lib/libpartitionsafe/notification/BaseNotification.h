@@ -19,12 +19,12 @@ public:
     const int id;
 
     /**
-     * The user whom send the notification
+     * The user who send the notification
      */
     const int user_from;
 
     /**
-     * The user whom receives the notification
+     * The user who receives the notification
      */
     const int user_to;
 
@@ -41,17 +41,18 @@ public:
     /**
      * Base notification constructor.
      *
-     * @param id
-     * @param user_from
-     * @param user_to
-     * @param type
-     * @param content
+     * @param id The ID of the notification
+     * @param user_from The user who send the notification
+     * @param user_to The user who received the notification
+     * @param type The type of the notification
+     * @param content The content of the notification
      */
     BaseNotification(const int id, const int user_from, const int user_to, const int type, const std::string content);
 
     /**
      * String representation of the base notification.
-     * @return
+     *
+     * @return The string representation
      */
     virtual std::string toString();
 
@@ -61,6 +62,7 @@ public:
      * The notification knows best what to do.
      *
      * @param psInstance The partition safe instance
+     *
      * @return 0 when ok, > 0 when not ok
      */
     virtual int handle(PartitionSafe *psInstance);

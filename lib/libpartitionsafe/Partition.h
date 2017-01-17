@@ -14,19 +14,19 @@ class Partition {
     /**
      * The save version for compatibility checks.
      */
-    static const TCHAR* LETTER;
+    static const TCHAR *LETTER;
 
     /**
      * File path to this partition
      */
-    const char* path;
+    const char *path;
 
     /**
      * The file descriptor of this partition.
      *
      * This descriptor contains the real partition file.
      */
-    FILE * fd;
+    FILE *fd;
 
     /**
      * The FatFS instance.
@@ -49,11 +49,10 @@ public:
     /**
      * Constructor of a partition.
      *
-     * @param path
-     * @param fh
-     * @return
+     * @param path The path of the partition
+     * @param fh The file handler
      */
-    Partition(const char* path, FILE* fh = nullptr);
+    Partition(const char *path, FILE *fh = nullptr);
 
     /**
      * Partition destructor.
@@ -63,186 +62,212 @@ public:
     /**
      * Open the partition.
      *
-     * @param path The path to the partition file
-     *
-     * @return
+     * @return The partition instance
      */
-    Partition* open();
+    Partition *open();
 
     /**
      * Create a new partition.
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* create();
+    Partition *create();
 
     /**
      * Write to a file on the partition.
      *
-     * @param fileName
-     * @param buff
-     * @param size
+     * @param fileName The filename of the file
+     * @param buff The buffer to write
+     * @param size The size to write
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* writeFile(const TCHAR* fileName, const void* buff, const UINT size);
+    Partition *writeFile(const TCHAR *fileName, const void *buff, const UINT size);
 
     /**
      * Write to a file on the partition.
      *
-     * @param fileName
-     * @param buff
-     * @param size
+     * @param fileName The filename of the file
+     * @param buff The buffer to write
+     * @param size The size to write
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* writeFile(const std::string fileName, const void* buff, const UINT size);
+    Partition *writeFile(const std::string fileName, const void *buff, const UINT size);
+
+#ifndef __WIN32
 
     /**
- * Rename a file or folder.
- *
- * @param oldPath - Path to the file or folder to be renamed
- * @param newPath - Path to the file or folder with changed name
- * @return
- */
+     * Write to a file on the partition.
+     *
+     * @param fileName The filename of the file
+     * @param buff The buffer to write
+     * @param size The size to write
+     *
+     * @return The partition instance
+     */
+    Partition *writeFile(const char *fileName, const void *buff, const UINT size);
+
+#endif
+
+    /**
+     * Rename a file or folder.
+     *
+     * @param oldPath Path to the file or folder to be renamed
+     * @param newPath Path to the file or folder with changed name
+     *
+     * @return The partition instance
+     */
     Partition *renameFileFolder(const char *oldPath, const char *newPath);
 
-#ifndef __WIN32
     /**
-     * Write to a file on the partition.
+     * Get information about a file.
      *
-     * @param fileName
-     * @param buff
-     * @param size
+     * @param fileName The file to get information about
+     * @param fileInfo OUTPUT The file info object to populate
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* writeFile(const char *fileName, const void* buff, const UINT size);
-#endif
+    Partition *fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
 
     /**
-     * Get the size a the file on the partition.
+     * Get information about a file.
      *
-     * @param fileName
+     * @param fileName The file to get information about
+     * @param fileInfo OUTPUT The file info object to populate
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* fileInfo(const TCHAR *fileName, FILINFO *fileInfo);
-
-    /**
-     * Get the size a the file on the partition.
-     *
-     * @param fileName
-     *
-     * @return
-     */
-    Partition* fileInfo(const std::string fileName, FILINFO *fileInfo);
+    Partition *fileInfo(const std::string fileName, FILINFO *fileInfo);
 
 #ifndef __WIN32
+
     /**
-     * Get the size a the file on the partition.
+     * Get information about a file.
      *
-     * @param fileName
+     * @param fileName The file to get information about
+     * @param fileInfo OUTPUT The file info object to populate
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* fileInfo(const char *fileName, FILINFO *fileInfo);
+    Partition *fileInfo(const char *fileName, FILINFO *fileInfo);
+
 #endif
 
     /**
      * Read the contents of a file on the partition.
      *
-     * @param fileName
-     * @param buff
+     * @param fileName The file to read
+     * @param buff OUTPUT The buffer to read into
+     * @param size The size of the buffer
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* readFile(const TCHAR *fileName, void *buff, const UINT size);
+    Partition *readFile(const TCHAR *fileName, void *buff, const UINT size);
 
     /**
      * Read the contents of a file on the partition.
      *
-     * @param fileName
-     * @param buff
+     * @param fileName The file to read
+     * @param buff OUTPUT The buffer to read into
+     * @param size The size of the buffer
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* readFile(const std::string fileName, void *buff, const UINT size);
+    Partition *readFile(const std::string fileName, void *buff, const UINT size);
 
 #ifndef __WIN32
+
     /**
      * Read the contents of a file on the partition.
      *
-     * @param fileName
-     * @param buff
+     * @param fileName The file to read
+     * @param buff OUTPUT The buffer to read into
+     * @param size The size of the buffer
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* readFile(const char *fileName, void *buff, const UINT size);
+    Partition *readFile(const char *fileName, void *buff, const UINT size);
+
 #endif
 
     /**
-     * Read the contents of a file on the partition.
+     * Create a new directory.
      *
-     * @param directoryName
+     * @param directoryName The directory to create
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* createDirectory(const TCHAR *directoryName);
+    Partition *createDirectory(const TCHAR *directoryName);
 
     /**
-     * Read the contents of a file on the partition.
+     * Create a new directory.
      *
-     * @param directoryName
+     * @param directoryName The directory to create
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* createDirectory(const std::string directoryName);
+    Partition *createDirectory(const std::string directoryName);
 
 #ifndef __WIN32
+
     /**
-     * Read the contents of a file on the partition.
+     * Create a new directory.
      *
-     * @param directoryName
+     * @param directoryName The directory to create
      *
-     * @return
+     * @return The partition instance
      */
-    Partition* createDirectory(const char *directoryName);
+    Partition *createDirectory(const char *directoryName);
+
 #endif
 
     /**
-     * Read the contents of a file on the partition.
+     * Get the content of a directory.
      *
-     * @param directoryName
+     * @param directoryName The directory name to list
+     * @param parentEntry The parent entry of the directory
+     * @param directoriesOnly true to list only directories, defauls to false
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry = nullptr, const bool directoriesOnly = false);
+    std::vector<Entry *> *listDirectory(const TCHAR *directoryName, TreeEntry **parentEntry = nullptr,
+                                        const bool directoriesOnly = false);
 
     /**
-     * Read the contents of a file on the partition.
+     * Get the content of a directory.
      *
-     * @param directoryName
+     * @param directoryName The directory name to list
+     * @param parentEntry The parent entry of the directory
+     * @param directoriesOnly true to list only directories, defauls to false
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const std::string directoryName, TreeEntry **parentEntry = nullptr, const bool directoriesOnly = false);
+    std::vector<Entry *> *listDirectory(const std::string directoryName, TreeEntry **parentEntry = nullptr,
+                                        const bool directoriesOnly = false);
 
 #ifndef __WIN32
+
     /**
-     * Read the contents of a file on the partition.
+     * Get the content of a directory.
      *
-     * @param directoryName
+     * @param directoryName The directory name to list
+     * @param parentEntry The parent entry of the directory
+     * @param directoriesOnly true to list only directories, defauls to false
      *
      * @return The list of found entries
      */
-    std::vector<Entry*> *listDirectory(const char *directoryName, TreeEntry **parentEntry = nullptr, const bool directoriesOnly = false);
+    std::vector<Entry *> *listDirectory(const char *directoryName, TreeEntry **parentEntry = nullptr,
+                                        const bool directoriesOnly = false);
+
 #endif
 
     /**
      * Delete the given file or directory.
      *
      * @param path The directory to delete
+     *
+     * @return The partition instance
      */
     Partition *deleteFileDirectory(const TCHAR *path);
 
@@ -250,37 +275,45 @@ public:
      * Delete the given file or directory.
      *
      * @param path The directory to delete
+     *
+     * @return The partition instance
      */
     Partition *deleteFileDirectory(const std::string path);
 
 #ifndef __WIN32
+
     /**
      * Delete the given file or directory.
      *
      * @param path The directory to delete
+     *
+     * @return The partition instance
      */
     Partition *deleteFileDirectory(const char *path);
+
 #endif
 
     /**
      * Import a single file by providing the source (file on your local disk)
      * and destination (file inside the PartitionSafe partition) paths.
      *
-     * @param source The source file path
-     * @param destination The destination path
-     * @return
+     * @param source The source file path on the system disk
+     * @param destination The destination path on the PartitionSafe partition
+     *
+     * @return The partition instance
      */
-    Partition *importFile(const char* source, const char* destination);
+    Partition *importFile(const char *source, const char *destination);
 
     /**
      * Export a single file by providing a source (file inside the PartitionSafe
      * partition) and destination (file on your local disk) paths.
      *
-     * @param source The source file path
-     * @param destination The destination path
-     * @return
+     * @param source The source file path on the PartitionSafe partition
+     * @param destination The destination path on the system disk
+     *
+     * @return The partition instance
      */
-    Partition *exportFile(const char* source, const char* destination);
+    Partition *exportFile(const char *source, const char *destination);
 
 };
 
