@@ -523,3 +523,23 @@ void MainWindow::on_buttonShare_clicked()
     DialogShare *share = new DialogShare(oldPath, this->psInstance, this);
     share->show();
 }
+void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
+{
+    // We should get the selected item
+    QVariant current = modelDirs->data(index, Qt::DisplayRole);
+    QModelIndex parentIndex = modelDirs->parent(index);
+    QString fullPath = "";
+
+    while(parentIndex.isValid())
+    {
+            QVariant parent = modelDirs->data(parentIndex, Qt::DisplayRole);
+            fullPath = "/" + parent.toString() + fullPath;
+            parentIndex = modelDirs->parent(parentIndex);
+    }
+
+    fullPath = fullPath + "/" + current.toString();
+
+    qDebug() << fullPath;
+    model->setCurrentDirectory(fullPath);
+
+}

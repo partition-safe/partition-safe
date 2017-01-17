@@ -53,6 +53,8 @@ private slots:
 
     void on_buttonShare_clicked(); // Shares a file or folder with a user
 
+    void on_treeViewFiles_clicked(const QModelIndex &index); // Opens folder in treeViewExplorer
+
 private:
     Ui::MainWindow *ui; // Contains ui elements of this class
     PSFileSystemModel *model; // Model of the file tree
