@@ -125,7 +125,7 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
         }
 
         try {
-            // Creat a partition
+            // Create a partition
             PartitionSafe* ps = new PartitionSafe();
             ps->create(filePath, keyPath, label, partitionSize, username, password);
             delete ps;
@@ -139,24 +139,12 @@ void DialogNew::on_buttonBox_clicked(QAbstractButton *button)
     }
 }
 
-/** Display warning message.
- *
- * @brief DialogOpen::show_warning
- * @param message - Given message to display
- */
 void DialogNew::show_warning(const char* message)
 {
     QMessageBox messageBox;
     messageBox.warning(0,"Warning",message);
 }
 
-/** Check if a given path has a given suffix
- *
- * @brief DialogOpen::has_suffix
- * @param filePath - Path to check if contains suffix
- * @param suffix - The suffix path sould contain
- * @return
- */
 bool DialogNew::has_suffix(const QString &filePath, const QString &suffix)
 {
     // Regular expresion to check if key files end with '.key' and
