@@ -13,13 +13,13 @@ class DialogNewDirectory : public QDialog {
 public:
     explicit DialogNewDirectory(QWidget *parent = 0);
     ~DialogNewDirectory();
-    QString dirName;
+    QString dirName; // Valid directory name.
 
 private slots:
-    void on_txtDirectoryName_textChanged(const QString &arg1);
+    void on_txtDirectoryName_textChanged(const QString &arg1); // Checks the input at text changed
 
 private:
-    Ui::DialogNewDirectory *ui;
+    Ui::DialogNewDirectory *ui; // Contains ui elements
 
     /** Check if directory name is valid. Uses regex to check the directory name.
    *

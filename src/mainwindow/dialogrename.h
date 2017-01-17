@@ -14,13 +14,13 @@ class DialogRename : public QDialog
 public:
     explicit DialogRename(QWidget *parent = 0, QString name = "");
     ~DialogRename();
-    QString fileName;
+    QString fileName; // a vaild file name
 
 private slots:
-    void on_txtRename_textChanged(const QString &arg1);
+    void on_txtRename_textChanged(const QString &arg1); // Check if name is vaid on text changed
 
 private:
-    Ui::DialogRename *ui;
+    Ui::DialogRename *ui; // Conatins ui elements
 
     /** Check if directory/file name is valid. Uses regex to check the directory name.
    *

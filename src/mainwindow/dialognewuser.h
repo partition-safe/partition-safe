@@ -17,12 +17,12 @@ public:
     ~DialogNewUser();
 
 private slots:
-    void on_btnCreate_clicked();
+    void on_btnCreate_clicked(); // Checks input and create user
 
 private:
-    Ui::DialogNewUser *ui;
+    Ui::DialogNewUser *ui; // Contains uit elements
 
-    PartitionSafe* partitionSafe;
+    PartitionSafe* partitionSafe; // Instance of partitionSafe
 };
 
 #endif // DIALOGNEWUSER_H

@@ -17,12 +17,16 @@ public:
     ~DialogNotifications();
 
 private slots:
-    void on_listNotifications_doubleClicked(const QModelIndex &index);
+    void on_listNotifications_doubleClicked(const QModelIndex &index); // Hande dubbelCliked notification
 
 private:
-    Ui::DialogNotifications *ui;
-    PartitionSafe *psInstance;
-    std::vector<BaseNotification *> *notifications;
+    Ui::DialogNotifications *ui; // Contains ui elements
+    PartitionSafe *psInstance; // Instance of PartitionSafe
+    std::vector<BaseNotification *> *notifications; // Vector containing norifications
+
+    /**
+     * @brief load - Retrieve notifications and add it to the list of notifications.
+     */
     void load();
 };
 

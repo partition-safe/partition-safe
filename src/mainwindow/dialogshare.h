@@ -17,13 +17,18 @@ public:
     ~DialogShare();
 
 private slots:
-    void on_buttonBox_accepted();
+    void on_buttonBox_accepted(); // Set notification for selected users
 
 private:
-    Ui::DialogShare *ui;
-    const std::string path;
-    PartitionSafe *ps;
-    std::vector<User*> *users;
+    Ui::DialogShare *ui; // Contains ui elements
+    const std::string path; // Path to file or folder to share
+    PartitionSafe *ps; // PartitionSafe instance
+    std::vector<User*> *users; // Vector of users
+
+
+    /**
+     * @brief load - Get and set list of users to potentialy share with
+     */
     void load();
 };
 
