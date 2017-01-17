@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <time.h>
 #include "PartitionSafe.h"
 #include "Common.h"
 #include "NotificationCentre.h"

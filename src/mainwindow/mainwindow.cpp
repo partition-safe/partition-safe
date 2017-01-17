@@ -84,6 +84,7 @@ void MainWindow::fileChanged(const QString & file)
     std::cout << "The file '" << file.toLatin1().data() << "' has been modified" << std::endl;
     Entry* item = modifiedFileList.value(file);
 
+    // If item is not null update the changed file
     if(item != NULL)
     {
         QFileInfo fileInfo(file);
@@ -166,6 +167,7 @@ void MainWindow::on_actionRename_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
+    // Opens dialog for a new PartitionSafe
     DialogNew *newDialog = new DialogNew(this);
     newDialog->exec();
 }
@@ -292,11 +294,11 @@ void MainWindow::exportFiles()
         qDebug() << destinationPath;
 
         // export the current file
-        exportFile(sourcePath, destinationDir, destinationPath);
+        exportFile(sourcePath, destinationPath);
     }
 }
 
-void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString destinationPath)
+void MainWindow::exportFile(QString sourcePath, QString destinationPath)
 {
     FRESULT exists;
     FILINFO fno;
@@ -333,7 +335,7 @@ void MainWindow::exportFile(QString sourcePath, QString destinationDir, QString 
                     // makeDir(fullDesPath);
 
                     // Recursive call for sub items of the sub-directory
-                    exportFile(entry->getFullPath().c_str(), destinationPath, fullDesPath);
+                    exportFile(entry->getFullPath().c_str(), fullDesPath);
                 }
                 // if a sub-file, export the file.
                 else psInstance->getVault()->getPartition()->exportFile(fullSourPath.toLatin1().data(), fullDesPath.toLatin1().data());
@@ -488,11 +490,6 @@ void MainWindow::on_treeViewExplorer_selectionChanged()
     ui->actionDelete->setEnabled(hasSelection);
     ui->actionExport->setEnabled(hasSelection);
     ui->actionRename->setEnabled(hasSelection);
-}
-
-void MainWindow::on_treeViewExplorer_viewportEntered()
-{
-    qDebug() << "haha";
 }
 
 void MainWindow::on_buttonNotifications_clicked()
