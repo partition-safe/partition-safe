@@ -4,7 +4,6 @@
 
 #include <cstring>
 #include "PartitionSafe.h"
-#include "NotificationCentre.h"
 #include "../libfatfs/src/diskio.h"
 
 PartitionSafe::~PartitionSafe() {
@@ -73,7 +72,7 @@ PartitionSafe::init(const char *vaultPath, const char *keyStorePath, const char 
     keyStore = KeyStore::init(keyStorePath);
 
     // Initialize the notification centre
-    NotificationCentre::getInstance(this);
+    notificationCentre = new NotificationCentre(this);
 
     // Check header stuff
     char *uuid = new char[36]();
@@ -157,4 +156,8 @@ void PartitionSafe::createUser(const char *username, const char *password, User 
     // Create the new root key based on the current encryption key
     keyStore->saveKey(*key);
     keyStore->getKey("/", *user, key);
+}
+
+NotificationCentre *PartitionSafe::getNotificationCentre() {
+    return notificationCentre;
 }

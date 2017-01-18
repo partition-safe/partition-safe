@@ -3,14 +3,10 @@
 //
 
 #include "NotificationCentre.h"
+#include "PartitionSafe.h"
 
 NotificationCentre::NotificationCentre(PartitionSafe *partitionSafe):
         partitionSafe(partitionSafe) {}
-
-NotificationCentre& NotificationCentre::getInstance(PartitionSafe *partitionSafe) {
-    static NotificationCentre instance(partitionSafe);
-    return instance;
-}
 
 int NotificationCentre::saveNotification(BaseNotification *notification) {
     // Save the thing

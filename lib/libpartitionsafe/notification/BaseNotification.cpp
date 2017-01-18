@@ -3,7 +3,7 @@
 //
 
 #include "BaseNotification.h"
-#include "../NotificationCentre.h"
+#include "../PartitionSafe.h"
 
 BaseNotification::BaseNotification(const int id, const int user_from, const int user_to, const int type,
                                    const std::string content): id(id), user_from(user_from), user_to(user_to), type(type),
@@ -15,7 +15,7 @@ std::string BaseNotification::toString() {
 
 int BaseNotification::handle(PartitionSafe *psInstance) {
     // Remove this notification
-    NotificationCentre::getInstance().deleteNotification(this);
+    psInstance->getNotificationCentre()->deleteNotification(this);
 
     // DONE
     return 0;

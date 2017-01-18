@@ -57,6 +57,6 @@ void DialogShare::on_buttonBox_accepted()
         DirectoryInvitationNotification *notif = DirectoryInvitationNotification::create(ps->getUser(), user, path, "");
 
         // Save the notification
-        NotificationCentre::getInstance().saveNotification(notif);
+        ps->getNotificationCentre()->saveNotification(notif);
     }
 }
