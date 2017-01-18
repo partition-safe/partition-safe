@@ -526,20 +526,14 @@ void MainWindow::on_buttonShare_clicked()
 void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
 {
     // We should get the selected item
-    QVariant current = modelDirs->data(index, Qt::DisplayRole);
-    QModelIndex parentIndex = modelDirs->parent(index);
-    QString fullPath = "";
+    TreeEntry *item = static_cast<TreeEntry*>(index.internalPointer());
 
-    while(parentIndex.isValid())
-    {
-            QVariant parent = modelDirs->data(parentIndex, Qt::DisplayRole);
-            fullPath = "/" + parent.toString() + fullPath;
-            parentIndex = modelDirs->parent(parentIndex);
-    }
+    // Get the path
+    QString path = QString(item->getData()->getFullPath().c_str());
 
-    fullPath = fullPath + "/" + current.toString();
+    // Enter given directory and add to history
+    model->enterDirectory(path, *folderHistory, *folderForwardHistory);
 
-    qDebug() << fullPath;
-    model->setCurrentDirectory(fullPath);
-
+    // Show path in status bar
+    this->setPath();
 }
