@@ -432,6 +432,7 @@ void MainWindow::initializeVault(const std::string vaultPath, const std::string 
         ui->actionFile->setEnabled(true);
         ui->buttonNotifications->setEnabled(true);
         ui->actionFolder->setEnabled(true);
+        ui->actionUser->setEnabled(true);
 
         // Set notifications
         setNotifications();
