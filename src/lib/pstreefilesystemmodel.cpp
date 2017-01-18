@@ -45,7 +45,9 @@ QVariant PSTreeFileSystemModel::headerData(int section, Qt::Orientation orientat
 void PSTreeFileSystemModel::init()
 {
     currentDirectory = new TreeEntry();
+    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()));
     setupData(&currentDirectory, "/");
+    endInsertRows();
 }
 
 QString PSTreeFileSystemModel::getCurrentDirectory()
@@ -103,9 +105,11 @@ int PSTreeFileSystemModel::rowCount(const QModelIndex &parent) const
     if (parent.column() > 0)
         return 0;
 
-    if (!parent.isValid())
-        parentItem = currentDirectory;
-    else
+    if (!parent.isValid()) {
+        if(currentDirectory) {
+            parentItem = currentDirectory;
+        } else return 0;
+    } else
         parentItem = static_cast<TreeEntry*>(parent.internalPointer());
 
     return parentItem->getChildren().size();

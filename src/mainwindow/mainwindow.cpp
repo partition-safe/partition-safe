@@ -89,6 +89,7 @@ void MainWindow::fileChanged(const QString & file)
     {
         QFileInfo fileInfo(file);
         psInstance->getVault()->getPartition()->importFile(file.toLatin1().data(), item->getFullPath().c_str());
+        modelDirs->init();
     }
 }
 
@@ -152,7 +153,10 @@ void MainWindow::on_actionOpen_triggered()
 
     // Open the dialog and wait for a result.
     // On result open partition.
-    if(open->exec()) initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
+    if(open->exec()) {
+        initializeVault(open->locationVault, open->locationKeyStore, open->username, open->password);
+        modelDirs->init();
+    }
 }
 
 void MainWindow::on_buttonEdit_clicked()
@@ -170,6 +174,7 @@ void MainWindow::on_actionNew_triggered()
     // Opens dialog for a new PartitionSafe
     DialogNew *newDialog = new DialogNew(this);
     newDialog->exec();
+    modelDirs->init();
 }
 
 void MainWindow::on_buttonExport_clicked()
@@ -251,6 +256,7 @@ void MainWindow::importFiles()
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
+    modelDirs->init();
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
@@ -268,6 +274,7 @@ void MainWindow::importFolder()
             qDebug() << filePath;
             model->importFolder(filePath.toLatin1().data(), model->getCurrentDirectory().toLatin1().data());
         }
+        modelDirs->init();
     }
 }
 
@@ -366,6 +373,7 @@ void MainWindow::renameFileFolder()
         newPath = newPath.trimmed();
 
         model->renameFileFolder(oldPath, newPath);
+        modelDirs->init();
     }
 }
 
@@ -373,6 +381,7 @@ void MainWindow::deleteFileDirectory()
 {
     model->deleteFileDirectory(selectedRowsList);
     on_treeViewExplorer_selectionChanged();
+    modelDirs->init();
 }
 
 void MainWindow::setNotifications()
@@ -399,6 +408,7 @@ void MainWindow::setNotifications()
 void MainWindow::makeDir(QString path)
 {
     QDir().mkdir(path);
+    modelDirs->init();
 }
 
 void MainWindow::initializeVault(const std::string vaultPath, const std::string keyStorePath, const std::string username, const std::string password)
@@ -472,6 +482,7 @@ void MainWindow::newDirectory()
         // if not existing, create new directory
         if(!model->directoryExists(fullPath)) model->createDirectory(fullPath);
         else QMessageBox::warning(0,"Can't ctory", "Directory already exists");
+        modelDirs->init();
     }
 }
 
