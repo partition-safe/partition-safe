@@ -21,7 +21,7 @@ DialogNotifications::~DialogNotifications()
 void DialogNotifications::load()
 {
     // Retrieve notifications
-    notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
+    notifications = psInstance->getNotificationCentre()->loadNotificationsForUser(psInstance->getUser()->id);
 
     // Reset listview
     ui->listNotifications->clear();

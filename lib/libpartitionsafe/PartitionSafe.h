@@ -8,6 +8,7 @@
 
 #include "Vault.h"
 #include "KeyStore.h"
+#include "NotificationCentre.h"
 
 class PartitionSafe {
     /**
@@ -19,6 +20,11 @@ class PartitionSafe {
      * Our key storage.
      */
     KeyStore *keyStore;
+
+    /**
+     * Our notification centre.
+     */
+    NotificationCentre *notificationCentre;
 
     /**
      * The current user.
@@ -49,6 +55,13 @@ public:
      * @return The key store instance
      */
     KeyStore *getKeyStore();
+
+    /**
+     * Get the notification centre instance.
+     *
+     * @return The notification centre instance
+     */
+    NotificationCentre *getNotificationCentre();
 
     /**
      * Get the current user.

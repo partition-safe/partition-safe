@@ -378,7 +378,7 @@ void MainWindow::deleteFileDirectory()
 void MainWindow::setNotifications()
 {
     // Get the notifications
-    auto *notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
+    auto *notifications = psInstance->getNotificationCentre()->loadNotificationsForUser(psInstance->getUser()->id);
 
     if (notifications->size()>0)
     {

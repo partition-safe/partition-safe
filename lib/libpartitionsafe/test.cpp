@@ -134,12 +134,12 @@ int main() {
         std::cout << "-- Notification tests" << std::endl;
         BaseNotification *notification1 = new BaseNotification(0, 1, 1, 1, "Notificatie 1");
         BaseNotification *notification2 = new BaseNotification(0, 1, 1, 2, "Notificatie 2");
-        NotificationCentre::getInstance().saveNotification(notification1);
-        NotificationCentre::getInstance().saveNotification(notification2);
+        ps->getNotificationCentre()->saveNotification(notification1);
+        ps->getNotificationCentre()->saveNotification(notification2);
 
         // Retrieve notifications
         std::cout << "Should print 2 notifications:" << std::endl;
-        std::vector<BaseNotification *> *notifications = NotificationCentre::getInstance().loadNotificationsForUser(1);
+        std::vector<BaseNotification *> *notifications = ps->getNotificationCentre()->loadNotificationsForUser(1);
         for(BaseNotification *value : *notifications) {
                 std::cout << value->toString() << std::endl;
         }
