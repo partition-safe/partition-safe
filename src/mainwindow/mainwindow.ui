@@ -14,7 +14,7 @@
    <string>PartitionSafe</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../application.qrc">
     <normaloff>:/resource/icon.png</normaloff>:/resource/icon.png</iconset>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
@@ -24,7 +24,7 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QSplitter" name="splitter">
         <property name="autoFillBackground">
          <bool>true</bool>
@@ -114,7 +114,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_navigate_before_black_48dp.png</normaloff>:/resource/ic_navigate_before_black_48dp.png</iconset>
         </property>
         <property name="flat">
@@ -134,7 +134,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_navigate_next_black_48dp.png</normaloff>:/resource/ic_navigate_next_black_48dp.png</iconset>
         </property>
        </widget>
@@ -164,7 +164,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_share_black_48dp.png</normaloff>:/resource/ic_share_black_48dp.png</iconset>
         </property>
         <property name="checkable">
@@ -184,7 +184,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_file_download_black_48dp.png</normaloff>:/resource/ic_file_download_black_48dp.png</iconset>
         </property>
        </widget>
@@ -201,7 +201,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_file_upload_black_48dp.png</normaloff>:/resource/ic_file_upload_black_48dp.png</iconset>
         </property>
        </widget>
@@ -218,7 +218,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_create_new_folder_black_48dp.png</normaloff>:/resource/ic_create_new_folder_black_48dp.png</iconset>
         </property>
        </widget>
@@ -235,7 +235,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_mode_edit_black_48dp.png</normaloff>:/resource/ic_mode_edit_black_48dp.png</iconset>
         </property>
        </widget>
@@ -252,7 +252,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_delete_black_48dp.png</normaloff>:/resource/ic_delete_black_48dp.png</iconset>
         </property>
        </widget>
@@ -269,7 +269,7 @@
          <string>[0]</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../application.qrc">
           <normaloff>:/resource/ic_notifications_none_black_48dp.png</normaloff>:/resource/ic_notifications_none_black_48dp.png</iconset>
         </property>
        </widget>
@@ -284,7 +284,7 @@
      <x>0</x>
      <y>0</y>
      <width>789</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPartitionSafe">
@@ -430,6 +430,9 @@
    </property>
   </action>
   <action name="actionUser">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>New User...</string>
    </property>
@@ -453,6 +456,8 @@
   <tabstop>treeViewFiles</tabstop>
   <tabstop>treeViewExplorer</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>
