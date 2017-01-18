@@ -8,7 +8,6 @@
 
 #include <string>
 
-// Define the partition safe class to prevent circular dependencies
 class PartitionSafe;
 
 class BaseNotification {

@@ -6,8 +6,10 @@
 #define PARTITIONSAFE_NOTIFICATIONCENTRE_H
 
 
-#include "PartitionSafe.h"
+#include <vector>
 #include "notification/BaseNotification.h"
+
+class PartitionSafe;
 
 class NotificationCentre {
 private:
@@ -21,22 +23,14 @@ protected:
      */
     PartitionSafe *partitionSafe;
 
+public:
+
     /**
      * Private constructor for singleton
      *
      * @param partitionSafe The PartitionSafe instance to use
      */
     NotificationCentre(PartitionSafe *partitionSafe);
-
-public:
-    /**
-     * Retrieve the notification centre instance
-     *
-     * @param partitionSafe The partition safe instance to use (may be empty)
-     *
-     * @return The notification centre instance
-     */
-    static NotificationCentre &getInstance(PartitionSafe *partitionSafe = nullptr);
 
     /**
      * Save a new notification.

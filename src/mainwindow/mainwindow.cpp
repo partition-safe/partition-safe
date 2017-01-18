@@ -378,7 +378,7 @@ void MainWindow::deleteFileDirectory()
 void MainWindow::setNotifications()
 {
     // Get the notifications
-    auto *notifications = NotificationCentre::getInstance().loadNotificationsForUser(psInstance->getUser()->id);
+    auto *notifications = psInstance->getNotificationCentre()->loadNotificationsForUser(psInstance->getUser()->id);
 
     if (notifications->size()>0)
     {
@@ -523,4 +523,18 @@ void MainWindow::on_buttonShare_clicked()
     // Open the dialog
     DialogShare *share = new DialogShare(oldPath, this->psInstance, this);
     share->show();
+}
+void MainWindow::on_treeViewFiles_clicked(const QModelIndex &index)
+{
+    // We should get the selected item
+    TreeEntry *item = static_cast<TreeEntry*>(index.internalPointer());
+
+    // Get the path
+    QString path = QString(item->getData()->getFullPath().c_str());
+
+    // Enter given directory and add to history
+    model->enterDirectory(path, *folderHistory, *folderForwardHistory);
+
+    // Show path in status bar
+    this->setPath();
 }
